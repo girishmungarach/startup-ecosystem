@@ -1,8 +1,8 @@
 "use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle, Clock, AlertCircle, Eye, Edit, ArrowRight, Users, MessageSquare, ArrowLeft, Bell } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, Clock, AlertCircle, Eye, Edit, ArrowRight, Users, MessageSquare, ArrowLeft, Bell, RefreshCw, TrendingUp, Calendar } from 'lucide-react';
 interface StatusPagesCollectionProps {
   statusType: 'opportunity-grabbed' | 'questionnaire-submitted' | 'pending-reviews';
   opportunityTitle?: string;
@@ -25,6 +25,30 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
   onReviewAll,
   onBack
 }) => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [showNotification, setShowNotification] = useState(false);
+
+  // Auto-refresh for pending reviews
+  useEffect(() => {
+    if (statusType === 'pending-reviews') {
+      const interval = setInterval(() => {
+        setLastUpdated(new Date());
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
+      }, 60000); // Update every minute
+
+      return () => clearInterval(interval);
+    }
+  }, [statusType]);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+      setLastUpdated(new Date());
+    }, 1000);
+  };
   // Mock data for pending candidates (for poster view)
   const mockCandidates = [{
     id: '1',
@@ -140,9 +164,24 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           duration: 0.6,
           delay: 0.5
         }} className="space-y-4">
-          <button onClick={onBrowseMore} className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
-            Browse More Opportunities
-          </button>
+          <motion.button 
+            onClick={onBrowseMore} 
+            className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <ArrowRight size={20} />
+            <span>Browse More Opportunities</span>
+          </motion.button>
+          
+          <motion.button 
+            className="w-full bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center justify-center space-x-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Users size={20} />
+            <span>View My Applications</span>
+          </motion.button>
           
           <div className="flex items-center justify-center space-x-4 text-gray-600">
             <div className="flex items-center space-x-2">
@@ -291,6 +330,26 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           </p>
         </motion.div>
 
+        {/* Real-time Notification */}
+        <AnimatePresence>
+          {showNotification && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between"
+            >
+              <div className="flex items-center space-x-2">
+                <Bell size={16} className="text-blue-600" />
+                <span className="text-blue-800">Data updated automatically</span>
+              </div>
+              <button onClick={() => setShowNotification(false)} className="text-blue-600 hover:text-blue-800">
+                <AlertCircle size={16} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Stats Cards */}
         <motion.div initial={{
           opacity: 0,
@@ -301,18 +360,56 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
         }} transition={{
           duration: 0.6,
           delay: 0.1
-        }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="border-2 border-gray-200 p-6 text-center">
+        }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <motion.div 
+            className="border-2 border-gray-200 p-6 text-center hover:border-orange-300 transition-colors duration-200"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <div className="text-3xl font-bold text-orange-600 mb-2">{pendingCount}</div>
             <div className="text-gray-600">Pending Reviews</div>
-          </div>
-          <div className="border-2 border-gray-200 p-6 text-center">
+            <div className="text-xs text-gray-500 mt-2">Requires attention</div>
+          </motion.div>
+          <motion.div 
+            className="border-2 border-gray-200 p-6 text-center hover:border-green-300 transition-colors duration-200"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <div className="text-3xl font-bold text-green-600 mb-2">12</div>
             <div className="text-gray-600">This Month</div>
-          </div>
-          <div className="border-2 border-gray-200 p-6 text-center">
+            <div className="text-xs text-gray-500 mt-2 flex items-center justify-center">
+              <TrendingUp size={12} className="mr-1" />
+              +15% from last month
+            </div>
+          </motion.div>
+          <motion.div 
+            className="border-2 border-gray-200 p-6 text-center hover:border-blue-300 transition-colors duration-200"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <div className="text-3xl font-bold text-blue-600 mb-2">2.3</div>
             <div className="text-gray-600">Avg. Response Time (days)</div>
+            <div className="text-xs text-gray-500 mt-2 flex items-center justify-center">
+              <Calendar size={12} className="mr-1" />
+              Faster than average
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Last Updated */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-center mb-8"
+        >
+          <div className="flex items-center justify-center space-x-2 text-gray-500 text-sm">
+            <RefreshCw 
+              size={14} 
+              className={`${isRefreshing ? 'animate-spin' : ''} cursor-pointer hover:text-gray-700`}
+              onClick={handleRefresh}
+            />
+            <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
           </div>
         </motion.div>
 
@@ -325,17 +422,26 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           y: 0
         }} transition={{
           duration: 0.6,
-          delay: 0.2
+          delay: 0.3
         }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button onClick={onReviewAll} className="w-full sm:w-auto bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2">
+          <motion.button 
+            onClick={onReviewAll} 
+            className="w-full sm:w-auto bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <Eye size={20} />
             <span>Review All Responses</span>
-          </button>
+          </motion.button>
           
-          <button className="w-full sm:w-auto bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center space-x-2">
+          <motion.button 
+            className="w-full sm:w-auto bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center space-x-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <MessageSquare size={20} />
             <span>View Messages</span>
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     </>

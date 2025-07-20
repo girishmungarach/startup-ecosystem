@@ -19,7 +19,7 @@ import ProfileDetailView from './components/generated/ProfileDetailView'
 import MyConnectionsPage from './components/generated/MyConnectionsPage'
 import BookmarksManagementPage from './components/generated/BookmarksManagementPage'
 import ContactRevelationSuccess from './components/generated/ContactRevelationSuccess'
-import StatusPagesCollection from './components/generated/StatusPagesCollection'
+import StatusPage from './pages/StatusPage'
 
 // Import new pages
 import SignInPage from './pages/SignInPage'
@@ -245,7 +245,7 @@ const AppContent: React.FC = () => {
           path="/status/:type" 
           element={
             <ProtectedRoute>
-              <StatusPagesCollection statusType="opportunity-grabbed" />
+              <StatusPage />
             </ProtectedRoute>
           } 
         />
