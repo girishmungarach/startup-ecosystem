@@ -145,57 +145,25 @@ const OpportunitiesDashboard: React.FC = () => {
       // You could show an error message to the user here
     }
   };
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Navigation Menu */}
-          <nav className="flex flex-wrap items-center gap-8">
-            <a href="#" className="text-lg font-semibold text-black border-b-2 border-black pb-1">
-              Opportunities
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Browse Profiles
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              My Opportunities
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              My Connections
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Bookmarks
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Title */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }} className="mb-6 md:mb-8">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-              Latest Opportunities
-            </h2>
-            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
-              Discover jobs, investments, partnerships, and more from India's most innovative startups.
-            </p>
-          </motion.div>
+  return (
+    <>
+      {/* Page Title */}
+      <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6
+      }} className="mb-6 md:mb-8">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
+          Latest Opportunities
+        </h2>
+        <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
+          Discover jobs, investments, partnerships, and more from India's most innovative startups.
+        </p>
+      </motion.div>
 
           {/* Search and Filters */}
           <motion.div initial={{
@@ -315,8 +283,6 @@ const OpportunitiesDashboard: React.FC = () => {
                 </p>
               </motion.div>}
           </AnimatePresence>
-        </div>
-      </main>
 
       {/* Floating Action Button */}
       <Link to="/opportunities/post">
@@ -336,8 +302,8 @@ const OpportunitiesDashboard: React.FC = () => {
           <span className="sr-only">Post New Opportunity</span>
         </motion.button>
       </Link>
-
-
-    </div>;
+    </>
+  );
+};
 };
 export default OpportunitiesDashboard;
