@@ -365,122 +365,101 @@ const PostOpportunityForm: React.FC = () => {
         </div>
       </section>
     </motion.div>;
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <button 
-                onClick={() => navigate(-1)}
-                className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
-              >
-                <ArrowLeft size={20} />
-                <span className="text-lg font-medium">Back</span>
+  return (
+    <>
+      {/* Back Navigation */}
+      <div className="mb-8">
+        <button 
+          onClick={() => navigate(-1)}
+          className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+        >
+          <ArrowLeft size={20} />
+          <span className="text-lg font-medium">Back</span>
+        </button>
+      </div>
+
+      <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6
+      }} className="mb-6 md:mb-8">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
+          Post an Opportunity
+        </h2>
+        <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
+          Share your opportunity with India's most innovative startup community and connect with the right talent.
+        </p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+        {/* Form Section */}
+        <div className="space-y-6 md:space-y-8">
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
+            <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+              Edit
+            </button>
+            <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+              <Eye size={18} className="md:w-5 md:h-5" />
+              <span>Preview</span>
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {isPreviewMode ? renderPreview() : renderForm()}
+          </AnimatePresence>
+        </div>
+
+        {/* Action Buttons Section */}
+        <div className="lg:sticky lg:top-8 lg:self-start">
+          <div className="bg-gray-50 border-2 border-gray-200 p-8 space-y-6">
+            <h3 className="text-2xl font-bold mb-4">Ready to post?</h3>
+            
+            {/* Error Display */}
+            {submitError && (
+              <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
+                <div className="flex items-center space-x-2 text-red-800">
+                  <AlertCircle size={20} />
+                  <span className="font-medium">Error</span>
+                </div>
+                <p className="text-red-700 mt-2 text-sm">{submitError}</p>
+                <button 
+                  onClick={() => setSubmitError(null)}
+                  className="text-red-600 hover:text-red-800 text-sm mt-2 underline"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+            
+            <div className="space-y-4">
+              <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+                <Send size={20} />
+                <span>{isSubmitting ? 'Posting...' : 'Post Opportunity'}</span>
+              </button>
+
+              <button onClick={() => handleSubmit(true)} disabled={isSubmitting} className="w-full bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+                <Save size={20} />
+                <span>Save as Draft</span>
               </button>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-6xl mx-auto">
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }} className="mb-6 md:mb-8">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-              Post an Opportunity
-            </h2>
-            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
-              Share your opportunity with India's most innovative startup community and connect with the right talent.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-            {/* Form Section */}
-            <div className="space-y-6 md:space-y-8">
-              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
-                <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
-                  Edit
-                </button>
-                <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
-                  <Eye size={18} className="md:w-5 md:h-5" />
-                  <span>Preview</span>
-                </button>
-              </div>
-
-              <AnimatePresence mode="wait">
-                {isPreviewMode ? renderPreview() : renderForm()}
-              </AnimatePresence>
-            </div>
-
-            {/* Action Buttons Section */}
-            <div className="lg:sticky lg:top-8 lg:self-start">
-              <div className="bg-gray-50 border-2 border-gray-200 p-8 space-y-6">
-                <h3 className="text-2xl font-bold mb-4">Ready to post?</h3>
-                
-                {/* Error Display */}
-                {submitError && (
-                  <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
-                    <div className="flex items-center space-x-2 text-red-800">
-                      <AlertCircle size={20} />
-                      <span className="font-medium">Error</span>
-                    </div>
-                    <p className="text-red-700 mt-2 text-sm">{submitError}</p>
-                    <button 
-                      onClick={() => setSubmitError(null)}
-                      className="text-red-600 hover:text-red-800 text-sm mt-2 underline"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                )}
-                
-                <div className="space-y-4">
-                  <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
-                    <Send size={20} />
-                    <span>{isSubmitting ? 'Posting...' : 'Post Opportunity'}</span>
-                  </button>
-
-                  <button onClick={() => handleSubmit(true)} disabled={isSubmitting} className="w-full bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
-                    <Save size={20} />
-                    <span>Save as Draft</span>
-                  </button>
-                </div>
-
-                <div className="pt-6 border-t border-gray-300">
-                  <h4 className="font-semibold mb-3">What happens next?</h4>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li>• Your opportunity will be reviewed within 24 hours</li>
-                    <li>• Once approved, it'll be visible to our community</li>
-                    <li>• You'll receive notifications when people show interest</li>
-                    <li>• Track engagement through your dashboard</li>
-                  </ul>
-                </div>
-              </div>
+            <div className="pt-6 border-t border-gray-300">
+              <h4 className="font-semibold mb-3">What happens next?</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• Your opportunity will be reviewed within 24 hours</li>
+                <li>• Once approved, it'll be visible to our community</li>
+                <li>• You'll receive notifications when people show interest</li>
+                <li>• Track engagement through your dashboard</li>
+              </ul>
             </div>
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
+      </div>
+    </>
+  );
 };
 export default PostOpportunityForm;

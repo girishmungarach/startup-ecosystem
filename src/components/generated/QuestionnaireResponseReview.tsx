@@ -103,76 +103,65 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
       console.log('Navigate back to Review Grabs');
     }
   };
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Back Navigation */}
-          <div className="flex items-center space-x-4 mb-6">
-            <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-              <ArrowLeft size={20} />
-              <span className="text-base font-medium">Back</span>
-            </button>
-          </div>
-
-          {/* Page Title */}
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              Review Response from {personName}
-            </h2>
-            <p className="text-lg font-light text-gray-600">
-              Opportunity: {opportunityTitle}
-            </p>
-          </div>
+  return (
+    <>
+      {/* Back Navigation and Page Title */}
+      <div className="mb-8">
+        <div className="flex items-center space-x-4 mb-6">
+          <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
+            <ArrowLeft size={20} />
+            <span className="text-base font-medium">Back</span>
+          </button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Left Column - Response Content */}
-            <div className="lg:col-span-2 space-y-8">
-              
-              {/* Person Profile Summary */}
-              <motion.div initial={{
-              opacity: 0,
-              y: 20
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.6
-            }} className="border-2 border-gray-200 p-6">
-                <h3 className="text-xl font-bold mb-4">Candidate Profile</h3>
-                <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                    <User size={32} className="text-gray-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-2xl font-bold mb-2">{personProfile.name}</h4>
-                    <div className="flex items-center space-x-2 text-gray-600 mb-3">
-                      <span className="font-medium">{personProfile.role}</span>
-                      <span>•</span>
-                      <div className="flex items-center space-x-1">
-                        <Building size={16} />
-                        <span>{personProfile.company}</span>
-                      </div>
-                    </div>
-                    <div>
-                      <h5 className="text-sm font-semibold text-gray-700 mb-2">Current Project:</h5>
-                      <p className="text-gray-700 leading-relaxed">{personProfile.currentProject}</p>
-                    </div>
+        {/* Page Title */}
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            Review Response from {personName}
+          </h2>
+          <p className="text-lg font-light text-gray-600">
+            Opportunity: {opportunityTitle}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left Column - Response Content */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Person Profile Summary */}
+          <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.6
+          }} className="border-2 border-gray-200 p-6">
+            <h3 className="text-xl font-bold mb-4">Candidate Profile</h3>
+            <div className="flex items-start space-x-4">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                <User size={32} className="text-gray-600" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-2xl font-bold mb-2">{personProfile.name}</h4>
+                <div className="flex items-center space-x-2 text-gray-600 mb-3">
+                  <span className="font-medium">{personProfile.role}</span>
+                  <span>•</span>
+                  <div className="flex items-center space-x-1">
+                    <Building size={16} />
+                    <span>{personProfile.company}</span>
                   </div>
                 </div>
-              </motion.div>
+                <div>
+                  <h5 className="text-sm font-semibold text-gray-700 mb-2">Current Project:</h5>
+                  <p className="text-gray-700 leading-relaxed">{personProfile.currentProject}</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
               {/* Previous Responses History */}
               {previousResponses.length > 0 && <motion.div initial={{
@@ -299,28 +288,26 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
               </motion.div>
             </div>
           </div>
-        </div>
-      </main>
 
-      {/* Confirmation Modals */}
-      <AnimatePresence>
-        {showConfirmModal && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        {/* Confirmation Modals */}
+        <AnimatePresence>
+          {showConfirmModal && <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} exit={{
+            opacity: 0
+          }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <motion.div initial={{
-          scale: 0.9,
-          opacity: 0
-        }} animate={{
-          scale: 1,
-          opacity: 1
-        }} exit={{
-          scale: 0.9,
-          opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+              scale: 0.9,
+              opacity: 0
+            }} animate={{
+              scale: 1,
+              opacity: 1
+            }} exit={{
+              scale: 0.9,
+              opacity: 0
+            }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
               <h3 className="text-2xl font-bold mb-4">
                 {showConfirmModal === 'share' ? 'Share Contact Details?' : 'Decline to Share?'}
               </h3>
@@ -337,27 +324,27 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
               </div>
             </motion.div>
           </motion.div>}
-      </AnimatePresence>
+        </AnimatePresence>
 
-      {/* Follow-up Question Modal */}
-      <AnimatePresence>
-        {showFollowUpModal && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        {/* Follow-up Question Modal */}
+        <AnimatePresence>
+          {showFollowUpModal && <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} exit={{
+            opacity: 0
+          }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <motion.div initial={{
-          scale: 0.9,
-          opacity: 0
-        }} animate={{
-          scale: 1,
-          opacity: 1
-        }} exit={{
-          scale: 0.9,
-          opacity: 0
-        }} className="bg-white p-8 max-w-lg w-full border-2 border-gray-200">
+              scale: 0.9,
+              opacity: 0
+            }} animate={{
+              scale: 1,
+              opacity: 1
+            }} exit={{
+              scale: 0.9,
+              opacity: 0
+            }} className="bg-white p-8 max-w-lg w-full border-2 border-gray-200">
               <h3 className="text-2xl font-bold mb-4">Ask Follow-up Question</h3>
               <p className="text-gray-600 mb-6">
                 Send an additional question to {personName} to gather more information before making your decision.
@@ -373,16 +360,8 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
               </div>
             </motion.div>
           </motion.div>}
-      </AnimatePresence>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
+        </AnimatePresence>
+      </>
+    );
 };
 export default QuestionnaireResponseReview;

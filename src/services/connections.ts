@@ -2,15 +2,21 @@ import { supabase } from './supabase';
 
 export interface Connection {
   id: string;
-  user_id: string;
-  connected_user_id: string;
+  requester_id: string;
+  responder_id: string;
   opportunity_id?: string;
-  status: 'active' | 'pending' | 'declined';
+  status: 'pending' | 'accepted' | 'rejected' | 'blocked';
+  connection_type?: 'professional' | 'mentorship' | 'investment' | 'partnership' | 'friendship';
+  message?: string;
+  mutual_connection_count?: number;
+  created_at: string;
+  updated_at: string;
+  // Computed fields for UI
+  user_id?: string;
+  connected_user_id?: string;
   request_type?: 'direct' | 'questionnaire';
   waiting_days?: number;
   decline_reason?: string;
-  created_at: string;
-  updated_at: string;
   // Joined data from profiles
   connected_user?: {
     id: string;
@@ -39,12 +45,19 @@ export const connectionsService = {
       .from('connections')
       .select(`
         *,
-        connected_user:profiles!connections_connected_user_id_fkey(
+        requester_profile:profiles!connections_requester_id_fkey(
           id,
-          name,
+          full_name,
           role,
           company,
-          profile_image
+          avatar_url
+        ),
+        responder_profile:profiles!connections_responder_id_fkey(
+          id,
+          full_name,
+          role,
+          company,
+          avatar_url
         ),
         opportunity:opportunities(
           id,
@@ -52,7 +65,7 @@ export const connectionsService = {
           company
         )
       `)
-      .eq('user_id', userId)
+      .or(`requester_id.eq.${userId},responder_id.eq.${userId}`)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -60,7 +73,30 @@ export const connectionsService = {
       throw error;
     }
 
-    return data || [];
+    // Transform data to match UI expectations
+    const connections = (data || []).map(connection => {
+      const isRequester = connection.requester_id === userId;
+      const otherUser = isRequester ? connection.responder_profile : connection.requester_profile;
+      
+      return {
+        ...connection,
+        user_id: userId,
+        connected_user_id: isRequester ? connection.responder_id : connection.requester_id,
+        connected_user: otherUser ? {
+          id: otherUser.id,
+          name: otherUser.full_name,
+          role: otherUser.role,
+          company: otherUser.company,
+          profile_image: otherUser.avatar_url
+        } : undefined,
+        // Map status to UI expectations
+        status: connection.status === 'accepted' ? 'active' : 
+                connection.status === 'rejected' ? 'declined' : 
+                connection.status === 'pending' ? 'pending' : 'declined'
+      };
+    });
+
+    return connections;
   },
 
   // Share contact with a connection
@@ -68,7 +104,7 @@ export const connectionsService = {
     const { error } = await supabase
       .from('connections')
       .update({ 
-        status: 'active',
+        status: 'accepted',
         updated_at: new Date().toISOString()
       })
       .eq('id', connectionId);
@@ -100,8 +136,8 @@ export const connectionsService = {
     const { error } = await supabase
       .from('connections')
       .update({ 
-        status: 'declined',
-        decline_reason: 'Access revoked by user',
+        status: 'rejected',
+        message: 'Access revoked by user',
         updated_at: new Date().toISOString()
       })
       .eq('id', connectionId);
@@ -117,8 +153,8 @@ export const connectionsService = {
     const { error } = await supabase
       .from('connections')
       .update({ 
-        status: 'declined',
-        decline_reason: reason,
+        status: 'rejected',
+        message: reason,
         updated_at: new Date().toISOString()
       })
       .eq('id', connectionId);
@@ -135,7 +171,7 @@ export const connectionsService = {
       .from('connections')
       .update({ 
         status: 'pending',
-        decline_reason: null,
+        message: null,
         updated_at: new Date().toISOString()
       })
       .eq('id', connectionId);
@@ -151,7 +187,7 @@ export const connectionsService = {
     const { data, error } = await supabase
       .from('connections')
       .select('status')
-      .eq('user_id', userId);
+      .or(`requester_id.eq.${userId},responder_id.eq.${userId}`);
 
     if (error) {
       console.error('Error fetching connection stats:', error);
@@ -160,9 +196,9 @@ export const connectionsService = {
 
     const connections = data || [];
     return {
-      active: connections.filter(c => c.status === 'active').length,
+      active: connections.filter(c => c.status === 'accepted').length,
       pending: connections.filter(c => c.status === 'pending').length,
-      declined: connections.filter(c => c.status === 'declined').length
+      declined: connections.filter(c => c.status === 'rejected' || c.status === 'blocked').length
     };
   }
 }; 

@@ -201,82 +201,32 @@ const MyOpportunitiesDashboard: React.FC = () => {
       console.error('Failed to reopen opportunity:', error);
     }
   };
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Navigation Menu */}
-          <nav className="flex flex-wrap items-center gap-8">
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Opportunities
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Browse Profiles
-            </a>
-            <a href="#" className="text-lg font-semibold text-black border-b-2 border-black pb-1">
-              My Opportunities
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              My Connections
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Bookmarks
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Title */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }} className="mb-6 md:mb-8">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-              My Opportunities
-            </h2>
-            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
-              Manage your posted opportunities, track engagement, and connect with interested candidates.
-            </p>
-          </motion.div>
-
-          {/* Statistics Cards */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6,
-          delay: 0.1
-        }} className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-            {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-gray-600">
-                    {stat.icon}
-                  </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold">{stat.value}</div>
-                    {stat.change && <div className="text-sm text-gray-500 mt-1">{stat.change}</div>}
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold">{stat.title}</h3>
-              </div>)}
-          </motion.div>
+  return (
+    <>
+      {/* Statistics Cards */}
+      <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6,
+        delay: 0.1
+      }} className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-gray-600">
+                {stat.icon}
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold">{stat.value}</div>
+                {stat.change && <div className="text-sm text-gray-500 mt-1">{stat.change}</div>}
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold">{stat.title}</h3>
+          </div>)}
+      </motion.div>
 
           {/* Action Bar */}
           <motion.div initial={{
@@ -446,45 +396,42 @@ const MyOpportunitiesDashboard: React.FC = () => {
                   </button>}
               </motion.div>}
           </AnimatePresence>
-        </div>
-      </main>
 
-      {/* Close Confirmation Modal */}
-      <AnimatePresence>
-        {showCloseModal && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <motion.div initial={{
-          scale: 0.9,
-          opacity: 0
-        }} animate={{
-          scale: 1,
-          opacity: 1
-        }} exit={{
-          scale: 0.9,
-          opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
-              <h3 className="text-2xl font-bold mb-4">Close Opportunity?</h3>
-              <p className="text-gray-600 mb-6">
-                This will close the opportunity and stop accepting new applications. You can reopen it later if needed.
-              </p>
-              <div className="flex items-center justify-end space-x-4">
-                <button onClick={() => setShowCloseModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
-                  Cancel
-                </button>
-                <button onClick={() => handleCloseOpportunity(showCloseModal)} className="bg-red-600 text-white px-6 py-3 text-base font-semibold hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20">
-                  Close Opportunity
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>}
-      </AnimatePresence>
-
-
-    </div>;
-};
+          {/* Close Confirmation Modal */}
+          <AnimatePresence>
+            {showCloseModal && <motion.div initial={{
+              opacity: 0
+            }} animate={{
+              opacity: 1
+            }} exit={{
+              opacity: 0
+            }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <motion.div initial={{
+                scale: 0.9,
+                opacity: 0
+              }} animate={{
+                scale: 1,
+                opacity: 1
+              }} exit={{
+                scale: 0.9,
+                opacity: 0
+              }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+                <h3 className="text-2xl font-bold mb-4">Close Opportunity?</h3>
+                <p className="text-gray-600 mb-6">
+                  This will close the opportunity and stop accepting new applications. You can reopen it later if needed.
+                </p>
+                <div className="flex items-center justify-end space-x-4">
+                  <button onClick={() => setShowCloseModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
+                    Cancel
+                  </button>
+                  <button onClick={() => handleCloseOpportunity(showCloseModal)} className="bg-red-600 text-white px-6 py-3 text-base font-semibold hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20">
+                    Close Opportunity
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>}
+          </AnimatePresence>
+        </>
+      );
+    };
 export default MyOpportunitiesDashboard;

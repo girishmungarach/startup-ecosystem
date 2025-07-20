@@ -270,101 +270,82 @@ const ProfileCreationForm: React.FC = () => {
         </div>
       </div>
     </motion.div>;
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header */}
-      <header className="w-full px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+  return (
+    <>
+      {/* Back Navigation */}
+      <div className="mb-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+        >
+          <ArrowLeft size={20} />
+          <span className="text-lg font-medium">Back</span>
+        </button>
+      </div>
+
+      <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6
+      }}>
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-4">
+          Create Your Profile
+        </h2>
+        <p className="text-xl md:text-2xl font-light text-center mb-12 max-w-2xl mx-auto">
+          Join the premier startup ecosystem and connect with innovators, investors, and talent.
+        </p>
+      </motion.div>
+
+      {renderProgressIndicator()}
+
+      <div className="bg-white border-2 border-gray-200 p-8 md:p-12">
+        <AnimatePresence mode="wait">
+          {currentStep === 1 && renderStep1()}
+          {currentStep === 2 && renderStep2()}
+          {currentStep === 3 && renderStep3()}
+        </AnimatePresence>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+          <button onClick={handlePrevious} disabled={currentStep === 1} className={`flex items-center space-x-2 px-6 py-3 text-lg font-semibold transition-all duration-200 ${currentStep === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-black hover:text-gray-600 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10'}`}>
+            <ChevronLeft size={20} />
+            <span>Previous</span>
+          </button>
+
+          <div className="text-center">
+            <span className="text-lg font-light text-gray-600">
+              Step {currentStep} of 3
+            </span>
+          </div>
+
+          {currentStep < 3 ? <button onClick={handleNext} className="flex items-center space-x-2 bg-black text-white px-8 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
+              <span>Next</span>
+              <ChevronRight size={20} />
+            </button> : <button 
+              onClick={handleSubmit} 
+              disabled={isSubmitting}
+              className={`flex items-center space-x-2 px-8 py-3 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 ${
+                isSubmitting 
+                  ? 'bg-gray-400 text-white cursor-not-allowed' 
+                  : 'bg-black text-white hover:bg-gray-900'
+              }`}
             >
-              <ArrowLeft size={20} />
-              <span className="text-lg font-medium">Back</span>
-            </button>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>Creating Profile...</span>
+                </>
+              ) : (
+                <span>Create Profile</span>
+              )}
+            </button>}
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-4xl mx-auto">
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-4">
-              Create Your Profile
-            </h2>
-            <p className="text-xl md:text-2xl font-light text-center mb-12 max-w-2xl mx-auto">
-              Join the premier startup ecosystem and connect with innovators, investors, and talent.
-            </p>
-          </motion.div>
-
-          {renderProgressIndicator()}
-
-          <div className="bg-white border-2 border-gray-200 p-8 md:p-12">
-            <AnimatePresence mode="wait">
-              {currentStep === 1 && renderStep1()}
-              {currentStep === 2 && renderStep2()}
-              {currentStep === 3 && renderStep3()}
-            </AnimatePresence>
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
-              <button onClick={handlePrevious} disabled={currentStep === 1} className={`flex items-center space-x-2 px-6 py-3 text-lg font-semibold transition-all duration-200 ${currentStep === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-black hover:text-gray-600 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10'}`}>
-                <ChevronLeft size={20} />
-                <span>Previous</span>
-              </button>
-
-              <div className="text-center">
-                <span className="text-lg font-light text-gray-600">
-                  Step {currentStep} of 3
-                </span>
-              </div>
-
-              {currentStep < 3 ? <button onClick={handleNext} className="flex items-center space-x-2 bg-black text-white px-8 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
-                  <span>Next</span>
-                  <ChevronRight size={20} />
-                </button> : <button 
-                  onClick={handleSubmit} 
-                  disabled={isSubmitting}
-                  className={`flex items-center space-x-2 px-8 py-3 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 ${
-                    isSubmitting 
-                      ? 'bg-gray-400 text-white cursor-not-allowed' 
-                      : 'bg-black text-white hover:bg-gray-900'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Creating Profile...</span>
-                    </>
-                  ) : (
-                    <span>Create Profile</span>
-                  )}
-                </button>}
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
+      </div>
+    </>
+  );
 };
 export default ProfileCreationForm;

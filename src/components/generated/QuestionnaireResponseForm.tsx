@@ -295,75 +295,63 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () =
         </motion.div>
       </div>;
   }
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Back Navigation */}
-          <div className="flex items-center space-x-4 mb-6">
-            <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-              <ArrowLeft size={20} />
-              <span className="text-base font-medium">Back</span>
-            </button>
-          </div>
+  return (
+    <>
+      {/* Back Navigation and Page Title */}
+      <div className="mb-8">
+        <div className="flex items-center space-x-4 mb-6">
+          <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
+            <ArrowLeft size={20} />
+            <span className="text-base font-medium">Back</span>
+          </button>
+        </div>
 
-          {/* Page Title */}
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              Answer a few questions about: {opportunityTitle}
-            </h2>
-            <p className="text-lg font-light text-gray-600">
-              {posterName} would like to know more before sharing contact details
-            </p>
+        {/* Page Title */}
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            Answer a few questions about: {opportunityTitle}
+          </h2>
+          <p className="text-lg font-light text-gray-600">
+            {posterName} would like to know more before sharing contact details
+          </p>
+        </div>
+      </div>
+
+      {/* Opportunity Summary Card */}
+      <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6
+      }} className="border-2 border-gray-200 p-6 mb-8">
+        <div className="flex items-start justify-between mb-4">
+          <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunityDetails.type)}`}>
+            {opportunityDetails.type}
+          </span>
+        </div>
+
+        <h3 className="text-2xl font-bold mb-3">{opportunityTitle}</h3>
+
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center space-x-2">
+            <Building size={16} className="text-gray-600" />
+            <span className="text-base font-semibold text-gray-800">
+              {opportunityDetails.company}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2 text-gray-600">
+            <MapPin size={16} />
+            <span className="text-sm">{opportunityDetails.location}</span>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-4xl mx-auto">
-          
-          {/* Opportunity Summary Card */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }} className="border-2 border-gray-200 p-6 mb-8">
-            <div className="flex items-start justify-between mb-4">
-              <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunityDetails.type)}`}>
-                {opportunityDetails.type}
-              </span>
-            </div>
-
-            <h3 className="text-2xl font-bold mb-3">{opportunityTitle}</h3>
-
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center space-x-2">
-                <Building size={16} className="text-gray-600" />
-                <span className="text-base font-semibold text-gray-800">
-                  {opportunityDetails.company}
-                </span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-600">
-                <MapPin size={16} />
-                <span className="text-sm">{opportunityDetails.location}</span>
-              </div>
-            </div>
-
-            <p className="text-gray-700 leading-relaxed">
-              {opportunityDetails.description}
-            </p>
-          </motion.div>
+        <p className="text-gray-700 leading-relaxed">
+          {opportunityDetails.description}
+        </p>
+      </motion.div>
 
           {/* Progress and Time Estimate */}
           <motion.div initial={{
@@ -496,17 +484,8 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () =
               </button>
             </div>
           </motion.div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
-};
+        </>
+      );
+    };
+    
 export default QuestionnaireResponseForm;

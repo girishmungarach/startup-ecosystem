@@ -178,77 +178,27 @@ const MyConnectionsPage: React.FC = () => {
     if (waitingDays >= 3) return 'medium';
     return 'normal';
   };
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Navigation Menu */}
-          <nav className="flex flex-wrap items-center gap-8">
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Opportunities
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Browse Profiles
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              My Opportunities
-            </a>
-            <a href="#" className="text-lg font-semibold text-black border-b-2 border-black pb-1">
-              My Connections
-            </a>
-            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              Bookmarks
-            </a>
-          </nav>
+  return (
+    <>
+      {/* Stats Summary */}
+      <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.6,
+        delay: 0.1
+      }} className="mb-8">
+        <div className="bg-gray-50 p-6 border-l-4 border-black">
+          <p className="text-lg font-medium">
+            <span className="font-bold">{stats.active}</span> Active Connections, 
+            <span className="font-bold text-orange-600 ml-2">{stats.pending}</span> Pending, 
+            <span className="font-bold text-gray-600 ml-2">{stats.declined}</span> Declined
+          </p>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Title */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }} className="mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              My Connections
-            </h2>
-            <p className="text-xl font-light text-gray-600 max-w-2xl">
-              Manage your professional connections, track contact access, and review connection history.
-            </p>
-          </motion.div>
-
-          {/* Stats Summary */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6,
-          delay: 0.1
-        }} className="mb-8">
-            <div className="bg-gray-50 p-6 border-l-4 border-black">
-              <p className="text-lg font-medium">
-                <span className="font-bold">{stats.active}</span> Active Connections, 
-                <span className="font-bold text-orange-600 ml-2">{stats.pending}</span> Pending, 
-                <span className="font-bold text-gray-600 ml-2">{stats.declined}</span> Declined
-              </p>
-            </div>
-          </motion.div>
+      </motion.div>
 
           {/* Search and Filter Bar */}
           <motion.div initial={{
@@ -475,28 +425,26 @@ const MyConnectionsPage: React.FC = () => {
               </motion.div>}
             </AnimatePresence>
           )}
-        </div>
-      </main>
 
-      {/* Revoke Access Modal */}
-      <AnimatePresence>
-        {showRevokeModal && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        {/* Revoke Access Modal */}
+        <AnimatePresence>
+          {showRevokeModal && <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} exit={{
+            opacity: 0
+          }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <motion.div initial={{
-          scale: 0.9,
-          opacity: 0
-        }} animate={{
-          scale: 1,
-          opacity: 1
-        }} exit={{
-          scale: 0.9,
-          opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+              scale: 0.9,
+              opacity: 0
+            }} animate={{
+              scale: 1,
+              opacity: 1
+            }} exit={{
+              scale: 0.9,
+              opacity: 0
+            }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
               <h3 className="text-2xl font-bold mb-4">Revoke Contact Access?</h3>
               <p className="text-gray-600 mb-6">
                 This person will no longer have access to your contact details. This action cannot be undone.
@@ -511,27 +459,27 @@ const MyConnectionsPage: React.FC = () => {
               </div>
             </motion.div>
           </motion.div>}
-      </AnimatePresence>
+        </AnimatePresence>
 
-      {/* Decline Request Modal */}
-      <AnimatePresence>
-        {showDeclineModal && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        {/* Decline Request Modal */}
+        <AnimatePresence>
+          {showDeclineModal && <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} exit={{
+            opacity: 0
+          }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <motion.div initial={{
-          scale: 0.9,
-          opacity: 0
-        }} animate={{
-          scale: 1,
-          opacity: 1
-        }} exit={{
-          scale: 0.9,
-          opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+              scale: 0.9,
+              opacity: 0
+            }} animate={{
+              scale: 1,
+              opacity: 1
+            }} exit={{
+              scale: 0.9,
+              opacity: 0
+            }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
               <h3 className="text-2xl font-bold mb-4">Decline Connection Request?</h3>
               <p className="text-gray-600 mb-6">
                 This will decline the connection request. You can reconsider this decision later if needed.
@@ -552,16 +500,8 @@ const MyConnectionsPage: React.FC = () => {
               </div>
             </motion.div>
           </motion.div>}
-      </AnimatePresence>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
-};
+        </AnimatePresence>
+      </>
+    );
+  };
 export default MyConnectionsPage;

@@ -147,7 +147,7 @@ const OpportunitiesDashboard: React.FC = () => {
   };
   return (
     <>
-      {/* Page Title */}
+      {/* Search and Filters */}
       <motion.div initial={{
         opacity: 0,
         y: 20
@@ -155,40 +155,22 @@ const OpportunitiesDashboard: React.FC = () => {
         opacity: 1,
         y: 0
       }} transition={{
-        duration: 0.6
-      }} className="mb-6 md:mb-8">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-          Latest Opportunities
-        </h2>
-        <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
-          Discover jobs, investments, partnerships, and more from India's most innovative startups.
-        </p>
+        duration: 0.6,
+        delay: 0.1
+      }} className="mb-6 md:mb-8 space-y-4 md:space-y-6">
+        {/* Search Bar */}
+        <div className="relative max-w-2xl">
+          <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <input type="text" placeholder="Search opportunities..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 md:pl-12 pr-4 py-3 md:py-4 text-base md:text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" />
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+          {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium transition-all duration-200 border-2 whitespace-nowrap ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
+              {filter}
+            </button>)}
+        </div>
       </motion.div>
-
-          {/* Search and Filters */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6,
-          delay: 0.1
-        }} className="mb-6 md:mb-8 space-y-4 md:space-y-6">
-            {/* Search Bar */}
-            <div className="relative max-w-2xl">
-              <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <input type="text" placeholder="Search opportunities..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 md:pl-12 pr-4 py-3 md:py-4 text-base md:text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" />
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
-              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium transition-all duration-200 border-2 whitespace-nowrap ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
-                  {filter}
-                </button>)}
-            </div>
-          </motion.div>
 
           {/* Opportunities Grid */}
           <AnimatePresence mode="wait">
@@ -304,6 +286,5 @@ const OpportunitiesDashboard: React.FC = () => {
       </Link>
     </>
   );
-};
 };
 export default OpportunitiesDashboard;

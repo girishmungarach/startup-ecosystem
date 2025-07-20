@@ -1,4 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&family=Arial&family=Helvetica&family=Times+New+Roman&family=Georgia&family=Roboto&display=swap');
+@font-face {
+  font-family: 'Abril Fatface';
+  src: url('../Abril_Fatface/AbrilFatface-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 @import 'tailwindcss';
 
 @plugin "tailwindcss-animate";

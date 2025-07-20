@@ -311,31 +311,10 @@ const ContactRevelationSuccess: React.FC<ContactRevelationSuccessProps> = ({
         </button>
       </motion.div>
     </div>;
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-6 py-12 md:px-12 lg:px-24">
-        {userRole === 'grabber' ? renderGrabberView() : renderPosterView()}
-      </main>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
+  return (
+    <>
+      {userRole === 'grabber' ? renderGrabberView() : renderPosterView()}
+    </>
+  );
 };
 export default ContactRevelationSuccess;

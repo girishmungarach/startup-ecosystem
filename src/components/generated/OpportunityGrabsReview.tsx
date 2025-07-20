@@ -260,50 +260,38 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
       console.log('Navigate back to My Opportunities');
     }
   };
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Back Navigation */}
-          <div className="flex items-center space-x-4 mb-6">
-            <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-              <ArrowLeft size={20} />
-              <span className="text-base font-medium">Back</span>
-            </button>
-          </div>
-
-          {/* Page Title */}
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              People Interested in: {opportunityTitle}
-            </h2>
-            <p className="text-lg font-light text-gray-600">
-              Review and manage candidates who have grabbed this opportunity
-            </p>
-          </div>
+  return (
+    <>
+      {/* Back Navigation and Page Title */}
+      <div className="mb-8">
+        <div className="flex items-center space-x-4 mb-6">
+          <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
+            <ArrowLeft size={20} />
+            <span className="text-base font-medium">Back</span>
+          </button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          
-          {/* Loading State */}
-          {loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-              <div className="mb-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Loading candidates...</h3>
-              <p className="text-gray-600 text-lg">Please wait while we fetch the candidates.</p>
-            </motion.div>
-          )}
+        {/* Page Title */}
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            People Interested in: {opportunityTitle}
+          </h2>
+          <p className="text-lg font-light text-gray-600">
+            Review and manage candidates who have grabbed this opportunity
+          </p>
+        </div>
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="mb-6">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+          </div>
+          <h3 className="text-2xl font-bold mb-4">Loading candidates...</h3>
+          <p className="text-gray-600 text-lg">Please wait while we fetch the candidates.</p>
+        </motion.div>
+      )}
 
           {/* Error State */}
           {error && !loading && (
@@ -516,54 +504,44 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
               )}
             </AnimatePresence>
           )}
-        </div>
-      </main>
 
-      {/* Batch Action Confirmation Modals */}
-      <AnimatePresence>
-        {showBatchModal && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <motion.div initial={{
-          scale: 0.9,
-          opacity: 0
-        }} animate={{
-          scale: 1,
-          opacity: 1
-        }} exit={{
-          scale: 0.9,
-          opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
-              <h3 className="text-2xl font-bold mb-4">
-                {showBatchModal === 'contact' ? 'Share Contact with All?' : 'Send Questionnaire to All?'}
-              </h3>
-              <p className="text-gray-600 mb-6">
-                {showBatchModal === 'contact' ? `This will share your contact information with all ${stats.pending} pending candidates.` : `This will send a questionnaire to all ${stats.pending} pending candidates.`}
-              </p>
-              <div className="flex items-center justify-end space-x-4">
-                <button onClick={() => setShowBatchModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
-                  Cancel
-                </button>
-                <button onClick={() => handleBatchAction(showBatchModal)} className={`px-6 py-3 text-base font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-opacity-20 ${showBatchModal === 'contact' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-600' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-600'}`}>
-                  {showBatchModal === 'contact' ? 'Share Contact' : 'Send Questionnaire'}
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>}
-      </AnimatePresence>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
-};
+          {/* Batch Action Confirmation Modals */}
+          <AnimatePresence>
+            {showBatchModal && <motion.div initial={{
+              opacity: 0
+            }} animate={{
+              opacity: 1
+            }} exit={{
+              opacity: 0
+            }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <motion.div initial={{
+                scale: 0.9,
+                opacity: 0
+              }} animate={{
+                scale: 1,
+                opacity: 1
+              }} exit={{
+                scale: 0.9,
+                opacity: 0
+              }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+                <h3 className="text-2xl font-bold mb-4">
+                  {showBatchModal === 'contact' ? 'Share Contact with All?' : 'Send Questionnaire to All?'}
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  {showBatchModal === 'contact' ? `This will share your contact information with all ${stats.pending} pending candidates.` : `This will send a questionnaire to all ${stats.pending} pending candidates.`}
+                </p>
+                <div className="flex items-center justify-end space-x-4">
+                  <button onClick={() => setShowBatchModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
+                    Cancel
+                  </button>
+                  <button onClick={() => handleBatchAction(showBatchModal)} className={`px-6 py-3 text-base font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-opacity-20 ${showBatchModal === 'contact' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-600' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-600'}`}>
+                    {showBatchModal === 'contact' ? 'Share Contact' : 'Send Questionnaire'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>}
+          </AnimatePresence>
+        </>
+      );
+    };
 export default OpportunityGrabsReview;

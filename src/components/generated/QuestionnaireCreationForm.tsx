@@ -232,81 +232,69 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
     }
   };
   const totalQuestions = prefilledQuestionsState.length + questions.length;
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-          </div>
-          
-          {/* Back Navigation */}
-          <div className="flex items-center space-x-4 mb-6">
-            <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-              <ArrowLeft size={20} />
-              <span className="text-base font-medium">Back</span>
-            </button>
-          </div>
-
-          {/* Page Title */}
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              Send questionnaire to {profile?.name || personName || 'Candidate'}
-            </h2>
-            <p className="text-lg font-light text-gray-600">
-              for {opportunity?.title || opportunityTitle || 'Opportunity'}
-            </p>
-          </div>
+  return (
+    <>
+      {/* Back Navigation and Page Title */}
+      <div className="mb-8">
+        <div className="flex items-center space-x-4 mb-6">
+          <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
+            <ArrowLeft size={20} />
+            <span className="text-base font-medium">Back</span>
+          </button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-4xl mx-auto">
-          
-          {/* Loading State */}
-          {loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-              <div className="mb-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Loading questionnaire form...</h3>
-              <p className="text-gray-600 text-lg">Please wait while we load the data.</p>
-            </motion.div>
-          )}
+        {/* Page Title */}
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            Send questionnaire to {profile?.name || personName || 'Candidate'}
+          </h2>
+          <p className="text-lg font-light text-gray-600">
+            for {opportunity?.title || opportunityTitle || 'Opportunity'}
+          </p>
+        </div>
+      </div>
 
-          {/* Error State */}
-          {error && !loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-              <div className="mb-6">
-                <AlertCircle size={64} className="mx-auto text-red-300" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-red-600">Error Loading Data</h3>
-              <p className="text-gray-600 text-lg mb-6">{error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="bg-black text-white px-6 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200"
-              >
-                Try Again
-              </button>
-            </motion.div>
-          )}
+      {/* Loading State */}
+      {loading && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="mb-6">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+          </div>
+          <h3 className="text-2xl font-bold mb-4">Loading questionnaire form...</h3>
+          <p className="text-gray-600 text-lg">Please wait while we load the data.</p>
+        </motion.div>
+      )}
 
-          {/* Content */}
-          {!loading && !error && (
-            <>
-              {/* Person Profile Summary */}
+      {/* Error State */}
+      {error && !loading && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="mb-6">
+            <AlertCircle size={64} className="mx-auto text-red-300" />
+          </div>
+          <h3 className="text-2xl font-bold mb-4 text-red-600">Error Loading Data</h3>
+          <p className="text-gray-600 text-lg mb-6">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-black text-white px-6 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200"
+          >
+            Try Again
+          </button>
+        </motion.div>
+      )}
+
+      {/* Content */}
+      {!loading && !error && (
+        <>
+          {/* Person Profile Summary */}
           <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }} className="border-2 border-gray-200 p-6 mb-8">
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.6
+          }} className="border-2 border-gray-200 p-6 mb-8">
             <div className="flex items-start space-x-4">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                 <User size={32} className="text-gray-600" />
@@ -670,19 +658,9 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
                 </motion.div>
               </motion.div>}
           </AnimatePresence>
-            </>
-          )}
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2025 Startup Ecosystem — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
+        </>
+      )}
+    </>
+  );
 };
 export default QuestionnaireCreationForm;
