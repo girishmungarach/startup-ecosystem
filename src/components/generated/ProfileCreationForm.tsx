@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Check, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../services/supabase';
 interface FormData {
   fullName: string;
   email: string;
@@ -30,7 +32,40 @@ const ProfileCreationForm: React.FC = () => {
     opportunities: []
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Load existing profile data if available
+  useEffect(() => {
+    const loadExistingProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (profile && !error) {
+          setFormData({
+            fullName: profile.full_name || '',
+            email: profile.email || user.email || '',
+            company: profile.company || '',
+            role: profile.role || '',
+            interests: profile.interests || [],
+            building: profile.building || '',
+            opportunities: profile.opportunities || []
+          });
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    };
+
+    loadExistingProfile();
+  }, [user]);
   const roleOptions = ['Founder', 'Investor', 'Developer', 'Designer', 'Marketing', 'Sales', 'Operations', 'Student', 'Other'];
   const interestOptions = ['Fintech', 'HealthTech', 'EdTech', 'E-commerce', 'AI/ML', 'SaaS', 'Gaming', 'AgriTech', 'Other'];
   const opportunityOptions = ['Jobs', 'Investment', 'Co-founders', 'Mentorship', 'Events', 'Partnerships'];
@@ -80,10 +115,47 @@ const ProfileCreationForm: React.FC = () => {
       [field]: prev[field].includes(value) ? prev[field].filter(item => item !== value) : [...prev[field], value]
     }));
   };
-  const handleSubmit = () => {
-    console.log('Profile created:', formData);
-    // Navigate to opportunities page after profile creation
-    navigate('/opportunities');
+  const handleSubmit = async () => {
+    if (!user) {
+      console.error('No authenticated user');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save profile to database
+      const { data, error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          full_name: formData.fullName,
+          email: formData.email || user.email,
+          company: formData.company,
+          role: formData.role,
+          interests: formData.interests,
+          building: formData.building,
+          opportunities: formData.opportunities,
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error saving profile:', error);
+        throw new Error('Failed to save profile');
+      }
+
+      console.log('Profile saved successfully:', data);
+      
+      // Navigate to opportunities page after profile creation
+      navigate('/opportunities');
+    } catch (error) {
+      console.error('Error creating profile:', error);
+      // You could show an error message to the user here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   const renderProgressIndicator = () => <div className="flex items-center justify-center mb-12">
       {[1, 2, 3].map(step => <React.Fragment key={step}>
@@ -262,8 +334,23 @@ const ProfileCreationForm: React.FC = () => {
               {currentStep < 3 ? <button onClick={handleNext} className="flex items-center space-x-2 bg-black text-white px-8 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
                   <span>Next</span>
                   <ChevronRight size={20} />
-                </button> : <button onClick={handleSubmit} className="bg-black text-white px-8 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
-                  Create Profile
+                </button> : <button 
+                  onClick={handleSubmit} 
+                  disabled={isSubmitting}
+                  className={`flex items-center space-x-2 px-8 py-3 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 ${
+                    isSubmitting 
+                      ? 'bg-gray-400 text-white cursor-not-allowed' 
+                      : 'bg-black text-white hover:bg-gray-900'
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Creating Profile...</span>
+                    </>
+                  ) : (
+                    <span>Create Profile</span>
+                  )}
                 </button>}
             </div>
           </div>
