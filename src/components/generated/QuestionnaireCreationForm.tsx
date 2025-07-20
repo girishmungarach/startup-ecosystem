@@ -9,7 +9,6 @@ interface PersonProfile {
   company: string;
   currentProject: string;
   profileImage?: string;
-  mpid?: string;
 }
 interface Question {
   id: string;
@@ -17,7 +16,6 @@ interface Question {
   type: 'text' | 'multiple_choice' | 'yes_no';
   options?: string[];
   required?: boolean;
-  mpid?: string;
 }
 interface QuestionnaireCreationFormProps {
   personName?: string;
@@ -27,7 +25,6 @@ interface QuestionnaireCreationFormProps {
   onBack?: () => void;
   onSend?: (questions: Question[]) => void;
   onSaveTemplate?: (questions: Question[], templateName: string) => void;
-  mpid?: string;
 }
 const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
   personName = "Sarah Chen",
@@ -239,7 +236,7 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
                   <div data-magicpath-id="33" data-magicpath-path="QuestionnaireCreationForm.tsx">
                     <h4 className="font-semibold text-red-800 mb-2" data-magicpath-id="34" data-magicpath-path="QuestionnaireCreationForm.tsx">Please fix the following issues:</h4>
                     <ul className="space-y-1" data-magicpath-id="35" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                      {validationErrors.map((error, index) => <li key={index} className="text-red-700 text-sm" data-magicpath-uuid={(error as any)["mpid"] ?? "unsafe"} data-magicpath-id="36" data-magicpath-path="QuestionnaireCreationForm.tsx">{error}</li>)}
+                      {validationErrors.map((error, index) => <li key={index} className="text-red-700 text-sm" data-magicpath-id="36" data-magicpath-path="QuestionnaireCreationForm.tsx">{error}</li>)}
                     </ul>
                   </div>
                 </div>
@@ -259,31 +256,31 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
         }} className="mb-8" data-magicpath-id="37" data-magicpath-path="QuestionnaireCreationForm.tsx">
               <h3 className="text-xl font-bold mb-4" data-magicpath-id="38" data-magicpath-path="QuestionnaireCreationForm.tsx">Questions from Opportunity Posting</h3>
               <div className="space-y-4" data-magicpath-id="39" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                {prefilledQuestionsState.map((question, index) => <div key={question.id} className="border-2 border-gray-200 p-4" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="40" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                    <div className="flex items-start justify-between mb-3" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="41" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                      <span className="text-sm font-medium text-gray-500" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="42" data-magicpath-path="QuestionnaireCreationForm.tsx">Question {index + 1}</span>
-                      <div className="flex items-center space-x-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="43" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                {prefilledQuestionsState.map((question, index) => <div key={question.id} className="border-2 border-gray-200 p-4" data-magicpath-id="40" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                    <div className="flex items-start justify-between mb-3" data-magicpath-id="41" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                      <span className="text-sm font-medium text-gray-500" data-magicpath-id="42" data-magicpath-path="QuestionnaireCreationForm.tsx">Question {index + 1}</span>
+                      <div className="flex items-center space-x-2" data-magicpath-id="43" data-magicpath-path="QuestionnaireCreationForm.tsx">
                         <select value={question.type} onChange={e => updatePrefilledQuestion(question.id, {
                     type: e.target.value as Question['type']
-                  })} className="text-sm border border-gray-300 px-2 py-1 focus:outline-none focus:border-black" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="44" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                          <option value="text" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="45" data-magicpath-path="QuestionnaireCreationForm.tsx">Text Response</option>
-                          <option value="multiple_choice" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="46" data-magicpath-path="QuestionnaireCreationForm.tsx">Multiple Choice</option>
-                          <option value="yes_no" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="47" data-magicpath-path="QuestionnaireCreationForm.tsx">Yes/No</option>
+                  })} className="text-sm border border-gray-300 px-2 py-1 focus:outline-none focus:border-black" data-magicpath-id="44" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                          <option value="text" data-magicpath-id="45" data-magicpath-path="QuestionnaireCreationForm.tsx">Text Response</option>
+                          <option value="multiple_choice" data-magicpath-id="46" data-magicpath-path="QuestionnaireCreationForm.tsx">Multiple Choice</option>
+                          <option value="yes_no" data-magicpath-id="47" data-magicpath-path="QuestionnaireCreationForm.tsx">Yes/No</option>
                         </select>
                       </div>
                     </div>
                     <textarea value={question.text} onChange={e => updatePrefilledQuestion(question.id, {
                 text: e.target.value
-              })} placeholder="Enter your question..." className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black resize-none" rows={2} maxLength={500} data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="48" data-magicpath-path="QuestionnaireCreationForm.tsx" />
-                    <div className="flex items-center justify-between mt-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="49" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                      <span className="text-xs text-gray-500" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="50" data-magicpath-path="QuestionnaireCreationForm.tsx">
+              })} placeholder="Enter your question..." className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black resize-none" rows={2} maxLength={500} data-magicpath-id="48" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                    <div className="flex items-center justify-between mt-2" data-magicpath-id="49" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                      <span className="text-xs text-gray-500" data-magicpath-id="50" data-magicpath-path="QuestionnaireCreationForm.tsx">
                         {question.text.length}/500 characters
                       </span>
-                      <label className="flex items-center space-x-2 text-sm" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="51" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                      <label className="flex items-center space-x-2 text-sm" data-magicpath-id="51" data-magicpath-path="QuestionnaireCreationForm.tsx">
                         <input type="checkbox" checked={question.required} onChange={e => updatePrefilledQuestion(question.id, {
                     required: e.target.checked
-                  })} className="rounded" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="52" data-magicpath-path="QuestionnaireCreationForm.tsx" />
-                        <span data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="53" data-magicpath-path="QuestionnaireCreationForm.tsx">Required</span>
+                  })} className="rounded" data-magicpath-id="52" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                        <span data-magicpath-id="53" data-magicpath-path="QuestionnaireCreationForm.tsx">Required</span>
                       </label>
                     </div>
                   </div>)}
@@ -322,58 +319,58 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
                 y: -20
               }} transition={{
                 duration: 0.3
-              }} className="border-2 border-gray-200 p-4" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="62" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                      <div className="flex items-start justify-between mb-3" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="63" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                        <div className="flex items-center space-x-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="64" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                          <GripVertical size={16} className="text-gray-400" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="65" data-magicpath-path="QuestionnaireCreationForm.tsx" />
-                          <span className="text-sm font-medium text-gray-500" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="66" data-magicpath-path="QuestionnaireCreationForm.tsx">
+              }} className="border-2 border-gray-200 p-4" data-magicpath-id="62" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                      <div className="flex items-start justify-between mb-3" data-magicpath-id="63" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                        <div className="flex items-center space-x-2" data-magicpath-id="64" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                          <GripVertical size={16} className="text-gray-400" data-magicpath-id="65" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                          <span className="text-sm font-medium text-gray-500" data-magicpath-id="66" data-magicpath-path="QuestionnaireCreationForm.tsx">
                             Question {prefilledQuestionsState.length + index + 1}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="67" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                        <div className="flex items-center space-x-2" data-magicpath-id="67" data-magicpath-path="QuestionnaireCreationForm.tsx">
                           <select value={question.type} onChange={e => updateQuestion(question.id, {
                       type: e.target.value as Question['type']
-                    })} className="text-sm border border-gray-300 px-2 py-1 focus:outline-none focus:border-black" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="68" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                            <option value="text" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="69" data-magicpath-path="QuestionnaireCreationForm.tsx">Text Response</option>
-                            <option value="multiple_choice" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="70" data-magicpath-path="QuestionnaireCreationForm.tsx">Multiple Choice</option>
-                            <option value="yes_no" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="71" data-magicpath-path="QuestionnaireCreationForm.tsx">Yes/No</option>
+                    })} className="text-sm border border-gray-300 px-2 py-1 focus:outline-none focus:border-black" data-magicpath-id="68" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                            <option value="text" data-magicpath-id="69" data-magicpath-path="QuestionnaireCreationForm.tsx">Text Response</option>
+                            <option value="multiple_choice" data-magicpath-id="70" data-magicpath-path="QuestionnaireCreationForm.tsx">Multiple Choice</option>
+                            <option value="yes_no" data-magicpath-id="71" data-magicpath-path="QuestionnaireCreationForm.tsx">Yes/No</option>
                           </select>
-                          <button onClick={() => removeQuestion(question.id)} className="text-red-500 hover:text-red-700 transition-colors duration-200" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="72" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                            <Trash2 size={16} data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="73" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                          <button onClick={() => removeQuestion(question.id)} className="text-red-500 hover:text-red-700 transition-colors duration-200" data-magicpath-id="72" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                            <Trash2 size={16} data-magicpath-id="73" data-magicpath-path="QuestionnaireCreationForm.tsx" />
                           </button>
                         </div>
                       </div>
 
                       <textarea value={question.text} onChange={e => updateQuestion(question.id, {
                   text: e.target.value
-                })} placeholder="Enter your question..." className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black resize-none mb-3" rows={2} maxLength={500} data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="74" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                })} placeholder="Enter your question..." className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black resize-none mb-3" rows={2} maxLength={500} data-magicpath-id="74" data-magicpath-path="QuestionnaireCreationForm.tsx" />
 
-                      {question.type === 'multiple_choice' && <div className="mb-3" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="75" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                          <div className="flex items-center justify-between mb-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="76" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                            <span className="text-sm font-medium text-gray-700" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="77" data-magicpath-path="QuestionnaireCreationForm.tsx">Answer Options:</span>
-                            <button onClick={() => addMultipleChoiceOption(question.id)} className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="78" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                      {question.type === 'multiple_choice' && <div className="mb-3" data-magicpath-id="75" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                          <div className="flex items-center justify-between mb-2" data-magicpath-id="76" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                            <span className="text-sm font-medium text-gray-700" data-magicpath-id="77" data-magicpath-path="QuestionnaireCreationForm.tsx">Answer Options:</span>
+                            <button onClick={() => addMultipleChoiceOption(question.id)} className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200" data-magicpath-id="78" data-magicpath-path="QuestionnaireCreationForm.tsx">
                               + Add Option
                             </button>
                           </div>
-                          <div className="space-y-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="79" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                            {(question.options || []).map((option, optionIndex) => <div key={optionIndex} className="flex items-center space-x-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="80" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                                <input type="text" value={option} onChange={e => updateMultipleChoiceOption(question.id, optionIndex, e.target.value)} placeholder={`Option ${optionIndex + 1}`} className="flex-1 p-2 border border-gray-300 focus:outline-none focus:border-black text-sm" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="81" data-magicpath-path="QuestionnaireCreationForm.tsx" />
-                                <button onClick={() => removeMultipleChoiceOption(question.id, optionIndex)} className="text-red-500 hover:text-red-700 transition-colors duration-200" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="82" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                                  <Trash2 size={14} data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="83" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                          <div className="space-y-2" data-magicpath-id="79" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                            {(question.options || []).map((option, optionIndex) => <div key={optionIndex} className="flex items-center space-x-2" data-magicpath-id="80" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                                <input type="text" value={option} onChange={e => updateMultipleChoiceOption(question.id, optionIndex, e.target.value)} placeholder={`Option ${optionIndex + 1}`} className="flex-1 p-2 border border-gray-300 focus:outline-none focus:border-black text-sm" data-magicpath-id="81" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                                <button onClick={() => removeMultipleChoiceOption(question.id, optionIndex)} className="text-red-500 hover:text-red-700 transition-colors duration-200" data-magicpath-id="82" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                                  <Trash2 size={14} data-magicpath-id="83" data-magicpath-path="QuestionnaireCreationForm.tsx" />
                                 </button>
                               </div>)}
                           </div>
                         </div>}
 
-                      <div className="flex items-center justify-between" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="84" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                        <span className="text-xs text-gray-500" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="85" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                      <div className="flex items-center justify-between" data-magicpath-id="84" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                        <span className="text-xs text-gray-500" data-magicpath-id="85" data-magicpath-path="QuestionnaireCreationForm.tsx">
                           {question.text.length}/500 characters
                         </span>
-                        <label className="flex items-center space-x-2 text-sm" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="86" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                        <label className="flex items-center space-x-2 text-sm" data-magicpath-id="86" data-magicpath-path="QuestionnaireCreationForm.tsx">
                           <input type="checkbox" checked={question.required} onChange={e => updateQuestion(question.id, {
                       required: e.target.checked
-                    })} className="rounded" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="87" data-magicpath-path="QuestionnaireCreationForm.tsx" />
-                          <span data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="88" data-magicpath-path="QuestionnaireCreationForm.tsx">Required</span>
+                    })} className="rounded" data-magicpath-id="87" data-magicpath-path="QuestionnaireCreationForm.tsx" />
+                          <span data-magicpath-id="88" data-magicpath-path="QuestionnaireCreationForm.tsx">Required</span>
                         </label>
                       </div>
                     </motion.div>)}
@@ -416,7 +413,7 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
                     Click on any template question to add it to your questionnaire:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3" data-magicpath-id="99" data-magicpath-path="QuestionnaireCreationForm.tsx">
-                    {templateQuestions.map((templateQ, index) => <button key={index} onClick={() => addQuestion(templateQ)} className="text-left p-3 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all duration-200 text-sm" data-magicpath-uuid={(templateQ as any)["mpid"] ?? "unsafe"} data-magicpath-id="100" data-magicpath-path="QuestionnaireCreationForm.tsx">
+                    {templateQuestions.map((templateQ, index) => <button key={index} onClick={() => addQuestion(templateQ)} className="text-left p-3 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all duration-200 text-sm" data-magicpath-id="100" data-magicpath-path="QuestionnaireCreationForm.tsx">
                         {templateQ}
                       </button>)}
                   </div>

@@ -14,14 +14,12 @@ interface Opportunity {
   viewCount: number;
   description: string;
   hasNotifications?: boolean;
-  mpid?: string;
 }
 interface StatsCard {
   title: string;
   value: string;
   icon: React.ReactNode;
   change?: string;
-  mpid?: string;
 }
 const MyOpportunitiesDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'active' | 'draft' | 'closed'>('active');
@@ -38,8 +36,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 3,
     viewCount: 45,
     description: 'Join our dynamic team building next-generation fintech solutions.',
-    hasNotifications: true,
-    mpid: "b245220a-058d-4144-93ff-8d4a8aba8817"
+    hasNotifications: true
   }, {
     id: '2',
     title: 'Seed Funding Round - $2M',
@@ -49,8 +46,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'active',
     grabCount: 7,
     viewCount: 89,
-    description: 'Seeking strategic investors for our sustainable energy platform.',
-    mpid: "e5982f47-7f66-4cf2-b01f-7e2db8ef4cab"
+    description: 'Seeking strategic investors for our sustainable energy platform.'
   }, {
     id: '3',
     title: 'Co-founder & CTO Needed',
@@ -60,8 +56,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'active',
     grabCount: 0,
     viewCount: 23,
-    description: 'Looking for a technical co-founder to join our healthcare AI venture.',
-    mpid: "5ebe0c40-b4a3-4891-bb1d-7db96e69113c"
+    description: 'Looking for a technical co-founder to join our healthcare AI venture.'
   }, {
     id: '4',
     title: 'Product Design Mentorship',
@@ -71,8 +66,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'draft',
     grabCount: 0,
     viewCount: 0,
-    description: 'Experienced product designer offering mentorship for early-stage startups.',
-    mpid: "66faa509-c3ac-4175-8ae2-430a4d6335bb"
+    description: 'Experienced product designer offering mentorship for early-stage startups.'
   }, {
     id: '5',
     title: 'Frontend Developer - React/Next.js',
@@ -82,8 +76,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'closed',
     grabCount: 12,
     viewCount: 156,
-    description: 'Join our fast-growing SaaS startup.',
-    mpid: "9e3ba6d9-3c4e-4d3f-abf0-606b6a15a029"
+    description: 'Join our fast-growing SaaS startup.'
   }, {
     id: '6',
     title: 'Series A Funding - $10M',
@@ -93,8 +86,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'closed',
     grabCount: 8,
     viewCount: 134,
-    description: 'Established logistics startup seeking Series A funding.',
-    mpid: "5a29824e-7bf3-4888-abaf-fd0d23a9220f"
+    description: 'Established logistics startup seeking Series A funding.'
   }, {
     id: '7',
     title: 'Marketing Co-founder',
@@ -104,8 +96,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'closed',
     grabCount: 5,
     viewCount: 78,
-    description: 'Food delivery startup seeking marketing co-founder.',
-    mpid: "fd0e78b6-87cb-49ca-9cf6-9242402204f0"
+    description: 'Food delivery startup seeking marketing co-founder.'
   }, {
     id: '8',
     title: 'Tech Startup Networking Event',
@@ -115,8 +106,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'closed',
     grabCount: 25,
     viewCount: 234,
-    description: 'Monthly networking event for tech entrepreneurs.',
-    mpid: "f5faaa63-d0c3-4e12-9adf-69c230fcf219"
+    description: 'Monthly networking event for tech entrepreneurs.'
   }, {
     id: '9',
     title: 'Strategic Partnership - EdTech',
@@ -126,8 +116,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     status: 'closed',
     grabCount: 4,
     viewCount: 67,
-    description: 'Seeking content partners for our online learning platform.',
-    mpid: "96560b39-8ba7-44f0-b184-f0f65f99224e"
+    description: 'Seeking content partners for our online learning platform.'
   }];
 
   // Statistics calculation
@@ -139,20 +128,17 @@ const MyOpportunitiesDashboard: React.FC = () => {
       title: 'Total Posts',
       value: totalPosts.toString(),
       icon: <BarChart3 size={24} data-magicpath-id="0" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
-      change: '+2 this month',
-      mpid: "ab2ebd3c-4f8d-441d-95c9-20794a8048d1"
+      change: '+2 this month'
     }, {
       title: 'Total Grabs',
       value: totalGrabs.toString(),
       icon: <Users size={24} data-magicpath-id="1" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
-      change: '+12 this week',
-      mpid: "f7c6e49d-38d9-4d1d-91bb-375331aaebe6"
+      change: '+12 this week'
     }, {
       title: 'Successful Connections',
       value: successfulConnections.toString(),
       icon: <CheckCircle size={24} data-magicpath-id="2" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
-      change: '78% success rate',
-      mpid: "b712fc2f-77b6-4030-b40e-12868be5fe00"
+      change: '78% success rate'
     }];
   }, [mockOpportunities]);
 
@@ -253,17 +239,17 @@ const MyOpportunitiesDashboard: React.FC = () => {
           duration: 0.6,
           delay: 0.1
         }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" data-magicpath-id="14" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-            {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-id="15" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                <div className="flex items-center justify-between mb-4" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-id="16" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                  <div className="text-gray-600" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-field="icon:unknown" data-magicpath-id="17" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+            {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300" data-magicpath-id="15" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                <div className="flex items-center justify-between mb-4" data-magicpath-id="16" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                  <div className="text-gray-600" data-magicpath-id="17" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                     {stat.icon}
                   </div>
-                  <div className="text-right" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-id="18" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                    <div className="text-3xl font-bold" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-field="value:unknown" data-magicpath-id="19" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.value}</div>
-                    {stat.change && <div className="text-sm text-gray-500 mt-1" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-field="change:unknown" data-magicpath-id="20" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.change}</div>}
+                  <div className="text-right" data-magicpath-id="18" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="text-3xl font-bold" data-magicpath-id="19" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.value}</div>
+                    {stat.change && <div className="text-sm text-gray-500 mt-1" data-magicpath-id="20" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.change}</div>}
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold" data-magicpath-uuid={(stat as any)["mpid"] ?? "unsafe"} data-magicpath-field="title:unknown" data-magicpath-id="21" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.title}</h3>
+                <h3 className="text-lg font-semibold" data-magicpath-id="21" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.title}</h3>
               </div>)}
           </motion.div>
 
@@ -282,17 +268,14 @@ const MyOpportunitiesDashboard: React.FC = () => {
             <div className="flex flex-wrap gap-2" data-magicpath-id="23" data-magicpath-path="MyOpportunitiesDashboard.tsx">
               {[{
               key: 'active',
-              label: `Active (${tabCounts.active})`,
-              mpid: "ccf58567-dd34-4729-be7f-f16d995cad25"
+              label: `Active (${tabCounts.active})`
             }, {
               key: 'draft',
-              label: `Draft (${tabCounts.draft})`,
-              mpid: "9759e18a-4cf5-4a91-a64a-e819e9ce6af7"
+              label: `Draft (${tabCounts.draft})`
             }, {
               key: 'closed',
-              label: `Closed (${tabCounts.closed})`,
-              mpid: "abb9d04b-a930-4742-b9a5-c923af2a8597"
-            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-uuid={(tab as any)["mpid"] ?? "unsafe"} data-magicpath-field="label:unknown" data-magicpath-id="24" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+              label: `Closed (${tabCounts.closed})`
+            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-id="24" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                   {tab.label}
                 </button>)}
             </div>
@@ -322,83 +305,83 @@ const MyOpportunitiesDashboard: React.FC = () => {
             }} transition={{
               duration: 0.4,
               delay: index * 0.1
-            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group relative" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="30" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group relative" data-magicpath-id="30" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                     {/* Notification Badge */}
-                    {opportunity.hasNotifications && <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="31" data-magicpath-path="MyOpportunitiesDashboard.tsx"></div>}
+                    {opportunity.hasNotifications && <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full" data-magicpath-id="31" data-magicpath-path="MyOpportunitiesDashboard.tsx"></div>}
 
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-4" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="32" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="type:unknown" data-magicpath-id="33" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="flex items-start justify-between mb-4" data-magicpath-id="32" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`} data-magicpath-id="33" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                         {opportunity.type}
                       </span>
-                      <div className="flex items-center space-x-2" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="34" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        {opportunity.status === 'active' && <div className="w-2 h-2 bg-green-500 rounded-full" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="35" data-magicpath-path="MyOpportunitiesDashboard.tsx"></div>}
-                        {opportunity.status === 'draft' && <Clock size={16} className="text-orange-500" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="36" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
-                        {opportunity.status === 'closed' && <X size={16} className="text-gray-500" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="37" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
+                      <div className="flex items-center space-x-2" data-magicpath-id="34" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                        {opportunity.status === 'active' && <div className="w-2 h-2 bg-green-500 rounded-full" data-magicpath-id="35" data-magicpath-path="MyOpportunitiesDashboard.tsx"></div>}
+                        {opportunity.status === 'draft' && <Clock size={16} className="text-orange-500" data-magicpath-id="36" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
+                        {opportunity.status === 'closed' && <X size={16} className="text-gray-500" data-magicpath-id="37" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
                       </div>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="title:unknown" data-magicpath-id="38" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200" data-magicpath-id="38" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                       {opportunity.title}
                     </h3>
 
                     {/* Company and Date */}
-                    <div className="space-y-2 mb-4" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="39" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <p className="text-base font-semibold text-gray-800" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="company:unknown" data-magicpath-id="40" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="space-y-2 mb-4" data-magicpath-id="39" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      <p className="text-base font-semibold text-gray-800" data-magicpath-id="40" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                         {opportunity.company}
                       </p>
-                      <p className="text-sm text-gray-600" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="postedAt:unknown" data-magicpath-id="41" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      <p className="text-sm text-gray-600" data-magicpath-id="41" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                         Posted {opportunity.postedAt}
                       </p>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-2" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="description:unknown" data-magicpath-id="42" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-2" data-magicpath-id="42" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                       {opportunity.description}
                     </p>
 
                     {/* Stats */}
-                    <div className="flex items-center justify-between mb-4 text-sm text-gray-600" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="43" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <div className="flex items-center space-x-4" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="44" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        <span data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="viewCount:unknown" data-magicpath-id="45" data-magicpath-path="MyOpportunitiesDashboard.tsx">{opportunity.viewCount} views</span>
-                        <span className="flex items-center space-x-1" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="46" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <Users size={14} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="47" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          <span data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="grabCount:unknown" data-magicpath-id="48" data-magicpath-path="MyOpportunitiesDashboard.tsx">{opportunity.grabCount} grabs</span>
+                    <div className="flex items-center justify-between mb-4 text-sm text-gray-600" data-magicpath-id="43" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      <div className="flex items-center space-x-4" data-magicpath-id="44" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                        <span data-magicpath-id="45" data-magicpath-path="MyOpportunitiesDashboard.tsx">{opportunity.viewCount} views</span>
+                        <span className="flex items-center space-x-1" data-magicpath-id="46" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                          <Users size={14} data-magicpath-id="47" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                          <span data-magicpath-id="48" data-magicpath-path="MyOpportunitiesDashboard.tsx">{opportunity.grabCount} grabs</span>
                         </span>
                       </div>
                     </div>
 
                     {/* Status Indicator */}
-                    <div className="mb-4" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="49" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      {opportunity.grabCount > 0 ? <div className="flex items-center space-x-2 text-green-600" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="50" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <CheckCircle size={16} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="51" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          <span className="text-sm font-medium" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="grabCount:unknown" data-magicpath-id="52" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="mb-4" data-magicpath-id="49" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      {opportunity.grabCount > 0 ? <div className="flex items-center space-x-2 text-green-600" data-magicpath-id="50" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                          <CheckCircle size={16} data-magicpath-id="51" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                          <span className="text-sm font-medium" data-magicpath-id="52" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                             {opportunity.grabCount} people grabbed this
                           </span>
-                        </div> : <div className="flex items-center space-x-2 text-gray-500" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="53" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <AlertCircle size={16} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="54" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          <span className="text-sm" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="55" data-magicpath-path="MyOpportunitiesDashboard.tsx">No grabs yet</span>
+                        </div> : <div className="flex items-center space-x-2 text-gray-500" data-magicpath-id="53" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                          <AlertCircle size={16} data-magicpath-id="54" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                          <span className="text-sm" data-magicpath-id="55" data-magicpath-path="MyOpportunitiesDashboard.tsx">No grabs yet</span>
                         </div>}
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="56" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <div className="flex items-center space-x-2" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="57" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="58" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                            <Eye size={16} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="59" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                            <span className="text-sm font-medium" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="60" data-magicpath-path="MyOpportunitiesDashboard.tsx">View Grabs</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-id="56" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      <div className="flex items-center space-x-2" data-magicpath-id="57" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1" data-magicpath-id="58" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                            <Eye size={16} data-magicpath-id="59" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                            <span className="text-sm font-medium" data-magicpath-id="60" data-magicpath-path="MyOpportunitiesDashboard.tsx">View Grabs</span>
                           </button>}
                       </div>
                       
-                      <div className="flex items-center space-x-2" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="61" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200" title="Edit" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="62" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <Edit size={16} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="63" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                      <div className="flex items-center space-x-2" data-magicpath-id="61" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                        <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200" title="Edit" data-magicpath-id="62" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                          <Edit size={16} data-magicpath-id="63" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
                         </button>
                         
-                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200" title="Close" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="64" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                            <X size={16} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="65" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="66" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200" title="Close" data-magicpath-id="64" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                            <X size={16} data-magicpath-id="65" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium" data-magicpath-id="66" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                             Reopen
                           </button> : null}
                       </div>

@@ -11,13 +11,11 @@ interface FormData {
   interests: string[];
   building: string;
   opportunities: string[];
-  mpid?: string;
 }
 interface FormErrors {
   fullName?: string;
   email?: string;
   role?: string;
-  mpid?: string;
 }
 const ProfileCreationForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -145,7 +143,7 @@ const ProfileCreationForm: React.FC = () => {
         </label>
         <select id="role" value={formData.role} onChange={e => handleInputChange('role', e.target.value)} className={`w-full px-4 py-4 text-lg border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${errors.role ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} data-magicpath-id="21" data-magicpath-path="ProfileCreationForm.tsx">
           <option value="" data-magicpath-id="22" data-magicpath-path="ProfileCreationForm.tsx">Select your role</option>
-          {roleOptions.map(role => <option key={role} value={role} data-magicpath-uuid={(role as any)["mpid"] ?? "unsafe"} data-magicpath-id="23" data-magicpath-path="ProfileCreationForm.tsx">{role}</option>)}
+          {roleOptions.map(role => <option key={role} value={role} data-magicpath-id="23" data-magicpath-path="ProfileCreationForm.tsx">{role}</option>)}
         </select>
         {errors.role && <p className="text-red-500 text-sm mt-2" data-magicpath-id="24" data-magicpath-path="ProfileCreationForm.tsx">{errors.role}</p>}
       </div>
@@ -155,9 +153,9 @@ const ProfileCreationForm: React.FC = () => {
           Areas of Interest
         </label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4" data-magicpath-id="27" data-magicpath-path="ProfileCreationForm.tsx">
-          {interestOptions.map(interest => <label key={interest} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-uuid={(interest as any)["mpid"] ?? "unsafe"} data-magicpath-id="28" data-magicpath-path="ProfileCreationForm.tsx">
-              <input type="checkbox" checked={formData.interests.includes(interest)} onChange={() => handleCheckboxChange('interests', interest)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-uuid={(interest as any)["mpid"] ?? "unsafe"} data-magicpath-id="29" data-magicpath-path="ProfileCreationForm.tsx" />
-              <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-uuid={(interest as any)["mpid"] ?? "unsafe"} data-magicpath-id="30" data-magicpath-path="ProfileCreationForm.tsx">
+          {interestOptions.map(interest => <label key={interest} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-id="28" data-magicpath-path="ProfileCreationForm.tsx">
+              <input type="checkbox" checked={formData.interests.includes(interest)} onChange={() => handleCheckboxChange('interests', interest)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-id="29" data-magicpath-path="ProfileCreationForm.tsx" />
+              <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-id="30" data-magicpath-path="ProfileCreationForm.tsx">
                 {interest}
               </span>
             </label>)}
@@ -188,9 +186,9 @@ const ProfileCreationForm: React.FC = () => {
           What opportunities interest you?
         </label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4" data-magicpath-id="37" data-magicpath-path="ProfileCreationForm.tsx">
-          {opportunityOptions.map(opportunity => <label key={opportunity} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="38" data-magicpath-path="ProfileCreationForm.tsx">
-              <input type="checkbox" checked={formData.opportunities.includes(opportunity)} onChange={() => handleCheckboxChange('opportunities', opportunity)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="39" data-magicpath-path="ProfileCreationForm.tsx" />
-              <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="40" data-magicpath-path="ProfileCreationForm.tsx">
+          {opportunityOptions.map(opportunity => <label key={opportunity} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-id="38" data-magicpath-path="ProfileCreationForm.tsx">
+              <input type="checkbox" checked={formData.opportunities.includes(opportunity)} onChange={() => handleCheckboxChange('opportunities', opportunity)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-id="39" data-magicpath-path="ProfileCreationForm.tsx" />
+              <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-id="40" data-magicpath-path="ProfileCreationForm.tsx">
                 {opportunity}
               </span>
             </label>)}

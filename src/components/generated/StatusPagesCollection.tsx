@@ -12,7 +12,6 @@ interface StatusPagesCollectionProps {
   onBrowseMore?: () => void;
   onEditResponses?: () => void;
   onReviewAll?: () => void;
-  mpid?: string;
 }
 const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
   statusType = 'opportunity-grabbed',
@@ -31,24 +30,21 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
     title: 'Full Stack Developer',
     experience: '4 years',
     waitingDays: 2,
-    hasQuestionnaire: false,
-    mpid: "977d7441-0438-4756-b40f-08df2fffa0c5"
+    hasQuestionnaire: false
   }, {
     id: '2',
     name: 'Rahul Kumar',
     title: 'Senior Developer',
     experience: '6 years',
     waitingDays: 4,
-    hasQuestionnaire: true,
-    mpid: "30a762f3-fdc0-443f-9beb-d88686060853"
+    hasQuestionnaire: true
   }, {
     id: '3',
     name: 'Anita Patel',
     title: 'Tech Lead',
     experience: '8 years',
     waitingDays: 1,
-    hasQuestionnaire: false,
-    mpid: "13ae0fc3-ccc7-4c3c-92fa-3ab4682fda34"
+    hasQuestionnaire: false
   }] as any[];
   const renderOpportunityGrabbedStatus = () => <div className="min-h-screen bg-white text-black font-sans" data-magicpath-id="0" data-magicpath-path="StatusPagesCollection.tsx">
       {/* Header Navigation */}
@@ -401,38 +397,38 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           }} transition={{
             duration: 0.4,
             delay: 0.3 + index * 0.1
-          }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="89" data-magicpath-path="StatusPagesCollection.tsx">
-                <div className="flex items-center justify-between" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="90" data-magicpath-path="StatusPagesCollection.tsx">
-                  <div className="flex-1" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="91" data-magicpath-path="StatusPagesCollection.tsx">
-                    <div className="flex items-center space-x-4 mb-3" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="92" data-magicpath-path="StatusPagesCollection.tsx">
-                      <h3 className="text-xl font-bold" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="name:unknown" data-magicpath-id="93" data-magicpath-path="StatusPagesCollection.tsx">{candidate.name}</h3>
-                      <span className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800 border border-gray-200" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="title:unknown" data-magicpath-id="94" data-magicpath-path="StatusPagesCollection.tsx">
+          }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300" data-magicpath-id="89" data-magicpath-path="StatusPagesCollection.tsx">
+                <div className="flex items-center justify-between" data-magicpath-id="90" data-magicpath-path="StatusPagesCollection.tsx">
+                  <div className="flex-1" data-magicpath-id="91" data-magicpath-path="StatusPagesCollection.tsx">
+                    <div className="flex items-center space-x-4 mb-3" data-magicpath-id="92" data-magicpath-path="StatusPagesCollection.tsx">
+                      <h3 className="text-xl font-bold" data-magicpath-id="93" data-magicpath-path="StatusPagesCollection.tsx">{candidate.name}</h3>
+                      <span className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800 border border-gray-200" data-magicpath-id="94" data-magicpath-path="StatusPagesCollection.tsx">
                         {candidate.title}
                       </span>
-                      {candidate.waitingDays >= 3 && <span className="px-3 py-1 text-sm font-medium bg-orange-100 text-orange-800 border border-orange-200" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="waitingDays:unknown" data-magicpath-id="95" data-magicpath-path="StatusPagesCollection.tsx">
+                      {candidate.waitingDays >= 3 && <span className="px-3 py-1 text-sm font-medium bg-orange-100 text-orange-800 border border-orange-200" data-magicpath-id="95" data-magicpath-path="StatusPagesCollection.tsx">
                           Waiting {candidate.waitingDays} days
                         </span>}
                     </div>
-                    <p className="text-gray-600 mb-3" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="experience:unknown" data-magicpath-id="96" data-magicpath-path="StatusPagesCollection.tsx">{candidate.experience} experience</p>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="97" data-magicpath-path="StatusPagesCollection.tsx">
-                      <Clock size={14} data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="98" data-magicpath-path="StatusPagesCollection.tsx" />
-                      <span data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="waitingDays:unknown" data-magicpath-id="99" data-magicpath-path="StatusPagesCollection.tsx">Applied {candidate.waitingDays} days ago</span>
+                    <p className="text-gray-600 mb-3" data-magicpath-id="96" data-magicpath-path="StatusPagesCollection.tsx">{candidate.experience} experience</p>
+                    <div className="flex items-center space-x-2 text-sm text-gray-500" data-magicpath-id="97" data-magicpath-path="StatusPagesCollection.tsx">
+                      <Clock size={14} data-magicpath-id="98" data-magicpath-path="StatusPagesCollection.tsx" />
+                      <span data-magicpath-id="99" data-magicpath-path="StatusPagesCollection.tsx">Applied {candidate.waitingDays} days ago</span>
                       {candidate.hasQuestionnaire && <>
-                          <span data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="100" data-magicpath-path="StatusPagesCollection.tsx">•</span>
-                          <MessageSquare size={14} data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="101" data-magicpath-path="StatusPagesCollection.tsx" />
-                          <span data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="102" data-magicpath-path="StatusPagesCollection.tsx">Questionnaire completed</span>
+                          <span data-magicpath-id="100" data-magicpath-path="StatusPagesCollection.tsx">•</span>
+                          <MessageSquare size={14} data-magicpath-id="101" data-magicpath-path="StatusPagesCollection.tsx" />
+                          <span data-magicpath-id="102" data-magicpath-path="StatusPagesCollection.tsx">Questionnaire completed</span>
                         </>}
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-3" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="103" data-magicpath-path="StatusPagesCollection.tsx">
-                    <button className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-600 focus:ring-opacity-20" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="104" data-magicpath-path="StatusPagesCollection.tsx">
+                  <div className="flex items-center space-x-3" data-magicpath-id="103" data-magicpath-path="StatusPagesCollection.tsx">
+                    <button className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-600 focus:ring-opacity-20" data-magicpath-id="104" data-magicpath-path="StatusPagesCollection.tsx">
                       Share Contact
                     </button>
-                    {!candidate.hasQuestionnaire && <button className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-20" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="105" data-magicpath-path="StatusPagesCollection.tsx">
+                    {!candidate.hasQuestionnaire && <button className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-20" data-magicpath-id="105" data-magicpath-path="StatusPagesCollection.tsx">
                         Send Questionnaire
                       </button>}
-                    <button className="text-red-600 border-2 border-red-200 px-4 py-2 text-sm font-semibold hover:border-red-600 hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="106" data-magicpath-path="StatusPagesCollection.tsx">
+                    <button className="text-red-600 border-2 border-red-200 px-4 py-2 text-sm font-semibold hover:border-red-600 hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20" data-magicpath-id="106" data-magicpath-path="StatusPagesCollection.tsx">
                       Decline
                     </button>
                   </div>

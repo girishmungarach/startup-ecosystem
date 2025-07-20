@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Container, Theme } from './settings/types';
-import ContactRevelationSuccess from './components/generated/ContactRevelationSuccess';
+import MyConnectionsPage from './components/generated/MyConnectionsPage';
 
 let theme: Theme = 'light';
 let container: Container = 'none';
@@ -18,7 +18,7 @@ function App() {
 
   const generatedComponent = useMemo(() => {
     // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <ContactRevelationSuccess userRole="grabber" />; // %EXPORT_STATEMENT%
+    return <MyConnectionsPage />; // %EXPORT_STATEMENT%
   }, []);
 
   if (container === 'centered') {

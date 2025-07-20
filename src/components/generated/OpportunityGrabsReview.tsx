@@ -12,12 +12,10 @@ interface GrabberProfile {
   profileImage?: string;
   status: 'pending' | 'contact_shared' | 'declined' | 'questionnaire_sent';
   grabbedAt: string;
-  mpid?: string;
 }
 interface OpportunityGrabsReviewProps {
   opportunityTitle?: string;
   onBack?: () => void;
-  mpid?: string;
 }
 const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
   opportunityTitle = "Senior Full Stack Developer",
@@ -35,8 +33,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     company: 'TechFlow Solutions',
     currentProject: 'Building a real-time collaboration platform for remote teams using React, Node.js, and WebSocket technology.',
     status: 'pending',
-    grabbedAt: '2 hours ago',
-    mpid: "2eaefcba-42f8-48f3-809f-03400acbdafd"
+    grabbedAt: '2 hours ago'
   }, {
     id: '2',
     name: 'Marcus Rodriguez',
@@ -44,8 +41,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     company: 'DataVision Inc',
     currentProject: 'Developing an AI-powered analytics dashboard that processes millions of data points in real-time.',
     status: 'contact_shared',
-    grabbedAt: '5 hours ago',
-    mpid: "0eae24c8-ea8d-4fa3-b4f7-4f57c73e99fa"
+    grabbedAt: '5 hours ago'
   }, {
     id: '3',
     name: 'Emily Watson',
@@ -53,8 +49,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     company: 'Creative Labs',
     currentProject: 'Creating an immersive e-commerce experience with 3D product visualization and AR integration.',
     status: 'questionnaire_sent',
-    grabbedAt: '1 day ago',
-    mpid: "4a7667aa-847e-4484-af55-b54ae5f7195e"
+    grabbedAt: '1 day ago'
   }, {
     id: '4',
     name: 'David Kim',
@@ -62,8 +57,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     company: 'CloudScale Systems',
     currentProject: 'Architecting a multi-cloud infrastructure solution that reduces deployment time by 80%.',
     status: 'declined',
-    grabbedAt: '2 days ago',
-    mpid: "bb401e2c-2a1f-4981-bfd7-bd784ba9a9cd"
+    grabbedAt: '2 days ago'
   }, {
     id: '5',
     name: 'Lisa Thompson',
@@ -71,8 +65,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     company: 'StartupHub',
     currentProject: 'Building a comprehensive project management tool specifically designed for startup teams.',
     status: 'pending',
-    grabbedAt: '3 days ago',
-    mpid: "26aa27b1-84e1-4e67-a1dc-05ca09768e90"
+    grabbedAt: '3 days ago'
   }];
 
   // Filter and count by status
@@ -240,83 +233,83 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
               }} transition={{
                 duration: 0.4,
                 delay: index * 0.1
-              }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="44" data-magicpath-path="OpportunityGrabsReview.tsx">
+              }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg" data-magicpath-id="44" data-magicpath-path="OpportunityGrabsReview.tsx">
                       {/* Header */}
-                      <div className="flex items-start justify-between mb-4" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="45" data-magicpath-path="OpportunityGrabsReview.tsx">
-                        <div className="flex items-center space-x-4" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="46" data-magicpath-path="OpportunityGrabsReview.tsx">
-                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="47" data-magicpath-path="OpportunityGrabsReview.tsx">
-                            <User size={24} className="text-gray-600" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="48" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                      <div className="flex items-start justify-between mb-4" data-magicpath-id="45" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <div className="flex items-center space-x-4" data-magicpath-id="46" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center" data-magicpath-id="47" data-magicpath-path="OpportunityGrabsReview.tsx">
+                            <User size={24} className="text-gray-600" data-magicpath-id="48" data-magicpath-path="OpportunityGrabsReview.tsx" />
                           </div>
-                          <div data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="49" data-magicpath-path="OpportunityGrabsReview.tsx">
-                            <h3 className="text-xl font-bold" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-field="name:string" data-magicpath-id="50" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <div data-magicpath-id="49" data-magicpath-path="OpportunityGrabsReview.tsx">
+                            <h3 className="text-xl font-bold" data-magicpath-id="50" data-magicpath-path="OpportunityGrabsReview.tsx">
                               {grabber.name}
                             </h3>
-                            <div className="flex items-center space-x-2 text-gray-600" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="51" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-field="role:string" data-magicpath-id="52" data-magicpath-path="OpportunityGrabsReview.tsx">{grabber.role}</span>
-                              <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="53" data-magicpath-path="OpportunityGrabsReview.tsx">•</span>
-                              <div className="flex items-center space-x-1" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="54" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <Building size={14} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="55" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-field="company:string" data-magicpath-id="56" data-magicpath-path="OpportunityGrabsReview.tsx">{grabber.company}</span>
+                            <div className="flex items-center space-x-2 text-gray-600" data-magicpath-id="51" data-magicpath-path="OpportunityGrabsReview.tsx">
+                              <span data-magicpath-id="52" data-magicpath-path="OpportunityGrabsReview.tsx">{grabber.role}</span>
+                              <span data-magicpath-id="53" data-magicpath-path="OpportunityGrabsReview.tsx">•</span>
+                              <div className="flex items-center space-x-1" data-magicpath-id="54" data-magicpath-path="OpportunityGrabsReview.tsx">
+                                <Building size={14} data-magicpath-id="55" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                                <span data-magicpath-id="56" data-magicpath-path="OpportunityGrabsReview.tsx">{grabber.company}</span>
                               </div>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center space-x-3" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="57" data-magicpath-path="OpportunityGrabsReview.tsx">
-                          <span className={`px-3 py-1 text-sm font-medium border flex items-center space-x-1 ${statusConfig.className}`} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="58" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <div className="flex items-center space-x-3" data-magicpath-id="57" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <span className={`px-3 py-1 text-sm font-medium border flex items-center space-x-1 ${statusConfig.className}`} data-magicpath-id="58" data-magicpath-path="OpportunityGrabsReview.tsx">
                             {statusConfig.icon}
-                            <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="59" data-magicpath-path="OpportunityGrabsReview.tsx">{statusConfig.label}</span>
+                            <span data-magicpath-id="59" data-magicpath-path="OpportunityGrabsReview.tsx">{statusConfig.label}</span>
                           </span>
-                          <span className="text-sm text-gray-500" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-field="grabbedAt:string" data-magicpath-id="60" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <span className="text-sm text-gray-500" data-magicpath-id="60" data-magicpath-path="OpportunityGrabsReview.tsx">
                             {grabber.grabbedAt}
                           </span>
                         </div>
                       </div>
 
                       {/* Current Project */}
-                      <div className="mb-6" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="61" data-magicpath-path="OpportunityGrabsReview.tsx">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="62" data-magicpath-path="OpportunityGrabsReview.tsx">Current Project:</h4>
-                        <p className="text-gray-700 leading-relaxed" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-field="currentProject:string" data-magicpath-id="63" data-magicpath-path="OpportunityGrabsReview.tsx">
+                      <div className="mb-6" data-magicpath-id="61" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2" data-magicpath-id="62" data-magicpath-path="OpportunityGrabsReview.tsx">Current Project:</h4>
+                        <p className="text-gray-700 leading-relaxed" data-magicpath-id="63" data-magicpath-path="OpportunityGrabsReview.tsx">
                           {grabber.currentProject}
                         </p>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="64" data-magicpath-path="OpportunityGrabsReview.tsx">
-                        <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="65" data-magicpath-path="OpportunityGrabsReview.tsx">
-                          <ExternalLink size={16} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="66" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                          <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="67" data-magicpath-path="OpportunityGrabsReview.tsx">View Full Profile</span>
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-id="64" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium" data-magicpath-id="65" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <ExternalLink size={16} data-magicpath-id="66" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                          <span data-magicpath-id="67" data-magicpath-path="OpportunityGrabsReview.tsx">View Full Profile</span>
                         </button>
                         
-                        <div className="flex items-center space-x-3" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="68" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <div className="flex items-center space-x-3" data-magicpath-id="68" data-magicpath-path="OpportunityGrabsReview.tsx">
                           {grabber.status === 'pending' && <>
-                              <button onClick={() => handleIndividualAction(grabber.id, 'contact')} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="69" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <Share2 size={14} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="70" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="71" data-magicpath-path="OpportunityGrabsReview.tsx">Share Contact</span>
+                              <button onClick={() => handleIndividualAction(grabber.id, 'contact')} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-id="69" data-magicpath-path="OpportunityGrabsReview.tsx">
+                                <Share2 size={14} data-magicpath-id="70" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                                <span data-magicpath-id="71" data-magicpath-path="OpportunityGrabsReview.tsx">Share Contact</span>
                               </button>
-                              <button onClick={() => handleIndividualAction(grabber.id, 'questionnaire')} disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="72" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <Send size={14} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="73" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="74" data-magicpath-path="OpportunityGrabsReview.tsx">Send Questionnaire</span>
+                              <button onClick={() => handleIndividualAction(grabber.id, 'questionnaire')} disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-id="72" data-magicpath-path="OpportunityGrabsReview.tsx">
+                                <Send size={14} data-magicpath-id="73" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                                <span data-magicpath-id="74" data-magicpath-path="OpportunityGrabsReview.tsx">Send Questionnaire</span>
                               </button>
-                              <button onClick={() => handleIndividualAction(grabber.id, 'decline')} disabled={isLoading} className="text-gray-500 hover:text-gray-700 transition-colors duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="75" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <X size={14} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="76" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="77" data-magicpath-path="OpportunityGrabsReview.tsx">Decline</span>
+                              <button onClick={() => handleIndividualAction(grabber.id, 'decline')} disabled={isLoading} className="text-gray-500 hover:text-gray-700 transition-colors duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-id="75" data-magicpath-path="OpportunityGrabsReview.tsx">
+                                <X size={14} data-magicpath-id="76" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                                <span data-magicpath-id="77" data-magicpath-path="OpportunityGrabsReview.tsx">Decline</span>
                               </button>
                             </>}
                           
-                          {grabber.status === 'contact_shared' && <div className="flex items-center space-x-2 text-green-600" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="78" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <CheckCircle size={16} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="79" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                              <span className="text-sm font-medium" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="80" data-magicpath-path="OpportunityGrabsReview.tsx">Contact information shared</span>
+                          {grabber.status === 'contact_shared' && <div className="flex items-center space-x-2 text-green-600" data-magicpath-id="78" data-magicpath-path="OpportunityGrabsReview.tsx">
+                              <CheckCircle size={16} data-magicpath-id="79" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                              <span className="text-sm font-medium" data-magicpath-id="80" data-magicpath-path="OpportunityGrabsReview.tsx">Contact information shared</span>
                             </div>}
                           
-                          {grabber.status === 'questionnaire_sent' && <div className="flex items-center space-x-2 text-blue-600" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="81" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <Mail size={16} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="82" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                              <span className="text-sm font-medium" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="83" data-magicpath-path="OpportunityGrabsReview.tsx">Questionnaire sent</span>
+                          {grabber.status === 'questionnaire_sent' && <div className="flex items-center space-x-2 text-blue-600" data-magicpath-id="81" data-magicpath-path="OpportunityGrabsReview.tsx">
+                              <Mail size={16} data-magicpath-id="82" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                              <span className="text-sm font-medium" data-magicpath-id="83" data-magicpath-path="OpportunityGrabsReview.tsx">Questionnaire sent</span>
                             </div>}
                           
-                          {grabber.status === 'declined' && <div className="flex items-center space-x-2 text-gray-500" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="84" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <X size={16} data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="85" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                              <span className="text-sm font-medium" data-magicpath-uuid={(grabber as any)["mpid"] ?? "unsafe"} data-magicpath-id="86" data-magicpath-path="OpportunityGrabsReview.tsx">Declined</span>
+                          {grabber.status === 'declined' && <div className="flex items-center space-x-2 text-gray-500" data-magicpath-id="84" data-magicpath-path="OpportunityGrabsReview.tsx">
+                              <X size={16} data-magicpath-id="85" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                              <span className="text-sm font-medium" data-magicpath-id="86" data-magicpath-path="OpportunityGrabsReview.tsx">Declined</span>
                             </div>}
                         </div>
                       </div>

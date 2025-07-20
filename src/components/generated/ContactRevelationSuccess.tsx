@@ -7,7 +7,6 @@ interface ContactDetails {
   email: string;
   phone?: string;
   linkedin?: string;
-  mpid?: string;
 }
 interface ContactRevelationSuccessProps {
   userRole: 'grabber' | 'poster';
@@ -20,7 +19,6 @@ interface ContactRevelationSuccessProps {
   sharedDetails?: string[];
   onBackToDashboard?: () => void;
   onBackToOpportunities?: () => void;
-  mpid?: string;
 }
 const ContactRevelationSuccess: React.FC<ContactRevelationSuccessProps> = ({
   userRole = 'grabber',
@@ -221,9 +219,9 @@ const ContactRevelationSuccess: React.FC<ContactRevelationSuccessProps> = ({
           <h2 className="text-2xl font-bold mb-6" data-magicpath-id="63" data-magicpath-path="ContactRevelationSuccess.tsx">What Was Shared</h2>
           
           <div className="space-y-4" data-magicpath-id="64" data-magicpath-path="ContactRevelationSuccess.tsx">
-            {sharedDetails.map((detail, index) => <div key={index} className="flex items-center space-x-3 p-3 bg-green-50 border border-green-200" data-magicpath-uuid={(detail as any)["mpid"] ?? "unsafe"} data-magicpath-id="65" data-magicpath-path="ContactRevelationSuccess.tsx">
-                <CheckCircle size={16} className="text-green-600" data-magicpath-uuid={(detail as any)["mpid"] ?? "unsafe"} data-magicpath-id="66" data-magicpath-path="ContactRevelationSuccess.tsx" />
-                <span className="font-medium" data-magicpath-uuid={(detail as any)["mpid"] ?? "unsafe"} data-magicpath-id="67" data-magicpath-path="ContactRevelationSuccess.tsx">{detail}</span>
+            {sharedDetails.map((detail, index) => <div key={index} className="flex items-center space-x-3 p-3 bg-green-50 border border-green-200" data-magicpath-id="65" data-magicpath-path="ContactRevelationSuccess.tsx">
+                <CheckCircle size={16} className="text-green-600" data-magicpath-id="66" data-magicpath-path="ContactRevelationSuccess.tsx" />
+                <span className="font-medium" data-magicpath-id="67" data-magicpath-path="ContactRevelationSuccess.tsx">{detail}</span>
               </div>)}
           </div>
 

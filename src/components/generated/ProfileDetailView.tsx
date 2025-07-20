@@ -17,7 +17,6 @@ interface Profile {
   lookingFor: string[];
   lastUpdate: string;
   recentOpportunities: Opportunity[];
-  mpid?: string;
 }
 interface Opportunity {
   id: string;
@@ -25,13 +24,11 @@ interface Opportunity {
   type: string;
   postedDate: string;
   description: string;
-  mpid?: string;
 }
 interface ProfileDetailViewProps {
   profile?: Profile;
   onBack?: () => void;
   onBookmark?: (profileId: string) => void;
-  mpid?: string;
 }
 const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
   profile,
@@ -58,15 +55,13 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
       title: 'Senior ML Engineer - Healthcare AI',
       type: 'Full-time Position',
       postedDate: '5 days ago',
-      description: 'Looking for an experienced ML engineer to join our core team building diagnostic AI systems.',
-      mpid: "f1a7ef45-8532-423f-98e4-5028b431960f"
+      description: 'Looking for an experienced ML engineer to join our core team building diagnostic AI systems.'
     }, {
       id: '2',
       title: 'Healthcare Partnership Opportunities',
       type: 'Partnership',
       postedDate: '2 weeks ago',
-      description: 'Seeking partnerships with hospitals and medical centers for pilot programs.',
-      mpid: "f9671ae8-a69e-4da6-8860-55a5b4b7b46c"
+      description: 'Seeking partnerships with hospitals and medical centers for pilot programs.'
     }]
   };
   const displayProfile = profile || mockProfile;

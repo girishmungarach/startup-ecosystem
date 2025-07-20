@@ -14,7 +14,6 @@ interface Profile {
   profileImage?: string;
   isBookmarked: boolean;
   location?: string;
-  mpid?: string;
 }
 const ProfileDiscoveryPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,8 +31,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['HealthTech', 'AI/ML'],
     buildingStatus: 'Actively building',
     isBookmarked: false,
-    location: 'San Francisco',
-    mpid: "cb0b37be-1232-4be0-822f-e25abcda2c26"
+    location: 'San Francisco'
   }, {
     id: '2',
     name: 'Rajesh Kumar',
@@ -43,8 +41,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['Fintech', 'SaaS'],
     buildingStatus: 'Actively building',
     isBookmarked: true,
-    location: 'Bangalore',
-    mpid: "a5b101fc-c426-47f3-a2a3-758c778413ab"
+    location: 'Bangalore'
   }, {
     id: '3',
     name: 'Emily Rodriguez',
@@ -54,8 +51,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['EdTech', 'SaaS'],
     buildingStatus: 'Looking for opportunities',
     isBookmarked: false,
-    location: 'New York',
-    mpid: "9b041aaf-2859-4aa2-a0a5-3b1c5fd6c03f"
+    location: 'New York'
   }, {
     id: '4',
     name: 'David Park',
@@ -65,8 +61,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['AgriTech', 'E-commerce'],
     buildingStatus: 'Actively building',
     isBookmarked: false,
-    location: 'Seoul',
-    mpid: "90983f28-385d-4a2c-a7c1-6874bfc33082"
+    location: 'Seoul'
   }, {
     id: '5',
     name: 'Priya Sharma',
@@ -76,8 +71,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['SaaS', 'Fintech'],
     buildingStatus: 'Exploring ideas',
     isBookmarked: true,
-    location: 'Mumbai',
-    mpid: "7946c120-ad99-4bb1-a3b3-0427056e6f6c"
+    location: 'Mumbai'
   }, {
     id: '6',
     name: 'Alex Thompson',
@@ -87,8 +81,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['Gaming', 'AI/ML'],
     buildingStatus: 'Exploring ideas',
     isBookmarked: false,
-    location: 'Palo Alto',
-    mpid: "08502917-0d40-40e7-a920-f18b447fd66e"
+    location: 'Palo Alto'
   }, {
     id: '7',
     name: 'Maria Santos',
@@ -98,8 +91,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['SaaS', 'E-commerce'],
     buildingStatus: 'Actively building',
     isBookmarked: false,
-    location: 'São Paulo',
-    mpid: "d682efa2-5b55-4339-ac77-cdfc76f9a3c0"
+    location: 'São Paulo'
   }, {
     id: '8',
     name: 'James Wilson',
@@ -109,8 +101,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['AgriTech', 'AI/ML'],
     buildingStatus: 'Actively building',
     isBookmarked: false,
-    location: 'London',
-    mpid: "09fb8649-ae18-41f6-989e-4f16f1016cb8"
+    location: 'London'
   }, {
     id: '9',
     name: 'Lisa Zhang',
@@ -120,8 +111,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['EdTech', 'AI/ML'],
     buildingStatus: 'Actively building',
     isBookmarked: true,
-    location: 'Toronto',
-    mpid: "c292791d-6f1b-4b07-bcd2-896bc81572f3"
+    location: 'Toronto'
   }, {
     id: '10',
     name: 'Ahmed Hassan',
@@ -131,8 +121,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     interests: ['Fintech', 'Other'],
     buildingStatus: 'Actively building',
     isBookmarked: false,
-    location: 'Dubai',
-    mpid: "c0b6ea2b-7efc-4c32-bfb9-23dd9b6b7a3e"
+    location: 'Dubai'
   }]);
   const roleOptions = ['All', 'Founders', 'Investors', 'Developers', 'Designers', 'Marketing', 'Sales', 'Operations', 'Students'];
   const interestOptions = ['Fintech', 'HealthTech', 'EdTech', 'AI/ML', 'SaaS', 'E-commerce', 'Gaming', 'AgriTech', 'Other'];
@@ -269,7 +258,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                 <div data-magicpath-id="36" data-magicpath-path="ProfileDiscoveryPage.tsx">
                   <h3 className="text-lg font-semibold mb-3" data-magicpath-id="37" data-magicpath-path="ProfileDiscoveryPage.tsx">Role</h3>
                   <div className="flex flex-wrap gap-2" data-magicpath-id="38" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    {roleOptions.map(role => <button key={role} onClick={() => toggleFilter(selectedRoles, setSelectedRoles, role)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedRoles.includes(role) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`} data-magicpath-uuid={(role as any)["mpid"] ?? "unsafe"} data-magicpath-id="39" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    {roleOptions.map(role => <button key={role} onClick={() => toggleFilter(selectedRoles, setSelectedRoles, role)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedRoles.includes(role) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`} data-magicpath-id="39" data-magicpath-path="ProfileDiscoveryPage.tsx">
                         {role}
                       </button>)}
                   </div>
@@ -279,7 +268,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                 <div data-magicpath-id="40" data-magicpath-path="ProfileDiscoveryPage.tsx">
                   <h3 className="text-lg font-semibold mb-3" data-magicpath-id="41" data-magicpath-path="ProfileDiscoveryPage.tsx">Interests</h3>
                   <div className="flex flex-wrap gap-2" data-magicpath-id="42" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    {interestOptions.map(interest => <button key={interest} onClick={() => toggleFilter(selectedInterests, setSelectedInterests, interest)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedInterests.includes(interest) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`} data-magicpath-uuid={(interest as any)["mpid"] ?? "unsafe"} data-magicpath-id="43" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    {interestOptions.map(interest => <button key={interest} onClick={() => toggleFilter(selectedInterests, setSelectedInterests, interest)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedInterests.includes(interest) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`} data-magicpath-id="43" data-magicpath-path="ProfileDiscoveryPage.tsx">
                         {interest}
                       </button>)}
                   </div>
@@ -289,7 +278,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                 <div data-magicpath-id="44" data-magicpath-path="ProfileDiscoveryPage.tsx">
                   <h3 className="text-lg font-semibold mb-3" data-magicpath-id="45" data-magicpath-path="ProfileDiscoveryPage.tsx">Building Status</h3>
                   <div className="flex flex-wrap gap-2" data-magicpath-id="46" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    {buildingStatusOptions.map(status => <button key={status} onClick={() => toggleFilter(selectedBuildingStatus, setSelectedBuildingStatus, status)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedBuildingStatus.includes(status) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`} data-magicpath-uuid={(status as any)["mpid"] ?? "unsafe"} data-magicpath-id="47" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    {buildingStatusOptions.map(status => <button key={status} onClick={() => toggleFilter(selectedBuildingStatus, setSelectedBuildingStatus, status)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedBuildingStatus.includes(status) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`} data-magicpath-id="47" data-magicpath-path="ProfileDiscoveryPage.tsx">
                         {status}
                       </button>)}
                   </div>
@@ -350,64 +339,64 @@ const ProfileDiscoveryPage: React.FC = () => {
           }} transition={{
             duration: 0.5,
             delay: index * 0.1
-          }} className="bg-white border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 group" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="60" data-magicpath-path="ProfileDiscoveryPage.tsx">
+          }} className="bg-white border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 group" data-magicpath-id="60" data-magicpath-path="ProfileDiscoveryPage.tsx">
                   {/* Profile Header */}
-                  <div className="flex items-center justify-between mb-4" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="61" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    <div className="flex items-center space-x-4" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="62" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="63" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                        <User size={24} className="text-gray-400" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="64" data-magicpath-path="ProfileDiscoveryPage.tsx" />
+                  <div className="flex items-center justify-between mb-4" data-magicpath-id="61" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    <div className="flex items-center space-x-4" data-magicpath-id="62" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200" data-magicpath-id="63" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                        <User size={24} className="text-gray-400" data-magicpath-id="64" data-magicpath-path="ProfileDiscoveryPage.tsx" />
                       </div>
-                      <div data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="65" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                        <h4 className="text-xl font-bold" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-field="name:unknown" data-magicpath-id="66" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.name}</h4>
-                        <p className="text-gray-600 flex items-center space-x-1" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="67" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                          <Briefcase size={14} data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="68" data-magicpath-path="ProfileDiscoveryPage.tsx" />
-                          <span data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-field="role:unknown" data-magicpath-id="69" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.role}</span>
+                      <div data-magicpath-id="65" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                        <h4 className="text-xl font-bold" data-magicpath-id="66" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.name}</h4>
+                        <p className="text-gray-600 flex items-center space-x-1" data-magicpath-id="67" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                          <Briefcase size={14} data-magicpath-id="68" data-magicpath-path="ProfileDiscoveryPage.tsx" />
+                          <span data-magicpath-id="69" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.role}</span>
                         </p>
                       </div>
                     </div>
-                    <button onClick={() => toggleBookmark(profile.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="70" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                      <Star size={20} className={profile.isBookmarked ? 'fill-black text-black' : 'text-gray-400'} data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="71" data-magicpath-path="ProfileDiscoveryPage.tsx" />
+                    <button onClick={() => toggleBookmark(profile.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors" data-magicpath-id="70" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                      <Star size={20} className={profile.isBookmarked ? 'fill-black text-black' : 'text-gray-400'} data-magicpath-id="71" data-magicpath-path="ProfileDiscoveryPage.tsx" />
                     </button>
                   </div>
 
                   {/* Company and Location */}
-                  <div className="mb-4 space-y-1" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="72" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    <p className="flex items-center space-x-1 text-gray-600" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="73" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                      <Building size={14} data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="74" data-magicpath-path="ProfileDiscoveryPage.tsx" />
-                      <span data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-field="company:unknown" data-magicpath-id="75" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.company}</span>
+                  <div className="mb-4 space-y-1" data-magicpath-id="72" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    <p className="flex items-center space-x-1 text-gray-600" data-magicpath-id="73" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                      <Building size={14} data-magicpath-id="74" data-magicpath-path="ProfileDiscoveryPage.tsx" />
+                      <span data-magicpath-id="75" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.company}</span>
                     </p>
-                    {profile.location && <p className="flex items-center space-x-1 text-gray-600" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="76" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                        <MapPin size={14} data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="77" data-magicpath-path="ProfileDiscoveryPage.tsx" />
-                        <span data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-field="location:unknown" data-magicpath-id="78" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.location}</span>
+                    {profile.location && <p className="flex items-center space-x-1 text-gray-600" data-magicpath-id="76" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                        <MapPin size={14} data-magicpath-id="77" data-magicpath-path="ProfileDiscoveryPage.tsx" />
+                        <span data-magicpath-id="78" data-magicpath-path="ProfileDiscoveryPage.tsx">{profile.location}</span>
                       </p>}
                   </div>
 
                   {/* Current Project */}
-                  <div className="mb-4" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="79" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    <p className="text-sm font-semibold text-gray-800 mb-2" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="80" data-magicpath-path="ProfileDiscoveryPage.tsx">Currently building:</p>
-                    <p className="text-sm text-gray-600 leading-relaxed" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-field="currentProject:unknown" data-magicpath-id="81" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                  <div className="mb-4" data-magicpath-id="79" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    <p className="text-sm font-semibold text-gray-800 mb-2" data-magicpath-id="80" data-magicpath-path="ProfileDiscoveryPage.tsx">Currently building:</p>
+                    <p className="text-sm text-gray-600 leading-relaxed" data-magicpath-id="81" data-magicpath-path="ProfileDiscoveryPage.tsx">
                       {profile.currentProject}
                     </p>
                   </div>
 
                   {/* Interest Tags */}
-                  <div className="mb-6" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="82" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    <div className="flex flex-wrap gap-2" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="83" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                      {profile.interests.map(interest => <span key={interest} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="84" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                  <div className="mb-6" data-magicpath-id="82" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    <div className="flex flex-wrap gap-2" data-magicpath-id="83" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                      {profile.interests.map(interest => <span key={interest} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200" data-magicpath-id="84" data-magicpath-path="ProfileDiscoveryPage.tsx">
                           {interest}
                         </span>)}
                     </div>
                   </div>
 
                   {/* Building Status */}
-                  <div className="mb-6" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="85" data-magicpath-path="ProfileDiscoveryPage.tsx">
-                    <span className={`px-3 py-1 text-xs font-semibold border ${profile.buildingStatus === 'Actively building' ? 'bg-green-50 text-green-700 border-green-200' : profile.buildingStatus === 'Exploring ideas' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`} data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-field="buildingStatus:unknown" data-magicpath-id="86" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                  <div className="mb-6" data-magicpath-id="85" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                    <span className={`px-3 py-1 text-xs font-semibold border ${profile.buildingStatus === 'Actively building' ? 'bg-green-50 text-green-700 border-green-200' : profile.buildingStatus === 'Exploring ideas' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`} data-magicpath-id="86" data-magicpath-path="ProfileDiscoveryPage.tsx">
                       {profile.buildingStatus}
                     </span>
                   </div>
 
                   {/* View Profile Button */}
-                  <button className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20" data-magicpath-uuid={(profile as any)["mpid"] ?? "unsafe"} data-magicpath-id="87" data-magicpath-path="ProfileDiscoveryPage.tsx">
+                  <button className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20" data-magicpath-id="87" data-magicpath-path="ProfileDiscoveryPage.tsx">
                     View Profile
                   </button>
                 </motion.div>)}

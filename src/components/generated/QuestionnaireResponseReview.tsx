@@ -9,14 +9,12 @@ interface PersonProfile {
   company: string;
   currentProject: string;
   profileImage?: string;
-  mpid?: string;
 }
 interface QuestionResponse {
   id: string;
   question: string;
   answer: string;
   timestamp: string;
-  mpid?: string;
 }
 interface PreviousResponse {
   id: string;
@@ -24,7 +22,6 @@ interface PreviousResponse {
   answer: string;
   timestamp: string;
   isFollowUp: boolean;
-  mpid?: string;
 }
 interface QuestionnaireResponseReviewProps {
   personName?: string;
@@ -36,7 +33,6 @@ interface QuestionnaireResponseReviewProps {
   onDecline?: () => void;
   onFollowUp?: () => void;
   onBack?: () => void;
-  mpid?: string;
 }
 const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = ({
   personName = "Sarah Chen",
@@ -51,20 +47,17 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
     id: '1',
     question: 'What specific experience do you have with React and Node.js?',
     answer: 'I have 5+ years of experience with React, including hooks, context API, and state management with Redux. For Node.js, I\'ve built scalable APIs using Express, implemented real-time features with Socket.io, and worked extensively with MongoDB and PostgreSQL databases.',
-    timestamp: '2 hours ago',
-    mpid: "6d898a42-209d-4c13-9033-4fe494e19642"
+    timestamp: '2 hours ago'
   }, {
     id: '2',
     question: 'Can you describe a challenging technical problem you solved recently?',
     answer: 'Recently, I optimized a real-time chat system that was experiencing latency issues with 1000+ concurrent users. I implemented Redis for session management, optimized database queries, and used WebSocket connection pooling. This reduced message latency by 70% and improved overall system stability.',
-    timestamp: '2 hours ago',
-    mpid: "6ba04435-b758-4c2f-91e1-b4ccd22fc948"
+    timestamp: '2 hours ago'
   }, {
     id: '3',
     question: 'What interests you most about this opportunity?',
     answer: 'I\'m excited about the opportunity to work on innovative fintech solutions and contribute to a product that can impact millions of users. The technical challenges around real-time data processing and the collaborative team environment really appeal to me.',
-    timestamp: '2 hours ago',
-    mpid: "cb773bb1-162a-411e-9bbb-f14e40c17c6b"
+    timestamp: '2 hours ago'
   }],
   previousResponses = [],
   onShareContact,
@@ -194,15 +187,15 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
             }} className="border-2 border-gray-200 p-6" data-magicpath-id="32" data-magicpath-path="QuestionnaireResponseReview.tsx">
                   <h3 className="text-xl font-bold mb-4" data-magicpath-id="33" data-magicpath-path="QuestionnaireResponseReview.tsx">Previous Responses</h3>
                   <div className="space-y-4" data-magicpath-id="34" data-magicpath-path="QuestionnaireResponseReview.tsx">
-                    {previousResponses.map((response, index) => <div key={response.id} className="border-l-4 border-blue-200 pl-4" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="35" data-magicpath-path="QuestionnaireResponseReview.tsx">
-                        <div className="flex items-center justify-between mb-2" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="36" data-magicpath-path="QuestionnaireResponseReview.tsx">
-                          <span className="text-sm font-medium text-blue-600" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="37" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                    {previousResponses.map((response, index) => <div key={response.id} className="border-l-4 border-blue-200 pl-4" data-magicpath-id="35" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                        <div className="flex items-center justify-between mb-2" data-magicpath-id="36" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                          <span className="text-sm font-medium text-blue-600" data-magicpath-id="37" data-magicpath-path="QuestionnaireResponseReview.tsx">
                             {response.isFollowUp ? 'Follow-up Question' : 'Initial Question'}
                           </span>
-                          <span className="text-sm text-gray-500" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-field="timestamp:unknown" data-magicpath-id="38" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.timestamp}</span>
+                          <span className="text-sm text-gray-500" data-magicpath-id="38" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.timestamp}</span>
                         </div>
-                        <h5 className="font-semibold mb-2" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-field="question:unknown" data-magicpath-id="39" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.question}</h5>
-                        <p className="text-gray-700" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-field="answer:unknown" data-magicpath-id="40" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.answer}</p>
+                        <h5 className="font-semibold mb-2" data-magicpath-id="39" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.question}</h5>
+                        <p className="text-gray-700" data-magicpath-id="40" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.answer}</p>
                       </div>)}
                   </div>
                 </motion.div>}
@@ -229,16 +222,16 @@ const QuestionnaireResponseReview: React.FC<QuestionnaireResponseReviewProps> = 
                 }} transition={{
                   duration: 0.4,
                   delay: index * 0.1
-                }} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="44" data-magicpath-path="QuestionnaireResponseReview.tsx">
-                      <div className="flex items-center justify-between mb-3" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="45" data-magicpath-path="QuestionnaireResponseReview.tsx">
-                        <span className="text-sm font-medium text-gray-500" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="46" data-magicpath-path="QuestionnaireResponseReview.tsx">Question {index + 1}</span>
-                        <span className="text-sm text-gray-500" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-field="timestamp:unknown" data-magicpath-id="47" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.timestamp}</span>
+                }} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0" data-magicpath-id="44" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                      <div className="flex items-center justify-between mb-3" data-magicpath-id="45" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                        <span className="text-sm font-medium text-gray-500" data-magicpath-id="46" data-magicpath-path="QuestionnaireResponseReview.tsx">Question {index + 1}</span>
+                        <span className="text-sm text-gray-500" data-magicpath-id="47" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.timestamp}</span>
                       </div>
-                      <h4 className="text-lg font-semibold mb-3 text-gray-800" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-field="question:unknown" data-magicpath-id="48" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                      <h4 className="text-lg font-semibold mb-3 text-gray-800" data-magicpath-id="48" data-magicpath-path="QuestionnaireResponseReview.tsx">
                         {response.question}
                       </h4>
-                      <div className="bg-gray-50 p-4 border-l-4 border-black" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-id="49" data-magicpath-path="QuestionnaireResponseReview.tsx">
-                        <p className="text-gray-800 leading-relaxed" data-magicpath-uuid={(response as any)["mpid"] ?? "unsafe"} data-magicpath-field="answer:unknown" data-magicpath-id="50" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.answer}</p>
+                      <div className="bg-gray-50 p-4 border-l-4 border-black" data-magicpath-id="49" data-magicpath-path="QuestionnaireResponseReview.tsx">
+                        <p className="text-gray-800 leading-relaxed" data-magicpath-id="50" data-magicpath-path="QuestionnaireResponseReview.tsx">{response.answer}</p>
                       </div>
                     </motion.div>)}
                 </div>

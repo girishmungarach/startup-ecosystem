@@ -12,13 +12,11 @@ interface FormData {
   compensation: string;
   contactPreference: 'direct' | 'review';
   screeningQuestions: string;
-  mpid?: string;
 }
 interface FormErrors {
   title?: string;
   type?: string;
   description?: string;
-  mpid?: string;
 }
 const PostOpportunityForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -182,7 +180,7 @@ const PostOpportunityForm: React.FC = () => {
             </label>
             <select id="type" value={formData.type} onChange={e => handleInputChange('type', e.target.value)} className={`w-full px-4 py-4 text-lg border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${errors.type ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} data-magicpath-id="30" data-magicpath-path="PostOpportunityForm.tsx">
               <option value="" data-magicpath-id="31" data-magicpath-path="PostOpportunityForm.tsx">Select opportunity type</option>
-              {opportunityTypes.map(type => <option key={type} value={type} data-magicpath-uuid={(type as any)["mpid"] ?? "unsafe"} data-magicpath-id="32" data-magicpath-path="PostOpportunityForm.tsx">{type}</option>)}
+              {opportunityTypes.map(type => <option key={type} value={type} data-magicpath-id="32" data-magicpath-path="PostOpportunityForm.tsx">{type}</option>)}
             </select>
             {errors.type && <p className="text-red-500 text-sm mt-2 flex items-center" data-magicpath-id="33" data-magicpath-path="PostOpportunityForm.tsx">
                 <AlertCircle size={16} className="mr-1" data-magicpath-id="34" data-magicpath-path="PostOpportunityForm.tsx" />

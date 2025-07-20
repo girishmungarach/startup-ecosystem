@@ -12,7 +12,6 @@ interface Opportunity {
   description: string;
   postedAt: string;
   isBookmarked?: boolean;
-  mpid?: string;
 }
 const OpportunitiesDashboard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('All');
@@ -28,8 +27,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Bangalore, India',
     description: 'Join our dynamic team building next-generation fintech solutions. We\'re looking for experienced developers passionate about creating scalable applications.',
     postedAt: '2 days ago',
-    isBookmarked: false,
-    mpid: "9ff5de24-f87b-4249-b206-43213fe30741"
+    isBookmarked: false
   }, {
     id: '2',
     title: 'Seed Funding Round - $2M',
@@ -38,8 +36,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Mumbai, India',
     description: 'Seeking strategic investors for our sustainable energy platform. We\'ve achieved product-market fit and are ready to scale across India.',
     postedAt: '1 day ago',
-    isBookmarked: true,
-    mpid: "d611ed69-2b48-4d9d-b97a-ece93bc5c285"
+    isBookmarked: true
   }, {
     id: '3',
     title: 'Co-founder & CTO Needed',
@@ -48,8 +45,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Delhi, India',
     description: 'Looking for a technical co-founder to join our healthcare AI venture. Equity-based partnership with proven business model.',
     postedAt: '3 days ago',
-    isBookmarked: false,
-    mpid: "cf293c56-34db-43d7-8e5a-eecfebf0fb0a"
+    isBookmarked: false
   }, {
     id: '4',
     title: 'Product Design Mentorship',
@@ -58,8 +54,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Remote',
     description: 'Experienced product designer offering mentorship for early-stage startups. Focus on user experience and design systems.',
     postedAt: '1 week ago',
-    isBookmarked: false,
-    mpid: "1dc3fe61-acd2-4aab-bc93-5d49ccde59a6"
+    isBookmarked: false
   }, {
     id: '5',
     title: 'Startup Pitch Competition',
@@ -68,8 +63,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Hyderabad, India',
     description: 'Annual startup pitch competition with $500K in prizes. Applications open for early-stage startups across all sectors.',
     postedAt: '5 days ago',
-    isBookmarked: true,
-    mpid: "1f432d51-625d-4a51-a6a6-a2d7846150f6"
+    isBookmarked: true
   }, {
     id: '6',
     title: 'Strategic Partnership - EdTech',
@@ -78,8 +72,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Pune, India',
     description: 'Seeking content partners for our online learning platform. Revenue sharing model with established user base of 100K+ students.',
     postedAt: '4 days ago',
-    isBookmarked: false,
-    mpid: "8647a9a7-92b2-4159-97d6-07fc6dc1e982"
+    isBookmarked: false
   }, {
     id: '7',
     title: 'Frontend Developer - React/Next.js',
@@ -88,8 +81,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Chennai, India',
     description: 'Join our fast-growing SaaS startup. Work on cutting-edge web applications with modern tech stack and flexible work culture.',
     postedAt: '6 days ago',
-    isBookmarked: false,
-    mpid: "c8d14000-59dd-429b-abc0-451ea34ffc8c"
+    isBookmarked: false
   }, {
     id: '8',
     title: 'Series A Funding - $10M',
@@ -98,8 +90,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Gurgaon, India',
     description: 'Established logistics startup seeking Series A funding. Strong revenue growth and expanding market presence.',
     postedAt: '1 week ago',
-    isBookmarked: false,
-    mpid: "3aa8c8a2-71b9-4551-b37c-b9a0057beec1"
+    isBookmarked: false
   }, {
     id: '9',
     title: 'Marketing Co-founder',
@@ -108,8 +99,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Mumbai, India',
     description: 'Food delivery startup seeking marketing co-founder. Proven traction in local market, ready for city-wide expansion.',
     postedAt: '2 weeks ago',
-    isBookmarked: true,
-    mpid: "8e054b04-4a7a-4ee7-b794-df067b1df9ed"
+    isBookmarked: true
   }, {
     id: '10',
     title: 'Tech Startup Networking Event',
@@ -118,8 +108,7 @@ const OpportunitiesDashboard: React.FC = () => {
     location: 'Bangalore, India',
     description: 'Monthly networking event for tech entrepreneurs, investors, and professionals. Great opportunity to connect and collaborate.',
     postedAt: '3 days ago',
-    isBookmarked: false,
-    mpid: "e067a831-2d42-44a8-9e69-c0ecd5b646ee"
+    isBookmarked: false
   }];
   const filterOptions = ['All', 'Jobs', 'Investment', 'Co-founder', 'Mentorship', 'Events', 'Partnerships'];
   const filteredOpportunities = useMemo(() => {
@@ -220,7 +209,7 @@ const OpportunitiesDashboard: React.FC = () => {
 
             {/* Filter Tabs */}
             <div className="flex flex-wrap gap-2" data-magicpath-id="15" data-magicpath-path="OpportunitiesDashboard.tsx">
-              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-uuid={(filter as any)["mpid"] ?? "unsafe"} data-magicpath-id="16" data-magicpath-path="OpportunitiesDashboard.tsx">
+              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-id="16" data-magicpath-path="OpportunitiesDashboard.tsx">
                   {filter}
                 </button>)}
             </div>
@@ -260,45 +249,45 @@ const OpportunitiesDashboard: React.FC = () => {
             }} transition={{
               duration: 0.4,
               delay: index * 0.1
-            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="26" data-magicpath-path="OpportunitiesDashboard.tsx">
+            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group" data-magicpath-id="26" data-magicpath-path="OpportunitiesDashboard.tsx">
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-4" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="27" data-magicpath-path="OpportunitiesDashboard.tsx">
-                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="type:unknown" data-magicpath-id="28" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <div className="flex items-start justify-between mb-4" data-magicpath-id="27" data-magicpath-path="OpportunitiesDashboard.tsx">
+                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`} data-magicpath-id="28" data-magicpath-path="OpportunitiesDashboard.tsx">
                         {opportunity.type}
                       </span>
-                      <button onClick={() => handleBookmark(opportunity.id)} className="text-gray-400 hover:text-black transition-colors duration-200" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="29" data-magicpath-path="OpportunitiesDashboard.tsx">
-                        <Bookmark size={20} className={opportunity.isBookmarked ? 'fill-current text-black' : ''} data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="30" data-magicpath-path="OpportunitiesDashboard.tsx" />
+                      <button onClick={() => handleBookmark(opportunity.id)} className="text-gray-400 hover:text-black transition-colors duration-200" data-magicpath-id="29" data-magicpath-path="OpportunitiesDashboard.tsx">
+                        <Bookmark size={20} className={opportunity.isBookmarked ? 'fill-current text-black' : ''} data-magicpath-id="30" data-magicpath-path="OpportunitiesDashboard.tsx" />
                       </button>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="title:unknown" data-magicpath-id="31" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200" data-magicpath-id="31" data-magicpath-path="OpportunitiesDashboard.tsx">
                       {opportunity.title}
                     </h3>
 
                     {/* Company and Location */}
-                    <div className="space-y-2 mb-4" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="32" data-magicpath-path="OpportunitiesDashboard.tsx">
-                      <p className="text-base font-semibold text-gray-800" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="company:unknown" data-magicpath-id="33" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <div className="space-y-2 mb-4" data-magicpath-id="32" data-magicpath-path="OpportunitiesDashboard.tsx">
+                      <p className="text-base font-semibold text-gray-800" data-magicpath-id="33" data-magicpath-path="OpportunitiesDashboard.tsx">
                         {opportunity.company}
                       </p>
-                      <div className="flex items-center text-gray-600" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="34" data-magicpath-path="OpportunitiesDashboard.tsx">
-                        <MapPin size={16} className="mr-2" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="35" data-magicpath-path="OpportunitiesDashboard.tsx" />
-                        <span className="text-sm" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="location:unknown" data-magicpath-id="36" data-magicpath-path="OpportunitiesDashboard.tsx">{opportunity.location}</span>
+                      <div className="flex items-center text-gray-600" data-magicpath-id="34" data-magicpath-path="OpportunitiesDashboard.tsx">
+                        <MapPin size={16} className="mr-2" data-magicpath-id="35" data-magicpath-path="OpportunitiesDashboard.tsx" />
+                        <span className="text-sm" data-magicpath-id="36" data-magicpath-path="OpportunitiesDashboard.tsx">{opportunity.location}</span>
                       </div>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="description:unknown" data-magicpath-id="37" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3" data-magicpath-id="37" data-magicpath-path="OpportunitiesDashboard.tsx">
                       {opportunity.description}
                     </p>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="38" data-magicpath-path="OpportunitiesDashboard.tsx">
-                      <div className="flex items-center text-gray-500" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="39" data-magicpath-path="OpportunitiesDashboard.tsx">
-                        <Clock size={14} className="mr-1" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="40" data-magicpath-path="OpportunitiesDashboard.tsx" />
-                        <span className="text-xs" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-field="postedAt:unknown" data-magicpath-id="41" data-magicpath-path="OpportunitiesDashboard.tsx">Posted {opportunity.postedAt}</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-id="38" data-magicpath-path="OpportunitiesDashboard.tsx">
+                      <div className="flex items-center text-gray-500" data-magicpath-id="39" data-magicpath-path="OpportunitiesDashboard.tsx">
+                        <Clock size={14} className="mr-1" data-magicpath-id="40" data-magicpath-path="OpportunitiesDashboard.tsx" />
+                        <span className="text-xs" data-magicpath-id="41" data-magicpath-path="OpportunitiesDashboard.tsx">Posted {opportunity.postedAt}</span>
                       </div>
-                      <button onClick={() => handleGrabIt(opportunity)} className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20" data-magicpath-uuid={(opportunity as any)["mpid"] ?? "unsafe"} data-magicpath-id="42" data-magicpath-path="OpportunitiesDashboard.tsx">
+                      <button onClick={() => handleGrabIt(opportunity)} className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20" data-magicpath-id="42" data-magicpath-path="OpportunitiesDashboard.tsx">
                         Grab It
                       </button>
                     </div>

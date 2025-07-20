@@ -9,14 +9,12 @@ interface Question {
   type: 'text' | 'multiple_choice' | 'yes_no';
   options?: string[];
   required?: boolean;
-  mpid?: string;
 }
 interface OpportunityDetails {
   type: string;
   company: string;
   description: string;
   location: string;
-  mpid?: string;
 }
 interface QuestionnaireResponseFormProps {
   opportunityTitle?: string;
@@ -26,7 +24,6 @@ interface QuestionnaireResponseFormProps {
   onSubmit?: (answers: Record<string, string>) => void;
   onSaveProgress?: (answers: Record<string, string>) => void;
   onBack?: () => void;
-  mpid?: string;
 }
 const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
   opportunityTitle = "Senior Full Stack Developer",
@@ -41,27 +38,23 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
     id: "1",
     text: "What relevant experience do you have with React and Node.js?",
     type: "text",
-    required: true,
-    mpid: "6f503aab-8204-47c1-95f3-de20b150e2a3"
+    required: true
   }, {
     id: "2",
     text: "Are you available for full-time work?",
     type: "yes_no",
-    required: true,
-    mpid: "a26453ca-b002-4252-ade1-1f34a425f59e"
+    required: true
   }, {
     id: "3",
     text: "What is your preferred working arrangement?",
     type: "multiple_choice",
     options: ["Remote", "Hybrid", "In-office", "Flexible"],
-    required: false,
-    mpid: "4a19b8b5-dca5-4f73-b6f1-7995ef065242"
+    required: false
   }, {
     id: "4",
     text: "Tell us about a challenging project you've worked on recently.",
     type: "text",
-    required: false,
-    mpid: "d6e64b41-8e64-4171-b13e-fc75a5c5d724"
+    required: false
   }],
   onSubmit,
   onSaveProgress,
@@ -274,59 +267,59 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
           duration: 0.6,
           delay: 0.2
         }} className="space-y-8" data-magicpath-id="42" data-magicpath-path="QuestionnaireResponseForm.tsx">
-            {questions.map((question, index) => <div key={question.id} className="border-2 border-gray-200 p-6" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="43" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                <div className="mb-4" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="44" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                  <div className="flex items-start space-x-2 mb-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="45" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                    <span className="text-lg font-bold text-gray-700 mt-1" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="46" data-magicpath-path="QuestionnaireResponseForm.tsx">
+            {questions.map((question, index) => <div key={question.id} className="border-2 border-gray-200 p-6" data-magicpath-id="43" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                <div className="mb-4" data-magicpath-id="44" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                  <div className="flex items-start space-x-2 mb-2" data-magicpath-id="45" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                    <span className="text-lg font-bold text-gray-700 mt-1" data-magicpath-id="46" data-magicpath-path="QuestionnaireResponseForm.tsx">
                       {index + 1}.
                     </span>
-                    <div className="flex-1" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="47" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                      <h4 className="text-lg font-semibold leading-relaxed" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-field="text:unknown" data-magicpath-id="48" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                    <div className="flex-1" data-magicpath-id="47" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                      <h4 className="text-lg font-semibold leading-relaxed" data-magicpath-id="48" data-magicpath-path="QuestionnaireResponseForm.tsx">
                         {question.text}
-                        {question.required && <span className="text-red-500 ml-1" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="49" data-magicpath-path="QuestionnaireResponseForm.tsx">*</span>}
+                        {question.required && <span className="text-red-500 ml-1" data-magicpath-id="49" data-magicpath-path="QuestionnaireResponseForm.tsx">*</span>}
                       </h4>
                     </div>
                   </div>
                 </div>
 
                 {/* Text Response */}
-                {question.type === 'text' && <div className="space-y-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="50" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                    <textarea value={answers[question.id] || ''} onChange={e => handleAnswerChange(question.id, e.target.value)} placeholder="Enter your response..." className={`w-full p-4 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 resize-none ${errors[question.id] ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} rows={4} maxLength={1000} data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="51" data-magicpath-path="QuestionnaireResponseForm.tsx" />
-                    <div className="flex items-center justify-between" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="52" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                      <span className="text-xs text-gray-500" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="53" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                {question.type === 'text' && <div className="space-y-2" data-magicpath-id="50" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                    <textarea value={answers[question.id] || ''} onChange={e => handleAnswerChange(question.id, e.target.value)} placeholder="Enter your response..." className={`w-full p-4 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 resize-none ${errors[question.id] ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} rows={4} maxLength={1000} data-magicpath-id="51" data-magicpath-path="QuestionnaireResponseForm.tsx" />
+                    <div className="flex items-center justify-between" data-magicpath-id="52" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                      <span className="text-xs text-gray-500" data-magicpath-id="53" data-magicpath-path="QuestionnaireResponseForm.tsx">
                         {(answers[question.id] || '').length}/1000 characters
                       </span>
-                      {errors[question.id] && <p className="text-red-500 text-sm flex items-center" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="54" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                          <AlertCircle size={16} className="mr-1" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="55" data-magicpath-path="QuestionnaireResponseForm.tsx" />
+                      {errors[question.id] && <p className="text-red-500 text-sm flex items-center" data-magicpath-id="54" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                          <AlertCircle size={16} className="mr-1" data-magicpath-id="55" data-magicpath-path="QuestionnaireResponseForm.tsx" />
                           {errors[question.id]}
                         </p>}
                     </div>
                   </div>}
 
                 {/* Multiple Choice */}
-                {question.type === 'multiple_choice' && <div className="space-y-3" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="56" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                    {question.options?.map((option, optionIndex) => <label key={optionIndex} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="57" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                        <input type="radio" name={`question-${question.id}`} value={option} checked={answers[question.id] === option} onChange={e => handleAnswerChange(question.id, e.target.value)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="58" data-magicpath-path="QuestionnaireResponseForm.tsx" />
-                        <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="59" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                {question.type === 'multiple_choice' && <div className="space-y-3" data-magicpath-id="56" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                    {question.options?.map((option, optionIndex) => <label key={optionIndex} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-id="57" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                        <input type="radio" name={`question-${question.id}`} value={option} checked={answers[question.id] === option} onChange={e => handleAnswerChange(question.id, e.target.value)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-id="58" data-magicpath-path="QuestionnaireResponseForm.tsx" />
+                        <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-id="59" data-magicpath-path="QuestionnaireResponseForm.tsx">
                           {option}
                         </span>
                       </label>)}
-                    {errors[question.id] && <p className="text-red-500 text-sm flex items-center mt-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="60" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                        <AlertCircle size={16} className="mr-1" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="61" data-magicpath-path="QuestionnaireResponseForm.tsx" />
+                    {errors[question.id] && <p className="text-red-500 text-sm flex items-center mt-2" data-magicpath-id="60" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                        <AlertCircle size={16} className="mr-1" data-magicpath-id="61" data-magicpath-path="QuestionnaireResponseForm.tsx" />
                         {errors[question.id]}
                       </p>}
                   </div>}
 
                 {/* Yes/No */}
-                {question.type === 'yes_no' && <div className="space-y-3" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="62" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                    {['Yes', 'No'].map(option => <label key={option} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="63" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                        <input type="radio" name={`question-${question.id}`} value={option} checked={answers[question.id] === option} onChange={e => handleAnswerChange(question.id, e.target.value)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="64" data-magicpath-path="QuestionnaireResponseForm.tsx" />
-                        <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="65" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                {question.type === 'yes_no' && <div className="space-y-3" data-magicpath-id="62" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                    {['Yes', 'No'].map(option => <label key={option} className="flex items-center space-x-3 cursor-pointer group" data-magicpath-id="63" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                        <input type="radio" name={`question-${question.id}`} value={option} checked={answers[question.id] === option} onChange={e => handleAnswerChange(question.id, e.target.value)} className="w-5 h-5 border-2 border-gray-300 focus:ring-4 focus:ring-black focus:ring-opacity-10" data-magicpath-id="64" data-magicpath-path="QuestionnaireResponseForm.tsx" />
+                        <span className="text-base group-hover:text-gray-600 transition-colors duration-200" data-magicpath-id="65" data-magicpath-path="QuestionnaireResponseForm.tsx">
                           {option}
                         </span>
                       </label>)}
-                    {errors[question.id] && <p className="text-red-500 text-sm flex items-center mt-2" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="66" data-magicpath-path="QuestionnaireResponseForm.tsx">
-                        <AlertCircle size={16} className="mr-1" data-magicpath-uuid={(question as any)["mpid"] ?? "unsafe"} data-magicpath-id="67" data-magicpath-path="QuestionnaireResponseForm.tsx" />
+                    {errors[question.id] && <p className="text-red-500 text-sm flex items-center mt-2" data-magicpath-id="66" data-magicpath-path="QuestionnaireResponseForm.tsx">
+                        <AlertCircle size={16} className="mr-1" data-magicpath-id="67" data-magicpath-path="QuestionnaireResponseForm.tsx" />
                         {errors[question.id]}
                       </p>}
                   </div>}
