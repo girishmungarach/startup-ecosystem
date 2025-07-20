@@ -59,14 +59,14 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
       type: 'Full-time Position',
       postedDate: '5 days ago',
       description: 'Looking for an experienced ML engineer to join our core team building diagnostic AI systems.',
-      mpid: "21ead757-2463-4411-9144-7a2aff73c810"
+      mpid: "f1a7ef45-8532-423f-98e4-5028b431960f"
     }, {
       id: '2',
       title: 'Healthcare Partnership Opportunities',
       type: 'Partnership',
       postedDate: '2 weeks ago',
       description: 'Seeking partnerships with hospitals and medical centers for pilot programs.',
-      mpid: "77a8d399-88e3-4282-8b52-dd89738d8d91"
+      mpid: "f9671ae8-a69e-4da6-8860-55a5b4b7b46c"
     }]
   };
   const displayProfile = profile || mockProfile;

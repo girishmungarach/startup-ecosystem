@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Container, Theme } from './settings/types';
-import StatusPagesCollection from './components/generated/StatusPagesCollection';
+import ContactRevelationSuccess from './components/generated/ContactRevelationSuccess';
 
 let theme: Theme = 'light';
 let container: Container = 'none';
@@ -18,7 +18,7 @@ function App() {
 
   const generatedComponent = useMemo(() => {
     // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <StatusPagesCollection statusType="opportunity-grabbed" />; // %EXPORT_STATEMENT%
+    return <ContactRevelationSuccess userRole="grabber" />; // %EXPORT_STATEMENT%
   }, []);
 
   if (container === 'centered') {

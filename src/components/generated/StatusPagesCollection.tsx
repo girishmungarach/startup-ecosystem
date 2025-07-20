@@ -32,7 +32,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
     experience: '4 years',
     waitingDays: 2,
     hasQuestionnaire: false,
-    mpid: "773ae9c1-43e2-412e-baff-748da91214ec"
+    mpid: "977d7441-0438-4756-b40f-08df2fffa0c5"
   }, {
     id: '2',
     name: 'Rahul Kumar',
@@ -40,7 +40,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
     experience: '6 years',
     waitingDays: 4,
     hasQuestionnaire: true,
-    mpid: "a4a80710-7d6e-4ceb-9d13-9f11aff9e3a7"
+    mpid: "30a762f3-fdc0-443f-9beb-d88686060853"
   }, {
     id: '3',
     name: 'Anita Patel',
@@ -48,7 +48,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
     experience: '8 years',
     waitingDays: 1,
     hasQuestionnaire: false,
-    mpid: "c1061dd0-ea18-49a8-bf9e-d161a1897803"
+    mpid: "13ae0fc3-ccc7-4c3c-92fa-3ab4682fda34"
   }] as any[];
   const renderOpportunityGrabbedStatus = () => <div className="min-h-screen bg-white text-black font-sans" data-magicpath-id="0" data-magicpath-path="StatusPagesCollection.tsx">
       {/* Header Navigation */}
@@ -405,18 +405,18 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
                 <div className="flex items-center justify-between" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="90" data-magicpath-path="StatusPagesCollection.tsx">
                   <div className="flex-1" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="91" data-magicpath-path="StatusPagesCollection.tsx">
                     <div className="flex items-center space-x-4 mb-3" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="92" data-magicpath-path="StatusPagesCollection.tsx">
-                      <h3 className="text-xl font-bold" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="name:string" data-magicpath-id="93" data-magicpath-path="StatusPagesCollection.tsx">{candidate.name}</h3>
-                      <span className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800 border border-gray-200" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="title:string" data-magicpath-id="94" data-magicpath-path="StatusPagesCollection.tsx">
+                      <h3 className="text-xl font-bold" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="name:unknown" data-magicpath-id="93" data-magicpath-path="StatusPagesCollection.tsx">{candidate.name}</h3>
+                      <span className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800 border border-gray-200" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="title:unknown" data-magicpath-id="94" data-magicpath-path="StatusPagesCollection.tsx">
                         {candidate.title}
                       </span>
-                      {candidate.waitingDays >= 3 && <span className="px-3 py-1 text-sm font-medium bg-orange-100 text-orange-800 border border-orange-200" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="waitingDays:number" data-magicpath-id="95" data-magicpath-path="StatusPagesCollection.tsx">
+                      {candidate.waitingDays >= 3 && <span className="px-3 py-1 text-sm font-medium bg-orange-100 text-orange-800 border border-orange-200" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="waitingDays:unknown" data-magicpath-id="95" data-magicpath-path="StatusPagesCollection.tsx">
                           Waiting {candidate.waitingDays} days
                         </span>}
                     </div>
-                    <p className="text-gray-600 mb-3" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="experience:string" data-magicpath-id="96" data-magicpath-path="StatusPagesCollection.tsx">{candidate.experience} experience</p>
+                    <p className="text-gray-600 mb-3" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="experience:unknown" data-magicpath-id="96" data-magicpath-path="StatusPagesCollection.tsx">{candidate.experience} experience</p>
                     <div className="flex items-center space-x-2 text-sm text-gray-500" data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="97" data-magicpath-path="StatusPagesCollection.tsx">
                       <Clock size={14} data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="98" data-magicpath-path="StatusPagesCollection.tsx" />
-                      <span data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="waitingDays:number" data-magicpath-id="99" data-magicpath-path="StatusPagesCollection.tsx">Applied {candidate.waitingDays} days ago</span>
+                      <span data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-field="waitingDays:unknown" data-magicpath-id="99" data-magicpath-path="StatusPagesCollection.tsx">Applied {candidate.waitingDays} days ago</span>
                       {candidate.hasQuestionnaire && <>
                           <span data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="100" data-magicpath-path="StatusPagesCollection.tsx">•</span>
                           <MessageSquare size={14} data-magicpath-uuid={(candidate as any)["mpid"] ?? "unsafe"} data-magicpath-id="101" data-magicpath-path="StatusPagesCollection.tsx" />
