@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Building, MapPin, Clock, AlertCircle, CheckCircle, Save, Send, User, ArrowLeft } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../services/supabase';
 interface Question {
   id: string;
   text: string;
@@ -25,46 +28,105 @@ interface QuestionnaireResponseFormProps {
   onSaveProgress?: (answers: Record<string, string>) => void;
   onBack?: () => void;
 }
-const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
-  opportunityTitle = "Senior Full Stack Developer",
-  posterName = "TechFlow Innovations",
-  opportunityDetails = {
+const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () => {
+  const { questionnaireId } = useParams<{ questionnaireId: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  const [opportunityTitle, setOpportunityTitle] = useState("Loading...");
+  const [posterName, setPosterName] = useState("Loading...");
+  const [opportunityDetails, setOpportunityDetails] = useState({
     type: "Jobs",
-    company: "TechFlow Innovations",
-    description: "Join our dynamic team building next-generation fintech solutions. We're looking for experienced developers passionate about creating scalable applications.",
-    location: "Bangalore, India"
-  },
-  questions = [{
-    id: "1",
-    text: "What relevant experience do you have with React and Node.js?",
-    type: "text",
-    required: true
-  }, {
-    id: "2",
-    text: "Are you available for full-time work?",
-    type: "yes_no",
-    required: true
-  }, {
-    id: "3",
-    text: "What is your preferred working arrangement?",
-    type: "multiple_choice",
-    options: ["Remote", "Hybrid", "In-office", "Flexible"],
-    required: false
-  }, {
-    id: "4",
-    text: "Tell us about a challenging project you've worked on recently.",
-    type: "text",
-    required: false
-  }],
-  onSubmit,
-  onSaveProgress,
-  onBack
-}) => {
+    company: "Loading...",
+    description: "Loading...",
+    location: "Loading..."
+  });
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Load questionnaire data
+  useEffect(() => {
+    const loadQuestionnaire = async () => {
+      if (!questionnaireId || !user) return;
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Load questionnaire with opportunity details
+        const { data: questionnaire, error: questionnaireError } = await supabase
+          .from('questionnaires')
+          .select(`
+            *,
+            opportunities (
+              id,
+              title,
+              type,
+              company,
+              description,
+              location,
+              profiles!opportunities_user_id_fkey (
+                full_name
+              )
+            )
+          `)
+          .eq('id', questionnaireId)
+          .single();
+
+        if (questionnaireError) {
+          console.error('Error loading questionnaire:', questionnaireError);
+          setError('Failed to load questionnaire');
+          return;
+        }
+
+        if (!questionnaire) {
+          setError('Questionnaire not found');
+          return;
+        }
+
+        // Set opportunity details
+        setOpportunityTitle(questionnaire.opportunities?.title || 'Unknown Opportunity');
+        setPosterName(questionnaire.opportunities?.profiles?.full_name || 'Unknown Poster');
+        setOpportunityDetails({
+          type: questionnaire.opportunities?.type || 'Jobs',
+          company: questionnaire.opportunities?.company || 'Unknown Company',
+          description: questionnaire.opportunities?.description || 'No description available',
+          location: questionnaire.opportunities?.location || 'Unknown Location'
+        });
+
+        // Set questions
+        const questionsData = questionnaire.questions || [];
+        setQuestions(questionsData);
+
+        // Load existing response if any
+        const { data: existingResponse } = await supabase
+          .from('questionnaire_responses')
+          .select('responses')
+          .eq('questionnaire_id', questionnaireId)
+          .eq('user_id', user.id)
+          .single();
+
+        if (existingResponse?.responses) {
+          setAnswers(existingResponse.responses);
+        }
+
+      } catch (err) {
+        console.error('Error loading questionnaire:', err);
+        setError('Failed to load questionnaire');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuestionnaire();
+  }, [questionnaireId, user]);
   const getTypeColor = (type: string) => {
     const colors = {
       'Jobs': 'bg-blue-100 text-blue-800 border-blue-200',
@@ -104,35 +166,113 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    if (!validateForm() || !user || !questionnaireId) return;
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    onSubmit?.(answers);
-    setShowSuccess(true);
-    setIsSubmitting(false);
+    try {
+      // Save response to database
+      const { error } = await supabase
+        .from('questionnaire_responses')
+        .upsert({
+          questionnaire_id: questionnaireId,
+          user_id: user.id,
+          responses: answers,
+          is_complete: true,
+          submitted_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('Error submitting questionnaire:', error);
+        throw error;
+      }
+
+      // Update opportunity grab status
+      const { error: grabError } = await supabase
+        .from('opportunity_grabs')
+        .update({ 
+          status: 'questionnaire_completed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('opportunity_id', opportunityDetails.id)
+        .eq('user_id', user.id);
+
+      if (grabError) {
+        console.error('Error updating opportunity grab:', grabError);
+      }
+
+      setShowSuccess(true);
+    } catch (err) {
+      console.error('Failed to submit questionnaire:', err);
+      setError('Failed to submit questionnaire. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   const handleSaveProgress = async () => {
+    if (!user || !questionnaireId) return;
     setIsSaving(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    onSaveProgress?.(answers);
-    setIsSaving(false);
+    try {
+      // Save draft response to database
+      const { error } = await supabase
+        .from('questionnaire_responses')
+        .upsert({
+          questionnaire_id: questionnaireId,
+          user_id: user.id,
+          responses: answers,
+          is_complete: false,
+          submitted_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('Error saving progress:', error);
+        throw error;
+      }
+
+      console.log('Progress saved successfully');
+    } catch (err) {
+      console.error('Failed to save progress:', err);
+      setError('Failed to save progress. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
   const handleBack = () => {
-    if (onBack) {
-      onBack();
-    } else {
-      console.log('Navigate back to opportunities');
-    }
+    navigate('/opportunities');
   };
   const progress = useMemo(() => {
     const answeredQuestions = questions.filter(q => answers[q.id] && answers[q.id].trim() !== '').length;
     return Math.round(answeredQuestions / questions.length * 100);
   }, [answers, questions]);
   const estimatedTime = Math.max(2, Math.ceil(questions.length * 0.5));
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white text-black font-sans flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+          <p className="text-lg">Loading questionnaire...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white text-black font-sans flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertCircle size={32} className="text-red-600" />
+          </div>
+          <h2 className="text-3xl font-bold mb-4">Error Loading Questionnaire</h2>
+          <p className="text-gray-600 text-lg mb-6">{error}</p>
+          <button onClick={handleBack} className="bg-black text-white px-8 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200">
+            Back to Opportunities
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (showSuccess) {
     return <div className="min-h-screen bg-white text-black font-sans flex items-center justify-center">
         <motion.div initial={{
