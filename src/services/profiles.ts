@@ -3,21 +3,33 @@ import { bookmarksService } from './bookmarks';
 
 export interface Profile {
   id: string;
-  user_id: string;
-  name: string;
+  user_id?: string;
+  full_name: string;
+  email: string;
   role: string;
   company: string;
-  current_project: string;
+  building: string;
   interests: string[];
-  building_status: 'Actively building' | 'Exploring ideas' | 'Looking for opportunities';
-  profile_image?: string;
-  location?: string;
+  opportunities: string[];
+  avatar_url?: string;
   bio?: string;
   linkedin_url?: string;
-  github_url?: string;
+  twitter_url?: string;
   website_url?: string;
+  location?: string;
+  experience_years?: number;
+  skills: string[];
+  is_verified: boolean;
+  is_public: boolean;
+  last_active: string;
   created_at: string;
   updated_at: string;
+  // Computed fields for UI
+  name?: string;
+  current_project?: string;
+  building_status?: 'Actively building' | 'Exploring ideas' | 'Looking for opportunities';
+  profile_image?: string;
+  github_url?: string;
   // Joined data for bookmarks
   is_bookmarked?: boolean;
 }
@@ -85,7 +97,17 @@ export const profilesService = {
       throw error;
     }
 
-    return data;
+    if (!data) return null;
+
+    // Transform database fields to UI fields
+    return {
+      ...data,
+      name: data.full_name,
+      current_project: data.building,
+      building_status: 'Actively building', // Default value since we don't have this field
+      profile_image: data.avatar_url,
+      github_url: undefined, // We don't have this field in DB
+    };
   },
 
   // Get profiles with bookmark status for a user
@@ -97,7 +119,7 @@ export const profilesService = {
 
     // Apply filters
     if (filters?.search) {
-      query = query.or(`name.ilike.%${filters.search}%,company.ilike.%${filters.search}%,current_project.ilike.%${filters.search}%`);
+      query = query.or(`full_name.ilike.%${filters.search}%,company.ilike.%${filters.search}%,building.ilike.%${filters.search}%`);
     }
 
     if (filters?.roles && filters.roles.length > 0) {
@@ -108,10 +130,6 @@ export const profilesService = {
       query = query.overlaps('interests', filters.interests);
     }
 
-    if (filters?.building_status && filters.building_status.length > 0) {
-      query = query.in('building_status', filters.building_status);
-    }
-
     const { data, error } = await query;
 
     if (error) {
@@ -119,13 +137,20 @@ export const profilesService = {
       throw error;
     }
 
-    // Get bookmark status for each profile
+    // Transform and get bookmark status for each profile
     const profiles = data || [];
     const profilesWithBookmarks = await Promise.all(
       profiles.map(async (profile) => {
         const isBookmarked = await bookmarksService.isBookmarked(userId, profile.id, 'profile');
+        
+        // Transform database fields to UI fields
         return {
           ...profile,
+          name: profile.full_name,
+          current_project: profile.building,
+          building_status: 'Actively building', // Default value since we don't have this field
+          profile_image: profile.avatar_url,
+          github_url: undefined, // We don't have this field in DB
           is_bookmarked: isBookmarked
         };
       })
