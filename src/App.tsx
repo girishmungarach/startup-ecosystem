@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Container, Theme } from './settings/types';
-import ProfileCreationForm from './components/generated/ProfileCreationForm';
+import OpportunitiesDashboard from './components/generated/OpportunitiesDashboard';
 
 let theme: Theme = 'light';
 let container: Container = 'none';
@@ -18,7 +18,7 @@ function App() {
 
   const generatedComponent = useMemo(() => {
     // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <ProfileCreationForm />; // %EXPORT_STATEMENT%
+    return <OpportunitiesDashboard />; // %EXPORT_STATEMENT%
   }, []);
 
   if (container === 'centered') {
