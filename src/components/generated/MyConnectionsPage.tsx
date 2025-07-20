@@ -5,6 +5,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, User, Building, Calendar, Eye, UserX, Check, X, Clock, AlertCircle, Users, CheckCircle, XCircle, RotateCcw, Send, FileText } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { connectionsService, Connection, ConnectionStats } from '../../services/connections';
+import { useRealtimeConnections } from '../../hooks/useRealtimeConnections';
+
+// Simple toast notification component
+const Toast: React.FC<{ message: string; type: 'success' | 'error'; onClose: () => void }> = ({ message, type, onClose }) => (
+  <motion.div
+    initial={{ opacity: 0, y: -50 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -50 }}
+    className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
+      type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    }`}
+  >
+    <div className="flex items-center justify-between">
+      <span>{message}</span>
+      <button onClick={onClose} className="ml-4 text-white hover:text-gray-200">
+        <X size={16} />
+      </button>
+    </div>
+  </motion.div>
+);
+
 const MyConnectionsPage: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'active' | 'pending' | 'declined'>('active');
@@ -12,35 +33,34 @@ const MyConnectionsPage: React.FC = () => {
   const [showRevokeModal, setShowRevokeModal] = useState<string | null>(null);
   const [showDeclineModal, setShowDeclineModal] = useState<string | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<string[]>([]);
-  const [connections, setConnections] = useState<Connection[]>([]);
   const [stats, setStats] = useState<ConnectionStats>({ active: 0, pending: 0, declined: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // Load connections data
+  // Use real-time connections hook
+  const { connections, loading, error, refetch } = useRealtimeConnections(user?.id || '');
+
+  // Show toast notification
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
+
+  // Load stats data
   useEffect(() => {
-    const loadConnections = async () => {
+    const loadStats = async () => {
       if (!user) return;
       
       try {
-        setLoading(true);
-        const [connectionsData, statsData] = await Promise.all([
-          connectionsService.getUserConnections(user.id),
-          connectionsService.getConnectionStats(user.id)
-        ]);
-        
-        setConnections(connectionsData);
+        const statsData = await connectionsService.getConnectionStats(user.id);
         setStats(statsData);
       } catch (err) {
-        setError('Failed to load connections');
-        console.error('Error loading connections:', err);
-      } finally {
-        setLoading(false);
+        console.error('Error loading connection stats:', err);
       }
     };
 
-    loadConnections();
-  }, [user]);
+    loadStats();
+  }, [user, connections]); // Re-run when connections change
   // Filter connections based on active tab and search
   const filteredConnections = useMemo(() => {
     let filtered = connections.filter(connection => connection.status === activeTab);
@@ -57,76 +77,76 @@ const MyConnectionsPage: React.FC = () => {
   // Handle actions
   const handleRevokeAccess = async (connectionId: string) => {
     try {
+      setActionLoading(connectionId);
       await connectionsService.revokeAccess(connectionId);
-      // Refresh connections data
-      const updatedConnections = await connectionsService.getUserConnections(user!.id);
-      const updatedStats = await connectionsService.getConnectionStats(user!.id);
-      setConnections(updatedConnections);
-      setStats(updatedStats);
       setShowRevokeModal(null);
+      showToast('Access revoked successfully', 'success');
+      // Real-time updates will handle the refresh automatically
     } catch (err) {
       console.error('Error revoking access:', err);
-      // You could add a toast notification here
+      showToast('Failed to revoke access', 'error');
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleShareContact = async (connectionId: string) => {
     try {
+      setActionLoading(connectionId);
       await connectionsService.shareContact(connectionId);
-      // Refresh connections data
-      const updatedConnections = await connectionsService.getUserConnections(user!.id);
-      const updatedStats = await connectionsService.getConnectionStats(user!.id);
-      setConnections(updatedConnections);
-      setStats(updatedStats);
+      showToast('Contact shared successfully', 'success');
+      // Real-time updates will handle the refresh automatically
     } catch (err) {
       console.error('Error sharing contact:', err);
-      // You could add a toast notification here
+      showToast('Failed to share contact', 'error');
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleSendQuestionnaire = async (connectionId: string) => {
     try {
+      setActionLoading(connectionId);
       // You would need to get the questionnaire ID from somewhere
       const questionnaireId = 'default-questionnaire-id'; // This should come from props or state
       await connectionsService.sendQuestionnaire(connectionId, questionnaireId);
-      // Refresh connections data
-      const updatedConnections = await connectionsService.getUserConnections(user!.id);
-      const updatedStats = await connectionsService.getConnectionStats(user!.id);
-      setConnections(updatedConnections);
-      setStats(updatedStats);
+      showToast('Questionnaire sent successfully', 'success');
+      // Real-time updates will handle the refresh automatically
     } catch (err) {
       console.error('Error sending questionnaire:', err);
-      // You could add a toast notification here
+      showToast('Failed to send questionnaire', 'error');
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleDeclineRequest = async (connectionId: string) => {
     try {
+      setActionLoading(connectionId);
       const reason = 'Declined by user'; // You could make this configurable
       await connectionsService.declineConnection(connectionId, reason);
-      // Refresh connections data
-      const updatedConnections = await connectionsService.getUserConnections(user!.id);
-      const updatedStats = await connectionsService.getConnectionStats(user!.id);
-      setConnections(updatedConnections);
-      setStats(updatedStats);
       setShowDeclineModal(null);
+      showToast('Connection declined successfully', 'success');
+      // Real-time updates will handle the refresh automatically
     } catch (err) {
       console.error('Error declining request:', err);
-      // You could add a toast notification here
+      showToast('Failed to decline connection', 'error');
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleReconsider = async (connectionId: string) => {
     try {
+      setActionLoading(connectionId);
       await connectionsService.reconsiderConnection(connectionId);
-      // Refresh connections data
-      const updatedConnections = await connectionsService.getUserConnections(user!.id);
-      const updatedStats = await connectionsService.getConnectionStats(user!.id);
-      setConnections(updatedConnections);
-      setStats(updatedStats);
+      showToast('Connection reconsidered successfully', 'success');
+      // Real-time updates will handle the refresh automatically
     } catch (err) {
       console.error('Error reconsidering connection:', err);
-      // You could add a toast notification here
+      showToast('Failed to reconsider connection', 'error');
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -138,6 +158,7 @@ const MyConnectionsPage: React.FC = () => {
   const handleBulkAction = async (action: string) => {
     try {
       for (const connectionId of selectedConnections) {
+        setActionLoading(connectionId);
         switch (action) {
           case 'share':
             await connectionsService.shareContact(connectionId);
@@ -150,15 +171,14 @@ const MyConnectionsPage: React.FC = () => {
             break;
         }
       }
-      // Refresh connections data
-      const updatedConnections = await connectionsService.getUserConnections(user!.id);
-      const updatedStats = await connectionsService.getConnectionStats(user!.id);
-      setConnections(updatedConnections);
-      setStats(updatedStats);
       setSelectedConnections([]);
+      showToast('Bulk action completed successfully', 'success');
+      // Real-time updates will handle the refresh automatically
     } catch (err) {
       console.error('Error performing bulk action:', err);
-      // You could add a toast notification here
+      showToast('Failed to perform bulk action', 'error');
+    } finally {
+      setActionLoading(null);
     }
   };
   const toggleConnectionSelection = (connectionId: string) => {
@@ -373,30 +393,70 @@ const MyConnectionsPage: React.FC = () => {
                           <span>View Profile</span>
                         </button>
 
-                        {activeTab === 'active' && <button onClick={() => setShowRevokeModal(connection.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium">
+                        {activeTab === 'active' && <button 
+                          onClick={() => setShowRevokeModal(connection.id)} 
+                          disabled={actionLoading === connection.id}
+                          className="text-red-600 hover:text-red-800 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {actionLoading === connection.id ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                          ) : (
                             <UserX size={16} />
-                            <span>Revoke Access</span>
-                          </button>}
+                          )}
+                          <span>{actionLoading === connection.id ? 'Processing...' : 'Revoke Access'}</span>
+                        </button>}
 
                         {activeTab === 'pending' && <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                            <button onClick={() => handleShareContact(connection.id)} className="bg-green-600 text-white px-4 py-2 text-sm font-medium hover:bg-green-700 transition-colors flex items-center space-x-1">
-                              <Check size={16} />
-                              <span>Share Contact</span>
+                            <button 
+                              onClick={() => handleShareContact(connection.id)} 
+                              disabled={actionLoading === connection.id}
+                              className="bg-green-600 text-white px-4 py-2 text-sm font-medium hover:bg-green-700 transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {actionLoading === connection.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              ) : (
+                                <Check size={16} />
+                              )}
+                              <span>{actionLoading === connection.id ? 'Processing...' : 'Share Contact'}</span>
                             </button>
-                            {connection.request_type === 'direct' && <button onClick={() => handleSendQuestionnaire(connection.id)} className="bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-1">
+                            {connection.request_type === 'direct' && <button 
+                              onClick={() => handleSendQuestionnaire(connection.id)} 
+                              disabled={actionLoading === connection.id}
+                              className="bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {actionLoading === connection.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              ) : (
                                 <FileText size={16} />
-                                <span>Send Questionnaire</span>
-                              </button>}
-                            <button onClick={() => setShowDeclineModal(connection.id)} className="bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition-colors flex items-center space-x-1">
-                              <X size={16} />
-                              <span>Decline</span>
+                              )}
+                              <span>{actionLoading === connection.id ? 'Processing...' : 'Send Questionnaire'}</span>
+                            </button>}
+                            <button 
+                              onClick={() => setShowDeclineModal(connection.id)} 
+                              disabled={actionLoading === connection.id}
+                              className="bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {actionLoading === connection.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              ) : (
+                                <X size={16} />
+                              )}
+                              <span>{actionLoading === connection.id ? 'Processing...' : 'Decline'}</span>
                             </button>
                           </div>}
 
-                        {activeTab === 'declined' && <button onClick={() => handleReconsider(connection.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium">
+                                                {activeTab === 'declined' && <button 
+                          onClick={() => handleReconsider(connection.id)} 
+                          disabled={actionLoading === connection.id}
+                          className="text-green-600 hover:text-green-800 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {actionLoading === connection.id ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+                          ) : (
                             <RotateCcw size={16} />
-                            <span>Reconsider</span>
-                          </button>}
+                          )}
+                          <span>{actionLoading === connection.id ? 'Processing...' : 'Reconsider'}</span>
+                        </button>}
                       </div>
                     </div>
                   </motion.div>)}
@@ -500,6 +560,17 @@ const MyConnectionsPage: React.FC = () => {
               </div>
             </motion.div>
           </motion.div>}
+        </AnimatePresence>
+
+        {/* Toast Notification */}
+        <AnimatePresence>
+          {toast && (
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={() => setToast(null)}
+            />
+          )}
         </AnimatePresence>
       </>
     );

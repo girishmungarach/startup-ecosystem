@@ -24,6 +24,11 @@ const OpportunitiesDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // Set page title
+  useEffect(() => {
+    document.title = 'Latest Opportunities - Startup Ecosystem';
+  }, []);
+
   // Load opportunities from database
   useEffect(() => {
     const loadOpportunities = async () => {
@@ -147,6 +152,19 @@ const OpportunitiesDashboard: React.FC = () => {
   };
   return (
     <>
+      {/* Page Title */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-8"
+      >
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Latest Opportunities</h1>
+        <p className="text-xl text-gray-600 max-w-3xl">
+          Discover jobs, investments, partnerships, and more from India's most innovative startups.
+        </p>
+      </motion.div>
+
       {/* Search and Filters */}
       <motion.div initial={{
         opacity: 0,

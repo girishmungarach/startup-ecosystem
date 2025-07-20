@@ -101,6 +101,19 @@ export const connectionsService = {
 
   // Share contact with a connection
   async shareContact(connectionId: string): Promise<void> {
+    // First get the connection details
+    const { data: connection, error: fetchError } = await supabase
+      .from('connections')
+      .select('*')
+      .eq('id', connectionId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching connection:', fetchError);
+      throw fetchError;
+    }
+
+    // Update the connection status
     const { error } = await supabase
       .from('connections')
       .update({ 
@@ -113,10 +126,40 @@ export const connectionsService = {
       console.error('Error sharing contact:', error);
       throw error;
     }
+
+    // Create notification for the requester
+    try {
+      await supabase
+        .from('notifications')
+        .insert({
+          user_id: connection.requester_id,
+          type: 'contact_shared',
+          title: 'Contact Shared',
+          message: 'Your contact information has been shared with the opportunity poster.',
+          data: { connection_id: connectionId, opportunity_id: connection.opportunity_id },
+          is_read: false,
+          is_email_sent: false
+        });
+    } catch (notificationError) {
+      console.error('Error creating notification:', notificationError);
+      // Don't throw here as the main action succeeded
+    }
   },
 
   // Send questionnaire to a connection
   async sendQuestionnaire(connectionId: string, questionnaireId: string): Promise<void> {
+    // First get the connection details
+    const { data: connection, error: fetchError } = await supabase
+      .from('connections')
+      .select('*')
+      .eq('id', connectionId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching connection:', fetchError);
+      throw fetchError;
+    }
+
     const { error } = await supabase
       .from('connection_questionnaires')
       .insert({
@@ -128,6 +171,24 @@ export const connectionsService = {
     if (error) {
       console.error('Error sending questionnaire:', error);
       throw error;
+    }
+
+    // Create notification for the requester
+    try {
+      await supabase
+        .from('notifications')
+        .insert({
+          user_id: connection.requester_id,
+          type: 'questionnaire_sent',
+          title: 'Questionnaire Sent',
+          message: 'A questionnaire has been sent for your opportunity application.',
+          data: { connection_id: connectionId, questionnaire_id: questionnaireId },
+          is_read: false,
+          is_email_sent: false
+        });
+    } catch (notificationError) {
+      console.error('Error creating notification:', notificationError);
+      // Don't throw here as the main action succeeded
     }
   },
 

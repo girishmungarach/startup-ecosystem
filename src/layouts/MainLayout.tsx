@@ -52,7 +52,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <Link to="/" className="text-2xl md:text-3xl font-bold tracking-tight hover:opacity-80 transition-opacity" style={{ fontFamily: 'Abril Fatface, serif' }}>
+            <Link to="/" className="text-2xl md:text-3xl font-bold tracking-tight hover:opacity-80 transition-opacity" style={{ fontFamily: 'Abril Fatface, serif', fontWeight: 'normal' }}>
               <span className="block">Startup</span>
               <span className="block">Ecosystem</span>
             </Link>
