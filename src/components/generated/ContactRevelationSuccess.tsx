@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Mail, Phone, Linkedin, ArrowRight, TrendingUp, Users, MessageCircle, ChevronLeft } from 'lucide-react';
+import { CheckCircle, Mail, Phone, Linkedin, ArrowRight, TrendingUp, Users, MessageCircle, ChevronLeft, ArrowLeft } from 'lucide-react';
 interface ContactDetails {
   email: string;
   phone?: string;
@@ -175,8 +175,8 @@ const ContactRevelationSuccess: React.FC<ContactRevelationSuccessProps> = ({
         </div>
 
         <button onClick={handleBackAction} className="bg-white text-black border-2 border-black px-8 py-4 text-lg font-semibold hover:bg-black hover:text-white transition-all duration-200 flex items-center space-x-2 mx-auto">
-          <ChevronLeft size={20} />
-          <span>Back to Opportunities</span>
+          <ArrowLeft size={20} />
+          <span>Back</span>
         </button>
       </motion.div>
     </div>;
@@ -332,7 +332,7 @@ const ContactRevelationSuccess: React.FC<ContactRevelationSuccessProps> = ({
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>

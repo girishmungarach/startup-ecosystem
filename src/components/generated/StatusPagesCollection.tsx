@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, AlertCircle, Eye, Edit, ArrowRight, Users, MessageSquare } from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, Eye, Edit, ArrowRight, Users, MessageSquare, ArrowLeft } from 'lucide-react';
 interface StatusPagesCollectionProps {
   statusType: 'opportunity-grabbed' | 'questionnaire-submitted' | 'pending-reviews';
   opportunityTitle?: string;
@@ -12,6 +12,7 @@ interface StatusPagesCollectionProps {
   onBrowseMore?: () => void;
   onEditResponses?: () => void;
   onReviewAll?: () => void;
+  onBack?: () => void;
 }
 const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
   statusType = 'opportunity-grabbed',
@@ -21,7 +22,8 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
   canEditResponses = true,
   onBrowseMore,
   onEditResponses,
-  onReviewAll
+  onReviewAll,
+  onBack
 }) => {
   // Mock data for pending candidates (for poster view)
   const mockCandidates = [{
@@ -51,6 +53,13 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
       <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+            >
+              <ArrowLeft size={20} />
+              <span className="text-lg font-medium">Back</span>
+            </button>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               StartupEcosystem.in
             </h1>
@@ -171,7 +180,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 StartupEcosystem.in — Building the future, one connection at a time.
           </p>
         </div>
       </footer>
@@ -181,6 +190,13 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
       <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+            >
+              <ArrowLeft size={20} />
+              <span className="text-lg font-medium">Back</span>
+            </button>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               StartupEcosystem.in
             </h1>
@@ -307,7 +323,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>
@@ -317,6 +333,13 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
       <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+            >
+              <ArrowLeft size={20} />
+              <span className="text-lg font-medium">Back</span>
+            </button>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               StartupEcosystem.in
             </h1>
@@ -460,7 +483,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>

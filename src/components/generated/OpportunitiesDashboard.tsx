@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, MapPin, Clock, Bookmark, Filter } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../../services/supabase';
 interface Opportunity {
   id: string;
   title: string;
@@ -17,102 +19,73 @@ const OpportunitiesDashboard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const navigate = useNavigate();
 
-  // Mock data for demonstration
-  const mockOpportunities: Opportunity[] = [{
-    id: '1',
-    title: 'Senior Full Stack Developer',
-    type: 'Jobs',
-    company: 'TechFlow Innovations',
-    location: 'Bangalore, India',
-    description: 'Join our dynamic team building next-generation fintech solutions. We\'re looking for experienced developers passionate about creating scalable applications.',
-    postedAt: '2 days ago',
-    isBookmarked: false
-  }, {
-    id: '2',
-    title: 'Seed Funding Round - $2M',
-    type: 'Investment',
-    company: 'GreenTech Solutions',
-    location: 'Mumbai, India',
-    description: 'Seeking strategic investors for our sustainable energy platform. We\'ve achieved product-market fit and are ready to scale across India.',
-    postedAt: '1 day ago',
-    isBookmarked: true
-  }, {
-    id: '3',
-    title: 'Co-founder & CTO Needed',
-    type: 'Co-founder',
-    company: 'HealthAI Startup',
-    location: 'Delhi, India',
-    description: 'Looking for a technical co-founder to join our healthcare AI venture. Equity-based partnership with proven business model.',
-    postedAt: '3 days ago',
-    isBookmarked: false
-  }, {
-    id: '4',
-    title: 'Product Design Mentorship',
-    type: 'Mentorship',
-    company: 'Design Collective',
-    location: 'Remote',
-    description: 'Experienced product designer offering mentorship for early-stage startups. Focus on user experience and design systems.',
-    postedAt: '1 week ago',
-    isBookmarked: false
-  }, {
-    id: '5',
-    title: 'Startup Pitch Competition',
-    type: 'Events',
-    company: 'Innovation Hub',
-    location: 'Hyderabad, India',
-    description: 'Annual startup pitch competition with $500K in prizes. Applications open for early-stage startups across all sectors.',
-    postedAt: '5 days ago',
-    isBookmarked: true
-  }, {
-    id: '6',
-    title: 'Strategic Partnership - EdTech',
-    type: 'Partnerships',
-    company: 'EduNext Platform',
-    location: 'Pune, India',
-    description: 'Seeking content partners for our online learning platform. Revenue sharing model with established user base of 100K+ students.',
-    postedAt: '4 days ago',
-    isBookmarked: false
-  }, {
-    id: '7',
-    title: 'Frontend Developer - React/Next.js',
-    type: 'Jobs',
-    company: 'StartupLab',
-    location: 'Chennai, India',
-    description: 'Join our fast-growing SaaS startup. Work on cutting-edge web applications with modern tech stack and flexible work culture.',
-    postedAt: '6 days ago',
-    isBookmarked: false
-  }, {
-    id: '8',
-    title: 'Series A Funding - $10M',
-    type: 'Investment',
-    company: 'LogiTech Solutions',
-    location: 'Gurgaon, India',
-    description: 'Established logistics startup seeking Series A funding. Strong revenue growth and expanding market presence.',
-    postedAt: '1 week ago',
-    isBookmarked: false
-  }, {
-    id: '9',
-    title: 'Marketing Co-founder',
-    type: 'Co-founder',
-    company: 'FoodTech Venture',
-    location: 'Mumbai, India',
-    description: 'Food delivery startup seeking marketing co-founder. Proven traction in local market, ready for city-wide expansion.',
-    postedAt: '2 weeks ago',
-    isBookmarked: true
-  }, {
-    id: '10',
-    title: 'Tech Startup Networking Event',
-    type: 'Events',
-    company: 'Startup Community',
-    location: 'Bangalore, India',
-    description: 'Monthly networking event for tech entrepreneurs, investors, and professionals. Great opportunity to connect and collaborate.',
-    postedAt: '3 days ago',
-    isBookmarked: false
-  }];
+  // Load opportunities from database
+  useEffect(() => {
+    const loadOpportunities = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('opportunities')
+          .select(`
+            id,
+            title,
+            type,
+            company,
+            location,
+            description,
+            created_at
+          `)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error loading opportunities:', error);
+          return;
+        }
+
+        const formattedOpportunities: Opportunity[] = data?.map(opp => ({
+          id: opp.id,
+          title: opp.title,
+          type: opp.type,
+          company: opp.company,
+          location: opp.location,
+          description: opp.description,
+          postedAt: formatTimeAgo(opp.created_at),
+          isBookmarked: false // TODO: Implement bookmark functionality
+        })) || [];
+
+        setOpportunities(formattedOpportunities);
+      } catch (error) {
+        console.error('Failed to load opportunities:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOpportunities();
+  }, []);
+
+  // Helper function to format time ago
+  const formatTimeAgo = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    return `${diffInWeeks} week${diffInWeeks > 1 ? 's' : ''} ago`;
+  };
   const filterOptions = ['All', 'Jobs', 'Investment', 'Co-founder', 'Mentorship', 'Events', 'Partnerships'];
   const filteredOpportunities = useMemo(() => {
-    let filtered = mockOpportunities;
+    let filtered = opportunities;
     if (activeFilter !== 'All') {
       filtered = filtered.filter(opp => opp.type === activeFilter);
     }
@@ -121,7 +94,7 @@ const OpportunitiesDashboard: React.FC = () => {
       filtered = filtered.filter(opp => opp.title.toLowerCase().includes(query) || opp.company.toLowerCase().includes(query) || opp.description.toLowerCase().includes(query) || opp.location.toLowerCase().includes(query));
     }
     return filtered;
-  }, [activeFilter, searchQuery]);
+  }, [opportunities, activeFilter, searchQuery]);
   const getTypeColor = (type: string) => {
     const colors = {
       'Jobs': 'bg-blue-100 text-blue-800 border-blue-200',
@@ -138,8 +111,8 @@ const OpportunitiesDashboard: React.FC = () => {
     console.log('Bookmark toggled for opportunity:', id);
   };
   const handleGrabIt = (opportunity: Opportunity) => {
-    // Handle "Grab It" action
-    console.log('Grab It clicked for:', opportunity.title);
+    // Navigate to status page showing opportunity grabbed
+    navigate(`/status/opportunity-grabbed?title=${encodeURIComponent(opportunity.title)}&company=${encodeURIComponent(opportunity.company)}`);
   };
   return <div className="min-h-screen bg-white text-black font-sans">
       {/* Header Navigation */}
@@ -163,6 +136,9 @@ const OpportunitiesDashboard: React.FC = () => {
               My Opportunities
             </a>
             <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
+              My Connections
+            </a>
+            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
               Bookmarks
             </a>
           </nav>
@@ -181,11 +157,11 @@ const OpportunitiesDashboard: React.FC = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+        }} className="mb-6 md:mb-8">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
               Latest Opportunities
             </h2>
-            <p className="text-xl font-light text-gray-600 max-w-2xl">
+            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
               Discover jobs, investments, partnerships, and more from India's most innovative startups.
             </p>
           </motion.div>
@@ -200,16 +176,16 @@ const OpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.1
-        }} className="mb-8 space-y-6">
+        }} className="mb-6 md:mb-8 space-y-4 md:space-y-6">
             {/* Search Bar */}
             <div className="relative max-w-2xl">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input type="text" placeholder="Search opportunities..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" />
+              <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <input type="text" placeholder="Search opportunities..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 md:pl-12 pr-4 py-3 md:py-4 text-base md:text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" />
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2">
-              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
+            <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium transition-all duration-200 border-2 whitespace-nowrap ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
                   {filter}
                 </button>)}
             </div>
@@ -312,30 +288,25 @@ const OpportunitiesDashboard: React.FC = () => {
       </main>
 
       {/* Floating Action Button */}
-      <motion.button initial={{
-      scale: 0
-    }} animate={{
-      scale: 1
-    }} transition={{
-      duration: 0.3,
-      delay: 0.5
-    }} className="fixed bottom-8 right-8 bg-black text-white p-4 rounded-full shadow-lg hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 z-50" whileHover={{
-      scale: 1.1
-    }} whileTap={{
-      scale: 0.9
-    }}>
-        <Plus size={24} />
-        <span className="sr-only">Post New Opportunity</span>
-      </motion.button>
+      <Link to="/opportunities/post">
+        <motion.button initial={{
+        scale: 0
+      }} animate={{
+        scale: 1
+      }} transition={{
+        duration: 0.3,
+        delay: 0.5
+      }} className="fixed bottom-8 right-8 bg-black text-white p-4 rounded-full shadow-lg hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 z-50" whileHover={{
+        scale: 1.1
+      }} whileTap={{
+        scale: 0.9
+      }}>
+          <Plus size={24} />
+          <span className="sr-only">Post New Opportunity</span>
+        </motion.button>
+      </Link>
 
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
+
     </div>;
 };
 export default OpportunitiesDashboard;

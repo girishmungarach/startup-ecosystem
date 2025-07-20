@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Building, MapPin, Clock, AlertCircle, CheckCircle, Save, Send, User } from 'lucide-react';
+import { ChevronLeft, Building, MapPin, Clock, AlertCircle, CheckCircle, Save, Send, User, ArrowLeft } from 'lucide-react';
 interface Question {
   id: string;
   text: string;
@@ -168,8 +168,8 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
           {/* Back Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-              <ChevronLeft size={20} />
-              <span className="text-base font-medium">Back to Opportunities</span>
+              <ArrowLeft size={20} />
+              <span className="text-base font-medium">Back</span>
             </button>
           </div>
 
@@ -363,7 +363,7 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = ({
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>

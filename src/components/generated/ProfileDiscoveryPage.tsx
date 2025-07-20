@@ -1,144 +1,81 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Star, User, MapPin, Building, Briefcase, X, Loader2 } from 'lucide-react';
-interface Profile {
-  id: string;
-  name: string;
-  role: string;
-  company: string;
-  currentProject: string;
-  interests: string[];
-  buildingStatus: 'Actively building' | 'Exploring ideas' | 'Looking for opportunities';
-  profileImage?: string;
-  isBookmarked: boolean;
-  location?: string;
-}
+import { Search, Filter, Bookmark, User, MapPin, Building, Briefcase, X, Loader2, AlertCircle } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { profilesService, Profile, ProfileFilters } from '../../services/profiles';
+import { bookmarksService } from '../../services/bookmarks';
+
 const ProfileDiscoveryPage: React.FC = () => {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedBuildingStatus, setSelectedBuildingStatus] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [profiles, setProfiles] = useState<Profile[]>([{
-    id: '1',
-    name: 'Sarah Chen',
-    role: 'Founder',
-    company: 'HealthTech Innovations',
-    currentProject: 'Building an AI-powered diagnostic platform for early disease detection',
-    interests: ['HealthTech', 'AI/ML'],
-    buildingStatus: 'Actively building',
-    isBookmarked: false,
-    location: 'San Francisco'
-  }, {
-    id: '2',
-    name: 'Rajesh Kumar',
-    role: 'Developer',
-    company: 'Fintech Solutions',
-    currentProject: 'Developing a blockchain-based payment system for rural banking',
-    interests: ['Fintech', 'SaaS'],
-    buildingStatus: 'Actively building',
-    isBookmarked: true,
-    location: 'Bangalore'
-  }, {
-    id: '3',
-    name: 'Emily Rodriguez',
-    role: 'Investor',
-    company: 'Venture Capital Partners',
-    currentProject: 'Looking for promising EdTech startups to invest in Series A rounds',
-    interests: ['EdTech', 'SaaS'],
-    buildingStatus: 'Looking for opportunities',
-    isBookmarked: false,
-    location: 'New York'
-  }, {
-    id: '4',
-    name: 'David Park',
-    role: 'Designer',
-    company: 'Creative Studio',
-    currentProject: 'Designing user experiences for sustainable agriculture mobile apps',
-    interests: ['AgriTech', 'E-commerce'],
-    buildingStatus: 'Actively building',
-    isBookmarked: false,
-    location: 'Seoul'
-  }, {
-    id: '5',
-    name: 'Priya Sharma',
-    role: 'Marketing',
-    company: 'Growth Hackers Inc',
-    currentProject: 'Exploring growth strategies for B2B SaaS companies in emerging markets',
-    interests: ['SaaS', 'Fintech'],
-    buildingStatus: 'Exploring ideas',
-    isBookmarked: true,
-    location: 'Mumbai'
-  }, {
-    id: '6',
-    name: 'Alex Thompson',
-    role: 'Student',
-    company: 'Stanford University',
-    currentProject: 'Researching machine learning applications in gaming and entertainment',
-    interests: ['Gaming', 'AI/ML'],
-    buildingStatus: 'Exploring ideas',
-    isBookmarked: false,
-    location: 'Palo Alto'
-  }, {
-    id: '7',
-    name: 'Maria Santos',
-    role: 'Sales',
-    company: 'TechSales Pro',
-    currentProject: 'Building a sales automation platform for small businesses',
-    interests: ['SaaS', 'E-commerce'],
-    buildingStatus: 'Actively building',
-    isBookmarked: false,
-    location: 'São Paulo'
-  }, {
-    id: '8',
-    name: 'James Wilson',
-    role: 'Operations',
-    company: 'LogiTech Solutions',
-    currentProject: 'Optimizing supply chain operations using IoT and data analytics',
-    interests: ['AgriTech', 'AI/ML'],
-    buildingStatus: 'Actively building',
-    isBookmarked: false,
-    location: 'London'
-  }, {
-    id: '9',
-    name: 'Lisa Zhang',
-    role: 'Founder',
-    company: 'EduInnovate',
-    currentProject: 'Creating personalized learning experiences for K-12 students',
-    interests: ['EdTech', 'AI/ML'],
-    buildingStatus: 'Actively building',
-    isBookmarked: true,
-    location: 'Toronto'
-  }, {
-    id: '10',
-    name: 'Ahmed Hassan',
-    role: 'Developer',
-    company: 'Blockchain Builders',
-    currentProject: 'Developing decentralized finance solutions for the Middle East',
-    interests: ['Fintech', 'Other'],
-    buildingStatus: 'Actively building',
-    isBookmarked: false,
-    location: 'Dubai'
-  }]);
-  const roleOptions = ['All', 'Founders', 'Investors', 'Developers', 'Designers', 'Marketing', 'Sales', 'Operations', 'Students'];
-  const interestOptions = ['Fintech', 'HealthTech', 'EdTech', 'AI/ML', 'SaaS', 'E-commerce', 'Gaming', 'AgriTech', 'Other'];
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [availableRoles, setAvailableRoles] = useState<string[]>([]);
+  const [availableInterests, setAvailableInterests] = useState<string[]>([]);
   const buildingStatusOptions = ['All', 'Actively building', 'Exploring ideas', 'Looking for opportunities'];
+
+  // Load profiles and available options
+  useEffect(() => {
+    const loadData = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const [profilesData, rolesData, interestsData] = await Promise.all([
+          profilesService.getProfilesWithBookmarks(user.id),
+          profilesService.getAvailableRoles(),
+          profilesService.getAvailableInterests()
+        ]);
+        
+        setProfiles(profilesData);
+        setAvailableRoles(rolesData);
+        setAvailableInterests(interestsData);
+      } catch (err) {
+        setError('Failed to load profiles');
+        console.error('Error loading profiles:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [user]);
+
+  // Apply filters to profiles
   const filteredProfiles = useMemo(() => {
     return profiles.filter(profile => {
-      const matchesSearch = searchQuery === '' || profile.name.toLowerCase().includes(searchQuery.toLowerCase()) || profile.company.toLowerCase().includes(searchQuery.toLowerCase()) || profile.currentProject.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesRole = selectedRoles.length === 0 || selectedRoles.includes('All') || selectedRoles.some(role => {
-        if (role === 'Founders') return profile.role === 'Founder';
-        if (role === 'Investors') return profile.role === 'Investor';
-        if (role === 'Developers') return profile.role === 'Developer';
-        if (role === 'Designers') return profile.role === 'Designer';
-        if (role === 'Students') return profile.role === 'Student';
-        return profile.role === role;
-      });
-      const matchesInterests = selectedInterests.length === 0 || selectedInterests.some(interest => profile.interests.includes(interest));
-      const matchesBuildingStatus = selectedBuildingStatus.length === 0 || selectedBuildingStatus.includes('All') || selectedBuildingStatus.includes(profile.buildingStatus);
+      const matchesSearch = searchQuery === '' || 
+        profile.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        profile.company.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        profile.current_project.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesRole = selectedRoles.length === 0 || 
+        selectedRoles.includes('All') || 
+        selectedRoles.some(role => {
+          if (role === 'Founders') return profile.role === 'Founder';
+          if (role === 'Investors') return profile.role === 'Investor';
+          if (role === 'Developers') return profile.role === 'Developer';
+          if (role === 'Designers') return profile.role === 'Designer';
+          if (role === 'Students') return profile.role === 'Student';
+          return profile.role === role;
+        });
+      
+      const matchesInterests = selectedInterests.length === 0 || 
+        selectedInterests.some(interest => profile.interests.includes(interest));
+      
+      const matchesBuildingStatus = selectedBuildingStatus.length === 0 || 
+        selectedBuildingStatus.includes('All') || 
+        selectedBuildingStatus.includes(profile.building_status);
+      
       return matchesSearch && matchesRole && matchesInterests && matchesBuildingStatus;
     });
   }, [profiles, searchQuery, selectedRoles, selectedInterests, selectedBuildingStatus]);
@@ -152,11 +89,21 @@ const ProfileDiscoveryPage: React.FC = () => {
       });
     }
   };
-  const toggleBookmark = (profileId: string) => {
-    setProfiles(prev => prev.map(profile => profile.id === profileId ? {
-      ...profile,
-      isBookmarked: !profile.isBookmarked
-    } : profile));
+  const toggleBookmark = async (profileId: string) => {
+    if (!user) return;
+    
+    try {
+      const wasAdded = await bookmarksService.toggleBookmark(profileId, user.id, 'profile');
+      
+      // Update local state
+      setProfiles(prev => prev.map(profile => profile.id === profileId ? {
+        ...profile,
+        is_bookmarked: wasAdded
+      } : profile));
+    } catch (err) {
+      console.error('Error toggling bookmark:', err);
+      // You could add a toast notification here
+    }
   };
   const clearAllFilters = () => {
     setSelectedRoles([]);
@@ -183,21 +130,11 @@ const ProfileDiscoveryPage: React.FC = () => {
       </div>
       <div className="h-10 bg-gray-200 rounded"></div>
     </div>;
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header */}
-      <header className="w-full px-6 py-8 md:px-12 lg:px-24 border-b border-gray-200">
+  return (
+    <div className="min-h-screen bg-white text-black font-sans">
+      {/* Main Content */}
+      <main className="px-6 py-8 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-lg font-light hover:text-gray-600 transition-colors">Home</a>
-              <a href="#" className="text-lg font-light hover:text-gray-600 transition-colors">Opportunities</a>
-              <a href="#" className="text-lg font-semibold border-b-2 border-black">Browse Profiles</a>
-              <a href="#" className="text-lg font-light hover:text-gray-600 transition-colors">About</a>
-            </nav>
-          </div>
           
           <motion.div initial={{
           opacity: 0,
@@ -216,7 +153,6 @@ const ProfileDiscoveryPage: React.FC = () => {
             </p>
           </motion.div>
         </div>
-      </header>
 
       {/* Search and Filters */}
       <section className="px-6 py-8 md:px-12 lg:px-24 bg-gray-50 border-b border-gray-200">
@@ -258,9 +194,15 @@ const ProfileDiscoveryPage: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Role</h3>
                   <div className="flex flex-wrap gap-2">
-                    {roleOptions.map(role => <button key={role} onClick={() => toggleFilter(selectedRoles, setSelectedRoles, role)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedRoles.includes(role) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+                    {['All', ...availableRoles].map(role => (
+                      <button 
+                        key={role} 
+                        onClick={() => toggleFilter(selectedRoles, setSelectedRoles, role)} 
+                        className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedRoles.includes(role) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
+                      >
                         {role}
-                      </button>)}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -268,9 +210,15 @@ const ProfileDiscoveryPage: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Interests</h3>
                   <div className="flex flex-wrap gap-2">
-                    {interestOptions.map(interest => <button key={interest} onClick={() => toggleFilter(selectedInterests, setSelectedInterests, interest)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedInterests.includes(interest) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+                    {availableInterests.map(interest => (
+                      <button 
+                        key={interest} 
+                        onClick={() => toggleFilter(selectedInterests, setSelectedInterests, interest)} 
+                        className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedInterests.includes(interest) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
+                      >
                         {interest}
-                      </button>)}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -297,39 +245,63 @@ const ProfileDiscoveryPage: React.FC = () => {
             </h3>
           </div>
 
+          {/* Error State */}
+          {error && !isLoading && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+              <div className="mb-6">
+                <AlertCircle size={64} className="mx-auto text-red-300" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-red-600">Error Loading Profiles</h3>
+              <p className="text-gray-600 text-lg mb-6">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="bg-black text-white px-6 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200"
+              >
+                Try Again
+              </button>
+            </motion.div>
+          )}
+
           {/* Loading State */}
-          {isLoading && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({
-            length: 8
-          }).map((_, index) => <SkeletonCard key={index} />)}
-            </div>}
+          {isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))}
+            </div>
+          )}
 
           {/* Empty State */}
-          {!isLoading && filteredProfiles.length === 0 && <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} className="text-center py-16">
+          {!isLoading && !error && filteredProfiles.length === 0 && (
+            <motion.div initial={{
+              opacity: 0,
+              y: 20
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} className="text-center py-16">
               <User size={64} className="mx-auto mb-6 text-gray-400" />
               <h3 className="text-2xl font-semibold mb-4">No profiles found</h3>
               <p className="text-lg text-gray-600 mb-6">
                 Try adjusting your search criteria or clearing some filters.
               </p>
-              {hasActiveFilters && <button onClick={clearAllFilters} className="bg-black text-white px-6 py-3 font-semibold hover:bg-gray-900 transition-all duration-200">
+              {hasActiveFilters && (
+                <button onClick={clearAllFilters} className="bg-black text-white px-6 py-3 font-semibold hover:bg-gray-900 transition-all duration-200">
                   Clear All Filters
-                </button>}
-            </motion.div>}
+                </button>
+              )}
+            </motion.div>
+          )}
 
           {/* Profile Grid */}
-          {!isLoading && filteredProfiles.length > 0 && <motion.div initial={{
-          opacity: 0
-        }} animate={{
-          opacity: 1
-        }} transition={{
-          duration: 0.5
-        }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {!isLoading && !error && filteredProfiles.length > 0 && (
+            <motion.div initial={{
+              opacity: 0
+            }} animate={{
+              opacity: 1
+            }} transition={{
+              duration: 0.5
+            }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProfiles.map((profile, index) => <motion.div key={profile.id} initial={{
             opacity: 0,
             y: 20
@@ -354,8 +326,16 @@ const ProfileDiscoveryPage: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                    <button onClick={() => toggleBookmark(profile.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                      <Star size={20} className={profile.isBookmarked ? 'fill-black text-black' : 'text-gray-400'} />
+                    <button 
+                      onClick={() => toggleBookmark(profile.id)} 
+                      className={`p-2 rounded-full transition-all duration-200 ${
+                        profile.is_bookmarked 
+                          ? 'bg-black text-white hover:bg-gray-800' 
+                          : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                      }`}
+                      title={profile.is_bookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
+                    >
+                      <Bookmark size={20} className={profile.is_bookmarked ? 'fill-current' : ''} />
                     </button>
                   </div>
 
@@ -375,7 +355,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                   <div className="mb-4">
                     <p className="text-sm font-semibold text-gray-800 mb-2">Currently building:</p>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      {profile.currentProject}
+                      {profile.current_project}
                     </p>
                   </div>
 
@@ -390,8 +370,8 @@ const ProfileDiscoveryPage: React.FC = () => {
 
                   {/* Building Status */}
                   <div className="mb-6">
-                    <span className={`px-3 py-1 text-xs font-semibold border ${profile.buildingStatus === 'Actively building' ? 'bg-green-50 text-green-700 border-green-200' : profile.buildingStatus === 'Exploring ideas' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                      {profile.buildingStatus}
+                    <span className={`px-3 py-1 text-xs font-semibold border ${profile.building_status === 'Actively building' ? 'bg-green-50 text-green-700 border-green-200' : profile.building_status === 'Exploring ideas' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                      {profile.building_status}
                     </span>
                   </div>
 
@@ -400,28 +380,27 @@ const ProfileDiscoveryPage: React.FC = () => {
                     View Profile
                   </button>
                 </motion.div>)}
-            </motion.div>}
+            </motion.div>
+          )}
 
           {/* Load More Button */}
-          {!isLoading && filteredProfiles.length > 0 && filteredProfiles.length >= 8 && <div className="text-center mt-12">
-              <button onClick={() => {
-            setIsLoading(true);
-            setTimeout(() => setIsLoading(false), 1500);
-          }} className="bg-white text-black border-2 border-black px-8 py-4 text-lg font-semibold hover:bg-black hover:text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
+          {!isLoading && !error && filteredProfiles.length > 0 && filteredProfiles.length >= 8 && (
+            <div className="text-center mt-12">
+              <button 
+                onClick={() => {
+                  setIsLoading(true);
+                  setTimeout(() => setIsLoading(false), 1500);
+                }} 
+                className="bg-white text-black border-2 border-black px-8 py-4 text-lg font-semibold hover:bg-black hover:text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20"
+              >
                 Load More Profiles
               </button>
-            </div>}
+            </div>
+          )}
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
-    </div>;
+      </main>
+    </div>
+  );
 };
 export default ProfileDiscoveryPage;

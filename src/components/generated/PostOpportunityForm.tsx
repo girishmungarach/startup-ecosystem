@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Eye, Save, Send, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Eye, Save, Send, AlertCircle, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../services/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 interface FormData {
   title: string;
   type: string;
@@ -19,6 +22,8 @@ interface FormErrors {
   description?: string;
 }
 const PostOpportunityForm: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     title: '',
     type: '',
@@ -32,6 +37,7 @@ const PostOpportunityForm: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const opportunityTypes = ['Jobs', 'Investment', 'Co-founder', 'Mentorship', 'Events', 'Partnerships'];
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -58,20 +64,91 @@ const PostOpportunityForm: React.FC = () => {
         [field]: undefined
       }));
     }
+    // Clear submit error when user starts typing
+    if (submitError) {
+      setSubmitError(null);
+    }
   };
   const handleSubmit = async (isDraft: boolean = false) => {
     if (!isDraft && !validateForm()) {
       return;
     }
+    
+    if (!user) {
+      console.error('No authenticated user');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log('Opportunity posted:', {
-      ...formData,
-      isDraft
-    });
-    setIsSubmitting(false);
+    try {
+      // First, ensure user has a profile
+      let { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('company')
+        .eq('id', user.id)
+        .single();
+
+      // If profile doesn't exist, create a default one
+      if (profileError && profileError.code === 'PGRST116') {
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            role: 'Member',
+            company: 'Your Company',
+            email: user.email
+          })
+          .select('company')
+          .single();
+
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          throw new Error('Failed to create user profile');
+        }
+
+        profile = newProfile;
+      } else if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        throw new Error('Failed to fetch user profile');
+      }
+
+      const opportunityData = {
+        user_id: user.id,
+        title: formData.title,
+        type: formData.type as any,
+        company: profile?.company || 'Your Company',
+        location: formData.location,
+        description: formData.description,
+        requirements: formData.requirements || null,
+        compensation: formData.compensation || null,
+        contact_email: user.email,
+        is_active: !isDraft
+      };
+
+      const { data, error } = await supabase
+        .from('opportunities')
+        .insert(opportunityData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error posting opportunity:', error);
+        throw error;
+      }
+
+      console.log('Opportunity posted successfully:', data);
+      
+      // Navigate to my opportunities page
+      navigate('/my-opportunities');
+      
+    } catch (error) {
+      console.error('Failed to post opportunity:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Failed to post opportunity. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   const getTypeColor = (type: string) => {
     const colors = {
@@ -294,9 +371,12 @@ const PostOpportunityForm: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
-              <button className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-                <ChevronLeft size={20} />
-                <span className="text-lg font-medium">Back to Dashboard</span>
+              <button 
+                onClick={() => navigate(-1)}
+                className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+              >
+                <ArrowLeft size={20} />
+                <span className="text-lg font-medium">Back</span>
               </button>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
@@ -317,24 +397,24 @@ const PostOpportunityForm: React.FC = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+        }} className="mb-6 md:mb-8">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
               Post an Opportunity
             </h2>
-            <p className="text-xl font-light text-gray-600 max-w-2xl">
+            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
               Share your opportunity with India's most innovative startup community and connect with the right talent.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
             {/* Form Section */}
-            <div className="space-y-8">
-              <div className="flex items-center space-x-4 mb-6">
-                <button onClick={() => setIsPreviewMode(false)} className={`px-6 py-3 text-lg font-semibold transition-all duration-200 border-2 ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+            <div className="space-y-6 md:space-y-8">
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
+                <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
                   Edit
                 </button>
-                <button onClick={() => setIsPreviewMode(true)} className={`px-6 py-3 text-lg font-semibold transition-all duration-200 border-2 flex items-center space-x-2 ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
-                  <Eye size={20} />
+                <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+                  <Eye size={18} className="md:w-5 md:h-5" />
                   <span>Preview</span>
                 </button>
               </div>
@@ -348,6 +428,23 @@ const PostOpportunityForm: React.FC = () => {
             <div className="lg:sticky lg:top-8 lg:self-start">
               <div className="bg-gray-50 border-2 border-gray-200 p-8 space-y-6">
                 <h3 className="text-2xl font-bold mb-4">Ready to post?</h3>
+                
+                {/* Error Display */}
+                {submitError && (
+                  <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
+                    <div className="flex items-center space-x-2 text-red-800">
+                      <AlertCircle size={20} />
+                      <span className="font-medium">Error</span>
+                    </div>
+                    <p className="text-red-700 mt-2 text-sm">{submitError}</p>
+                    <button 
+                      onClick={() => setSubmitError(null)}
+                      className="text-red-600 hover:text-red-800 text-sm mt-2 underline"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
                 
                 <div className="space-y-4">
                   <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
@@ -380,7 +477,7 @@ const PostOpportunityForm: React.FC = () => {
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>

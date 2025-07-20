@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Eye, Edit, MoreHorizontal, Users, TrendingUp, CheckCircle, Clock, AlertCircle, X, BarChart3 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../../services/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 interface Opportunity {
   id: string;
   title: string;
@@ -22,108 +25,89 @@ interface StatsCard {
   change?: string;
 }
 const MyOpportunitiesDashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'active' | 'draft' | 'closed'>('active');
   const [showCloseModal, setShowCloseModal] = useState<string | null>(null);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Mock data for user's opportunities
-  const mockOpportunities: Opportunity[] = [{
-    id: '1',
-    title: 'Senior Full Stack Developer',
-    type: 'Jobs',
-    company: 'TechFlow Innovations',
-    postedAt: '2 days ago',
-    status: 'active',
-    grabCount: 3,
-    viewCount: 45,
-    description: 'Join our dynamic team building next-generation fintech solutions.',
-    hasNotifications: true
-  }, {
-    id: '2',
-    title: 'Seed Funding Round - $2M',
-    type: 'Investment',
-    company: 'GreenTech Solutions',
-    postedAt: '1 day ago',
-    status: 'active',
-    grabCount: 7,
-    viewCount: 89,
-    description: 'Seeking strategic investors for our sustainable energy platform.'
-  }, {
-    id: '3',
-    title: 'Co-founder & CTO Needed',
-    type: 'Co-founder',
-    company: 'HealthAI Startup',
-    postedAt: '3 days ago',
-    status: 'active',
-    grabCount: 0,
-    viewCount: 23,
-    description: 'Looking for a technical co-founder to join our healthcare AI venture.'
-  }, {
-    id: '4',
-    title: 'Product Design Mentorship',
-    type: 'Mentorship',
-    company: 'Design Collective',
-    postedAt: '1 week ago',
-    status: 'draft',
-    grabCount: 0,
-    viewCount: 0,
-    description: 'Experienced product designer offering mentorship for early-stage startups.'
-  }, {
-    id: '5',
-    title: 'Frontend Developer - React/Next.js',
-    type: 'Jobs',
-    company: 'StartupLab',
-    postedAt: '2 weeks ago',
-    status: 'closed',
-    grabCount: 12,
-    viewCount: 156,
-    description: 'Join our fast-growing SaaS startup.'
-  }, {
-    id: '6',
-    title: 'Series A Funding - $10M',
-    type: 'Investment',
-    company: 'LogiTech Solutions',
-    postedAt: '3 weeks ago',
-    status: 'closed',
-    grabCount: 8,
-    viewCount: 134,
-    description: 'Established logistics startup seeking Series A funding.'
-  }, {
-    id: '7',
-    title: 'Marketing Co-founder',
-    type: 'Co-founder',
-    company: 'FoodTech Venture',
-    postedAt: '1 month ago',
-    status: 'closed',
-    grabCount: 5,
-    viewCount: 78,
-    description: 'Food delivery startup seeking marketing co-founder.'
-  }, {
-    id: '8',
-    title: 'Tech Startup Networking Event',
-    type: 'Events',
-    company: 'Startup Community',
-    postedAt: '1 month ago',
-    status: 'closed',
-    grabCount: 25,
-    viewCount: 234,
-    description: 'Monthly networking event for tech entrepreneurs.'
-  }, {
-    id: '9',
-    title: 'Strategic Partnership - EdTech',
-    type: 'Partnerships',
-    company: 'EduNext Platform',
-    postedAt: '1 month ago',
-    status: 'closed',
-    grabCount: 4,
-    viewCount: 67,
-    description: 'Seeking content partners for our online learning platform.'
-  }];
+  // Load user's opportunities from database
+  useEffect(() => {
+    const loadMyOpportunities = async () => {
+      if (!user) return;
+      
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('opportunities')
+          .select(`
+            id,
+            title,
+            type,
+            company,
+            description,
+            created_at,
+            is_active,
+            grabs_count,
+            views_count
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error loading opportunities:', error);
+          return;
+        }
+
+        const formattedOpportunities: Opportunity[] = data?.map(opp => ({
+          id: opp.id,
+          title: opp.title,
+          type: opp.type,
+          company: opp.company,
+          postedAt: formatTimeAgo(opp.created_at),
+          status: opp.is_active ? 'active' : 'closed',
+          grabCount: opp.grabs_count || 0,
+          viewCount: opp.views_count || 0,
+          description: opp.description,
+          hasNotifications: (opp.grabs_count || 0) > 0
+        })) || [];
+
+        setOpportunities(formattedOpportunities);
+      } catch (error) {
+        console.error('Failed to load opportunities:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMyOpportunities();
+  }, [user]);
+
+  // Helper function to format time ago
+  const formatTimeAgo = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    if (diffInWeeks < 4) return `${diffInWeeks} week${diffInWeeks > 1 ? 's' : ''} ago`;
+    
+    const diffInMonths = Math.floor(diffInDays / 30);
+    return `${diffInMonths} month${diffInMonths > 1 ? 's' : ''} ago`;
+  };
 
   // Statistics calculation
   const stats: StatsCard[] = useMemo(() => {
-    const totalPosts = mockOpportunities.length;
-    const totalGrabs = mockOpportunities.reduce((sum, opp) => sum + opp.grabCount, 0);
-    const successfulConnections = mockOpportunities.filter(opp => opp.grabCount > 0).length;
+    const totalPosts = opportunities.length;
+    const totalGrabs = opportunities.reduce((sum, opp) => sum + opp.grabCount, 0);
+    const successfulConnections = opportunities.filter(opp => opp.grabCount > 0).length;
     return [{
       title: 'Total Posts',
       value: totalPosts.toString(),
@@ -140,21 +124,21 @@ const MyOpportunitiesDashboard: React.FC = () => {
       icon: <CheckCircle size={24} />,
       change: '78% success rate'
     }];
-  }, [mockOpportunities]);
+  }, [opportunities]);
 
   // Filter opportunities by tab
   const filteredOpportunities = useMemo(() => {
-    return mockOpportunities.filter(opp => opp.status === activeTab);
-  }, [activeTab, mockOpportunities]);
+    return opportunities.filter(opp => opp.status === activeTab);
+  }, [activeTab, opportunities]);
 
   // Tab counts
   const tabCounts = useMemo(() => {
     return {
-      active: mockOpportunities.filter(opp => opp.status === 'active').length,
-      draft: mockOpportunities.filter(opp => opp.status === 'draft').length,
-      closed: mockOpportunities.filter(opp => opp.status === 'closed').length
+      active: opportunities.filter(opp => opp.status === 'active').length,
+      draft: opportunities.filter(opp => opp.status === 'draft').length,
+      closed: opportunities.filter(opp => opp.status === 'closed').length
     };
-  }, [mockOpportunities]);
+  }, [opportunities]);
   const getTypeColor = (type: string) => {
     const colors = {
       'Jobs': 'bg-blue-100 text-blue-800 border-blue-200',
@@ -167,17 +151,55 @@ const MyOpportunitiesDashboard: React.FC = () => {
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
   const handleViewGrabs = (opportunityId: string) => {
-    console.log('View grabs for opportunity:', opportunityId);
+    navigate(`/opportunities/${opportunityId}/review`);
   };
   const handleEdit = (opportunityId: string) => {
+    // TODO: Implement edit functionality
     console.log('Edit opportunity:', opportunityId);
   };
-  const handleCloseOpportunity = (opportunityId: string) => {
-    console.log('Close opportunity:', opportunityId);
-    setShowCloseModal(null);
+  const handleCloseOpportunity = async (opportunityId: string) => {
+    try {
+      const { error } = await supabase
+        .from('opportunities')
+        .update({ is_active: false })
+        .eq('id', opportunityId);
+
+      if (error) {
+        console.error('Error closing opportunity:', error);
+        return;
+      }
+
+      // Refresh opportunities
+      const updatedOpportunities = opportunities.map(opp => 
+        opp.id === opportunityId ? { ...opp, status: 'closed' as const } : opp
+      );
+      setOpportunities(updatedOpportunities);
+      
+      setShowCloseModal(null);
+    } catch (error) {
+      console.error('Failed to close opportunity:', error);
+    }
   };
-  const handleReopenOpportunity = (opportunityId: string) => {
-    console.log('Reopen opportunity:', opportunityId);
+  const handleReopenOpportunity = async (opportunityId: string) => {
+    try {
+      const { error } = await supabase
+        .from('opportunities')
+        .update({ is_active: true })
+        .eq('id', opportunityId);
+
+      if (error) {
+        console.error('Error reopening opportunity:', error);
+        return;
+      }
+
+      // Refresh opportunities
+      const updatedOpportunities = opportunities.map(opp => 
+        opp.id === opportunityId ? { ...opp, status: 'active' as const } : opp
+      );
+      setOpportunities(updatedOpportunities);
+    } catch (error) {
+      console.error('Failed to reopen opportunity:', error);
+    }
   };
   return <div className="min-h-screen bg-white text-black font-sans">
       {/* Header Navigation */}
@@ -201,6 +223,9 @@ const MyOpportunitiesDashboard: React.FC = () => {
               My Opportunities
             </a>
             <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
+              My Connections
+            </a>
+            <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
               Bookmarks
             </a>
           </nav>
@@ -219,11 +244,11 @@ const MyOpportunitiesDashboard: React.FC = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+        }} className="mb-6 md:mb-8">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
               My Opportunities
             </h2>
-            <p className="text-xl font-light text-gray-600 max-w-2xl">
+            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
               Manage your posted opportunities, track engagement, and connect with interested candidates.
             </p>
           </motion.div>
@@ -238,7 +263,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.1
-        }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        }} className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
             {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-gray-600">
@@ -263,9 +288,9 @@ const MyOpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.2
-        }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
             {/* Tab Navigation */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
               {[{
               key: 'active',
               label: `Active (${tabCounts.active})`
@@ -275,14 +300,17 @@ const MyOpportunitiesDashboard: React.FC = () => {
             }, {
               key: 'closed',
               label: `Closed (${tabCounts.closed})`
-            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
+            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium transition-all duration-200 border-2 whitespace-nowrap ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
                   {tab.label}
                 </button>)}
             </div>
 
             {/* Post New Opportunity Button */}
-            <button className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2">
-              <Plus size={20} />
+            <button 
+              onClick={() => navigate('/opportunities/post')}
+              className="bg-black text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2 w-full sm:w-auto"
+            >
+              <Plus size={18} className="md:w-5 md:h-5" />
               <span>Post New Opportunity</span>
             </button>
           </motion.div>
@@ -409,7 +437,10 @@ const MyOpportunitiesDashboard: React.FC = () => {
                   {activeTab === 'draft' && "No draft opportunities found. Create a new opportunity and save it as draft."}
                   {activeTab === 'closed' && "No closed opportunities yet. Your completed opportunities will appear here."}
                 </p>
-                {activeTab !== 'closed' && <button className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2 mx-auto">
+                {activeTab !== 'closed' && <button 
+                  onClick={() => navigate('/opportunities/post')}
+                  className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2 mx-auto"
+                >
                     <Plus size={20} />
                     <span>Post New Opportunity</span>
                   </button>}
@@ -453,14 +484,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
           </motion.div>}
       </AnimatePresence>
 
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
-          </p>
-        </div>
-      </footer>
+
     </div>;
 };
 export default MyOpportunitiesDashboard;

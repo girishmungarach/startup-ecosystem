@@ -1,223 +1,165 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, User, Building, Calendar, Eye, UserX, Check, X, Clock, AlertCircle, Users, CheckCircle, XCircle, RotateCcw, Send, FileText } from 'lucide-react';
-interface Connection {
-  id: string;
-  name: string;
-  role: string;
-  company: string;
-  profileImage?: string;
-  opportunityTitle: string;
-  connectionDate: string;
-  status: 'active' | 'pending' | 'declined';
-  requestType?: 'direct' | 'questionnaire';
-  waitingDays?: number;
-  declineReason?: string;
-}
-interface ConnectionStats {
-  active: number;
-  pending: number;
-  declined: number;
-}
+import { useAuth } from '../../contexts/AuthContext';
+import { connectionsService, Connection, ConnectionStats } from '../../services/connections';
 const MyConnectionsPage: React.FC = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'active' | 'pending' | 'declined'>('active');
   const [searchQuery, setSearchQuery] = useState('');
   const [showRevokeModal, setShowRevokeModal] = useState<string | null>(null);
   const [showDeclineModal, setShowDeclineModal] = useState<string | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<string[]>([]);
+  const [connections, setConnections] = useState<Connection[]>([]);
+  const [stats, setStats] = useState<ConnectionStats>({ active: 0, pending: 0, declined: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data for connections
-  const mockConnections: Connection[] = [
-  // Active Connections
-  {
-    id: '1',
-    name: 'Alex Rodriguez',
-    role: 'Senior Developer',
-    company: 'TechFlow Solutions',
-    opportunityTitle: 'Senior Full Stack Developer',
-    connectionDate: '2024-01-15',
-    status: 'active'
-  }, {
-    id: '2',
-    name: 'Sarah Kim',
-    role: 'Product Manager',
-    company: 'InnovateCorp',
-    opportunityTitle: 'Product Manager - FinTech',
-    connectionDate: '2024-01-10',
-    status: 'active'
-  }, {
-    id: '3',
-    name: 'Michael Chen',
-    role: 'Investor',
-    company: 'Venture Capital Partners',
-    opportunityTitle: 'Seed Funding Round - $2M',
-    connectionDate: '2024-01-08',
-    status: 'active'
-  }, {
-    id: '4',
-    name: 'Emily Johnson',
-    role: 'UX Designer',
-    company: 'Design Studio Pro',
-    opportunityTitle: 'Senior UX Designer',
-    connectionDate: '2024-01-05',
-    status: 'active'
-  }, {
-    id: '5',
-    name: 'David Park',
-    role: 'Co-founder',
-    company: 'StartupLab',
-    opportunityTitle: 'Technical Co-founder Needed',
-    connectionDate: '2024-01-03',
-    status: 'active'
-  }, {
-    id: '6',
-    name: 'Lisa Wang',
-    role: 'Marketing Director',
-    company: 'GrowthHackers Inc',
-    opportunityTitle: 'Marketing Partnership',
-    connectionDate: '2023-12-28',
-    status: 'active'
-  }, {
-    id: '7',
-    name: 'James Wilson',
-    role: 'CTO',
-    company: 'AI Innovations',
-    opportunityTitle: 'AI/ML Engineer Position',
-    connectionDate: '2023-12-25',
-    status: 'active'
-  }, {
-    id: '8',
-    name: 'Anna Martinez',
-    role: 'Business Analyst',
-    company: 'DataCorp Solutions',
-    opportunityTitle: 'Business Intelligence Role',
-    connectionDate: '2023-12-20',
-    status: 'active'
-  },
-  // Pending Decisions
-  {
-    id: '9',
-    name: 'Robert Taylor',
-    role: 'Software Engineer',
-    company: 'CodeCraft Studios',
-    opportunityTitle: 'Frontend Developer Position',
-    connectionDate: '2024-01-18',
-    status: 'pending',
-    requestType: 'questionnaire',
-    waitingDays: 2
-  }, {
-    id: '10',
-    name: 'Jennifer Lee',
-    role: 'Data Scientist',
-    company: 'Analytics Pro',
-    opportunityTitle: 'Data Science Collaboration',
-    connectionDate: '2024-01-16',
-    status: 'pending',
-    requestType: 'direct',
-    waitingDays: 4
-  }, {
-    id: '11',
-    name: 'Kevin Brown',
-    role: 'DevOps Engineer',
-    company: 'CloudTech Systems',
-    opportunityTitle: 'DevOps Infrastructure Role',
-    connectionDate: '2024-01-14',
-    status: 'pending',
-    requestType: 'questionnaire',
-    waitingDays: 6
-  },
-  // Declined Requests
-  {
-    id: '12',
-    name: 'Michelle Davis',
-    role: 'Sales Manager',
-    company: 'SalesForce Pro',
-    opportunityTitle: 'Sales Partnership Opportunity',
-    connectionDate: '2024-01-12',
-    status: 'declined',
-    declineReason: 'Not aligned with current goals'
-  }, {
-    id: '13',
-    name: 'Thomas Anderson',
-    role: 'Consultant',
-    company: 'Strategy Consulting',
-    opportunityTitle: 'Business Strategy Consultation',
-    connectionDate: '2024-01-09',
-    status: 'declined',
-    declineReason: 'Timeline conflict'
-  }, {
-    id: '14',
-    name: 'Rachel Green',
-    role: 'HR Director',
-    company: 'TalentAcquisition Co',
-    opportunityTitle: 'HR Partnership',
-    connectionDate: '2024-01-07',
-    status: 'declined',
-    declineReason: 'Different target market'
-  }, {
-    id: '15',
-    name: 'Mark Thompson',
-    role: 'Operations Manager',
-    company: 'LogiFlow Systems',
-    opportunityTitle: 'Operations Optimization',
-    connectionDate: '2024-01-04',
-    status: 'declined',
-    declineReason: 'Resource constraints'
-  }, {
-    id: '16',
-    name: 'Sophie Miller',
-    role: 'Finance Director',
-    company: 'FinanceFirst',
-    opportunityTitle: 'Financial Advisory Role',
-    connectionDate: '2024-01-01',
-    status: 'declined',
-    declineReason: 'Expertise mismatch'
-  }];
-
-  // Calculate stats
-  const stats: ConnectionStats = useMemo(() => {
-    return {
-      active: mockConnections.filter(c => c.status === 'active').length,
-      pending: mockConnections.filter(c => c.status === 'pending').length,
-      declined: mockConnections.filter(c => c.status === 'declined').length
+  // Load connections data
+  useEffect(() => {
+    const loadConnections = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        const [connectionsData, statsData] = await Promise.all([
+          connectionsService.getUserConnections(user.id),
+          connectionsService.getConnectionStats(user.id)
+        ]);
+        
+        setConnections(connectionsData);
+        setStats(statsData);
+      } catch (err) {
+        setError('Failed to load connections');
+        console.error('Error loading connections:', err);
+      } finally {
+        setLoading(false);
+      }
     };
-  }, [mockConnections]);
 
+    loadConnections();
+  }, [user]);
   // Filter connections based on active tab and search
   const filteredConnections = useMemo(() => {
-    let filtered = mockConnections.filter(connection => connection.status === activeTab);
+    let filtered = connections.filter(connection => connection.status === activeTab);
     if (searchQuery) {
-      filtered = filtered.filter(connection => connection.name.toLowerCase().includes(searchQuery.toLowerCase()) || connection.company.toLowerCase().includes(searchQuery.toLowerCase()) || connection.opportunityTitle.toLowerCase().includes(searchQuery.toLowerCase()));
+      filtered = filtered.filter(connection => 
+        connection.connected_user?.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        connection.connected_user?.company.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        connection.opportunity?.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
     return filtered;
-  }, [activeTab, searchQuery, mockConnections]);
+  }, [activeTab, searchQuery, connections]);
 
   // Handle actions
-  const handleRevokeAccess = (connectionId: string) => {
-    console.log('Revoke access for:', connectionId);
-    setShowRevokeModal(null);
+  const handleRevokeAccess = async (connectionId: string) => {
+    try {
+      await connectionsService.revokeAccess(connectionId);
+      // Refresh connections data
+      const updatedConnections = await connectionsService.getUserConnections(user!.id);
+      const updatedStats = await connectionsService.getConnectionStats(user!.id);
+      setConnections(updatedConnections);
+      setStats(updatedStats);
+      setShowRevokeModal(null);
+    } catch (err) {
+      console.error('Error revoking access:', err);
+      // You could add a toast notification here
+    }
   };
-  const handleShareContact = (connectionId: string) => {
-    console.log('Share contact for:', connectionId);
+
+  const handleShareContact = async (connectionId: string) => {
+    try {
+      await connectionsService.shareContact(connectionId);
+      // Refresh connections data
+      const updatedConnections = await connectionsService.getUserConnections(user!.id);
+      const updatedStats = await connectionsService.getConnectionStats(user!.id);
+      setConnections(updatedConnections);
+      setStats(updatedStats);
+    } catch (err) {
+      console.error('Error sharing contact:', err);
+      // You could add a toast notification here
+    }
   };
-  const handleSendQuestionnaire = (connectionId: string) => {
-    console.log('Send questionnaire to:', connectionId);
+
+  const handleSendQuestionnaire = async (connectionId: string) => {
+    try {
+      // You would need to get the questionnaire ID from somewhere
+      const questionnaireId = 'default-questionnaire-id'; // This should come from props or state
+      await connectionsService.sendQuestionnaire(connectionId, questionnaireId);
+      // Refresh connections data
+      const updatedConnections = await connectionsService.getUserConnections(user!.id);
+      const updatedStats = await connectionsService.getConnectionStats(user!.id);
+      setConnections(updatedConnections);
+      setStats(updatedStats);
+    } catch (err) {
+      console.error('Error sending questionnaire:', err);
+      // You could add a toast notification here
+    }
   };
-  const handleDeclineRequest = (connectionId: string) => {
-    console.log('Decline request for:', connectionId);
-    setShowDeclineModal(null);
+
+  const handleDeclineRequest = async (connectionId: string) => {
+    try {
+      const reason = 'Declined by user'; // You could make this configurable
+      await connectionsService.declineConnection(connectionId, reason);
+      // Refresh connections data
+      const updatedConnections = await connectionsService.getUserConnections(user!.id);
+      const updatedStats = await connectionsService.getConnectionStats(user!.id);
+      setConnections(updatedConnections);
+      setStats(updatedStats);
+      setShowDeclineModal(null);
+    } catch (err) {
+      console.error('Error declining request:', err);
+      // You could add a toast notification here
+    }
   };
-  const handleReconsider = (connectionId: string) => {
-    console.log('Reconsider connection:', connectionId);
+
+  const handleReconsider = async (connectionId: string) => {
+    try {
+      await connectionsService.reconsiderConnection(connectionId);
+      // Refresh connections data
+      const updatedConnections = await connectionsService.getUserConnections(user!.id);
+      const updatedStats = await connectionsService.getConnectionStats(user!.id);
+      setConnections(updatedConnections);
+      setStats(updatedStats);
+    } catch (err) {
+      console.error('Error reconsidering connection:', err);
+      // You could add a toast notification here
+    }
   };
+
   const handleViewProfile = (connectionId: string) => {
-    console.log('View profile for:', connectionId);
+    // Navigate to profile detail view
+    window.location.href = `/profiles/${connectionId}`;
   };
-  const handleBulkAction = (action: string) => {
-    console.log('Bulk action:', action, 'for connections:', selectedConnections);
-    setSelectedConnections([]);
+
+  const handleBulkAction = async (action: string) => {
+    try {
+      for (const connectionId of selectedConnections) {
+        switch (action) {
+          case 'share':
+            await connectionsService.shareContact(connectionId);
+            break;
+          case 'revoke':
+            await connectionsService.revokeAccess(connectionId);
+            break;
+          case 'decline':
+            await connectionsService.declineConnection(connectionId, 'Bulk declined');
+            break;
+        }
+      }
+      // Refresh connections data
+      const updatedConnections = await connectionsService.getUserConnections(user!.id);
+      const updatedStats = await connectionsService.getConnectionStats(user!.id);
+      setConnections(updatedConnections);
+      setStats(updatedStats);
+      setSelectedConnections([]);
+    } catch (err) {
+      console.error('Error performing bulk action:', err);
+      // You could add a toast notification here
+    }
   };
   const toggleConnectionSelection = (connectionId: string) => {
     setSelectedConnections(prev => prev.includes(connectionId) ? prev.filter(id => id !== connectionId) : [...prev, connectionId]);
@@ -261,7 +203,7 @@ const MyConnectionsPage: React.FC = () => {
               My Connections
             </a>
             <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
-              My Profile
+              Bookmarks
             </a>
           </nav>
         </div>
@@ -367,15 +309,44 @@ const MyConnectionsPage: React.FC = () => {
             </div>
           </motion.div>
 
+          {/* Loading State */}
+          {loading && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+              <div className="mb-6">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Loading connections...</h3>
+              <p className="text-gray-600 text-lg">Please wait while we fetch your connections.</p>
+            </motion.div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+              <div className="mb-6">
+                <AlertCircle size={64} className="mx-auto text-red-300" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-red-600">Error Loading Connections</h3>
+              <p className="text-gray-600 text-lg mb-6">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="bg-black text-white px-6 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200"
+              >
+                Try Again
+              </button>
+            </motion.div>
+          )}
+
           {/* Connections List */}
-          <AnimatePresence mode="wait">
-            {filteredConnections.length > 0 ? <motion.div initial={{
-            opacity: 0
-          }} animate={{
-            opacity: 1
-          }} exit={{
-            opacity: 0
-          }} className="space-y-4">
+          {!loading && !error && (
+            <AnimatePresence mode="wait">
+              {filteredConnections.length > 0 ? <motion.div initial={{
+              opacity: 0
+            }} animate={{
+              opacity: 1
+            }} exit={{
+              opacity: 0
+            }} className="space-y-4">
                 {filteredConnections.map((connection, index) => <motion.div key={connection.id} initial={{
               opacity: 0,
               y: 20
@@ -400,47 +371,47 @@ const MyConnectionsPage: React.FC = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
                             <div>
-                              <h3 className="text-xl font-bold mb-1">{connection.name}</h3>
+                              <h3 className="text-xl font-bold mb-1">{connection.connected_user?.name || 'Unknown User'}</h3>
                               <div className="flex items-center space-x-2 text-gray-600 mb-2">
                                 <Building size={16} />
-                                <span>{connection.role} at {connection.company}</span>
+                                <span>{connection.connected_user?.role || 'Unknown Role'} at {connection.connected_user?.company || 'Unknown Company'}</span>
                               </div>
                             </div>
 
                             {/* Priority Badge for Pending */}
-                            {activeTab === 'pending' && connection.waitingDays && <div className={`px-3 py-1 text-sm font-medium border ${getPriorityLevel(connection.waitingDays) === 'high' ? 'bg-red-100 text-red-800 border-red-200' : getPriorityLevel(connection.waitingDays) === 'medium' ? 'bg-orange-100 text-orange-800 border-orange-200' : 'bg-gray-100 text-gray-800 border-gray-200'}`}>
-                                {connection.waitingDays} days waiting
+                            {activeTab === 'pending' && connection.waiting_days && <div className={`px-3 py-1 text-sm font-medium border ${getPriorityLevel(connection.waiting_days) === 'high' ? 'bg-red-100 text-red-800 border-red-200' : getPriorityLevel(connection.waiting_days) === 'medium' ? 'bg-orange-100 text-orange-800 border-orange-200' : 'bg-gray-100 text-gray-800 border-gray-200'}`}>
+                                {connection.waiting_days} days waiting
                               </div>}
                           </div>
 
                           {/* Opportunity Connection */}
                           <div className="mb-3">
                             <p className="text-sm text-gray-600 mb-1">Connected through:</p>
-                            <p className="font-medium">{connection.opportunityTitle}</p>
+                            <p className="font-medium">{connection.opportunity?.title || 'Unknown Opportunity'}</p>
                           </div>
 
                           {/* Connection Date */}
                           <div className="flex items-center space-x-2 text-sm text-gray-600 mb-4">
                             <Calendar size={14} />
                             <span>
-                              {activeTab === 'active' ? 'Contact shared' : activeTab === 'pending' ? 'Request received' : 'Declined'} on {formatDate(connection.connectionDate)}
+                              {activeTab === 'active' ? 'Contact shared' : activeTab === 'pending' ? 'Request received' : 'Declined'} on {formatDate(connection.created_at)}
                             </span>
                           </div>
 
                           {/* Request Type for Pending */}
-                          {activeTab === 'pending' && connection.requestType && <div className="mb-4">
+                          {activeTab === 'pending' && connection.request_type && <div className="mb-4">
                               <div className="flex items-center space-x-2">
-                                {connection.requestType === 'questionnaire' ? <FileText size={16} className="text-blue-600" /> : <Send size={16} className="text-green-600" />}
+                                {connection.request_type === 'questionnaire' ? <FileText size={16} className="text-blue-600" /> : <Send size={16} className="text-green-600" />}
                                 <span className="text-sm font-medium">
-                                  {connection.requestType === 'questionnaire' ? 'Questionnaire response awaiting review' : 'Direct contact request'}
+                                  {connection.request_type === 'questionnaire' ? 'Questionnaire response awaiting review' : 'Direct contact request'}
                                 </span>
                               </div>
                             </div>}
 
                           {/* Decline Reason for Declined */}
-                          {activeTab === 'declined' && connection.declineReason && <div className="mb-4">
+                          {activeTab === 'declined' && connection.decline_reason && <div className="mb-4">
                               <p className="text-sm text-gray-600 mb-1">Reason:</p>
-                              <p className="text-sm italic text-gray-700">{connection.declineReason}</p>
+                              <p className="text-sm italic text-gray-700">{connection.decline_reason}</p>
                             </div>}
                         </div>
                       </div>
@@ -462,7 +433,7 @@ const MyConnectionsPage: React.FC = () => {
                               <Check size={16} />
                               <span>Share Contact</span>
                             </button>
-                            {connection.requestType === 'direct' && <button onClick={() => handleSendQuestionnaire(connection.id)} className="bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-1">
+                            {connection.request_type === 'direct' && <button onClick={() => handleSendQuestionnaire(connection.id)} className="bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-1">
                                 <FileText size={16} />
                                 <span>Send Questionnaire</span>
                               </button>}
@@ -502,7 +473,8 @@ const MyConnectionsPage: React.FC = () => {
                   {activeTab === 'declined' && "No declined connection requests in your history."}
                 </p>
               </motion.div>}
-          </AnimatePresence>
+            </AnimatePresence>
+          )}
         </div>
       </main>
 
@@ -586,7 +558,7 @@ const MyConnectionsPage: React.FC = () => {
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>

@@ -1,511 +1,494 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Star, User, MapPin, Building, Briefcase, X, Trash2, Plus, Check, ChevronDown, Calendar, Tag, Users } from 'lucide-react';
-interface BookmarkedProfile {
-  id: string;
-  name: string;
-  role: string;
-  company: string;
-  currentProject: string;
-  location?: string;
-  customTags: string[];
-  addedDaysAgo: number;
-  profileImage?: string;
-  isSelected?: boolean;
-}
+import { 
+  Bookmark, 
+  Search, 
+  Filter, 
+  X, 
+  Trash2, 
+  Download, 
+  Calendar,
+  User,
+  Briefcase,
+  TrendingUp,
+  Calendar as CalendarIcon,
+  MapPin,
+  Building,
+  ExternalLink,
+  AlertCircle,
+  Loader2,
+  CheckSquare,
+  Square
+} from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { bookmarksService, Bookmark as BookmarkType, BookmarkFilters } from '../../services/bookmarks';
+
 const BookmarksManagementPage: React.FC = () => {
+  const { user } = useAuth();
+  const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState<'recent' | 'name' | 'role'>('recent');
+  const [selectedType, setSelectedType] = useState<'all' | 'profile' | 'job' | 'investment' | 'event'>('all');
   const [showFilters, setShowFilters] = useState(false);
-  const [showSortDropdown, setShowSortDropdown] = useState(false);
-  const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
-  const [showBulkActions, setShowBulkActions] = useState(false);
-  const [newTagInput, setNewTagInput] = useState('');
-  const [showNewTagInput, setShowNewTagInput] = useState(false);
-  const [editingTags, setEditingTags] = useState<string | null>(null);
+  const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
+  const [stats, setStats] = useState<{
+    total: number;
+    byType: Record<string, number>;
+    recent: number;
+  } | null>(null);
 
-  // Mock bookmarked profiles data
-  const [bookmarkedProfiles, setBookmarkedProfiles] = useState<BookmarkedProfile[]>([{
-    id: '1',
-    name: 'Sarah Chen',
-    role: 'Founder',
-    company: 'HealthTech Innovations',
-    currentProject: 'Building an AI-powered diagnostic platform for early disease detection',
-    location: 'San Francisco',
-    customTags: ['Potential co-founder', 'HealthTech'],
-    addedDaysAgo: 3
-  }, {
-    id: '2',
-    name: 'Rajesh Kumar',
-    role: 'Developer',
-    company: 'Fintech Solutions',
-    currentProject: 'Developing a blockchain-based payment system for rural banking',
-    location: 'Bangalore',
-    customTags: ['Future hire', 'Blockchain Expert'],
-    addedDaysAgo: 7
-  }, {
-    id: '3',
-    name: 'Emily Rodriguez',
-    role: 'Investor',
-    company: 'Venture Capital Partners',
-    currentProject: 'Looking for promising EdTech startups to invest in Series A rounds',
-    location: 'New York',
-    customTags: ['Interesting investor', 'Series A'],
-    addedDaysAgo: 12
-  }, {
-    id: '4',
-    name: 'David Park',
-    role: 'Designer',
-    company: 'Creative Studio',
-    currentProject: 'Designing user experiences for sustainable agriculture mobile apps',
-    location: 'Seoul',
-    customTags: ['Collaborator', 'UX Expert'],
-    addedDaysAgo: 5
-  }, {
-    id: '5',
-    name: 'Priya Sharma',
-    role: 'Marketing',
-    company: 'Growth Hackers Inc',
-    currentProject: 'Exploring growth strategies for B2B SaaS companies in emerging markets',
-    location: 'Mumbai',
-    customTags: ['Mentor', 'Growth Expert'],
-    addedDaysAgo: 15
-  }, {
-    id: '6',
-    name: 'Alex Thompson',
-    role: 'Student',
-    company: 'Stanford University',
-    currentProject: 'Researching machine learning applications in gaming and entertainment',
-    location: 'Palo Alto',
-    customTags: ['Future hire', 'AI Research'],
-    addedDaysAgo: 2
-  }, {
-    id: '7',
-    name: 'Maria Santos',
-    role: 'Sales',
-    company: 'TechSales Pro',
-    currentProject: 'Building a sales automation platform for small businesses',
-    location: 'São Paulo',
-    customTags: ['Collaborator', 'Sales Expert'],
-    addedDaysAgo: 9
-  }, {
-    id: '8',
-    name: 'James Wilson',
-    role: 'Operations',
-    company: 'LogiTech Solutions',
-    currentProject: 'Optimizing supply chain operations using IoT and data analytics',
-    location: 'London',
-    customTags: ['Potential co-founder', 'Operations'],
-    addedDaysAgo: 21
-  }]);
-
-  // Predefined tags
-  const predefinedTags = ['Potential co-founder', 'Interesting investor', 'Future hire', 'Mentor', 'Collaborator'];
-
-  // Get all unique tags from profiles and predefined tags
-  const allTags = useMemo(() => {
-    const profileTags = bookmarkedProfiles.flatMap(profile => profile.customTags);
-    return [...new Set([...predefinedTags, ...profileTags])];
-  }, [bookmarkedProfiles]);
-
-  // Filter and sort profiles
-  const filteredAndSortedProfiles = useMemo(() => {
-    let filtered = bookmarkedProfiles.filter(profile => {
-      const matchesSearch = searchQuery === '' || profile.name.toLowerCase().includes(searchQuery.toLowerCase()) || profile.role.toLowerCase().includes(searchQuery.toLowerCase()) || profile.company.toLowerCase().includes(searchQuery.toLowerCase()) || profile.currentProject.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => profile.customTags.includes(tag));
-      return matchesSearch && matchesTags;
-    });
-
-    // Sort profiles
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'role':
-          return a.role.localeCompare(b.role);
-        case 'recent':
-        default:
-          return a.addedDaysAgo - b.addedDaysAgo;
+  // Load bookmarks and stats
+  useEffect(() => {
+    const loadData = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const [bookmarksData, statsData] = await Promise.all([
+          bookmarksService.getBookmarks(user.id),
+          bookmarksService.getBookmarkStats(user.id)
+        ]);
+        
+        setBookmarks(bookmarksData);
+        setStats(statsData);
+      } catch (err) {
+        setError('Failed to load bookmarks');
+        console.error('Error loading bookmarks:', err);
+      } finally {
+        setIsLoading(false);
       }
+    };
+
+    loadData();
+  }, [user]);
+
+  // Filter bookmarks
+  const filteredBookmarks = useMemo(() => {
+    return bookmarks.filter(bookmark => {
+      const matchesType = selectedType === 'all' || bookmark.type === selectedType;
+      
+      const item = bookmark.profile || bookmark.job || bookmark.investment || bookmark.event;
+      const matchesSearch = searchQuery === '' || 
+        (item?.name || item?.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item?.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item?.company || '').toLowerCase().includes(searchQuery.toLowerCase());
+      
+      return matchesType && matchesSearch;
     });
-    return filtered;
-  }, [bookmarkedProfiles, searchQuery, selectedTags, sortBy]);
-  const toggleTagFilter = (tag: string) => {
-    setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+  }, [bookmarks, selectedType, searchQuery]);
+
+  // Toggle bookmark selection
+  const toggleBookmarkSelection = (bookmarkId: string) => {
+    setSelectedBookmarks(prev => 
+      prev.includes(bookmarkId) 
+        ? prev.filter(id => id !== bookmarkId)
+        : [...prev, bookmarkId]
+    );
   };
-  const toggleProfileSelection = (profileId: string) => {
-    setSelectedProfiles(prev => prev.includes(profileId) ? prev.filter(id => id !== profileId) : [...prev, profileId]);
+
+  // Select all bookmarks
+  const selectAllBookmarks = () => {
+    setSelectedBookmarks(filteredBookmarks.map(b => b.id));
   };
-  const selectAllProfiles = () => {
-    setSelectedProfiles(filteredAndSortedProfiles.map(p => p.id));
+
+  // Clear selection
+  const clearSelection = () => {
+    setSelectedBookmarks([]);
   };
-  const deselectAllProfiles = () => {
-    setSelectedProfiles([]);
-  };
-  const removeSelectedBookmarks = () => {
-    setBookmarkedProfiles(prev => prev.filter(profile => !selectedProfiles.includes(profile.id)));
-    setSelectedProfiles([]);
-    setShowBulkActions(false);
-  };
-  const removeBookmark = (profileId: string) => {
-    setBookmarkedProfiles(prev => prev.filter(profile => profile.id !== profileId));
-  };
-  const addTagToProfile = (profileId: string, tag: string) => {
-    setBookmarkedProfiles(prev => prev.map(profile => profile.id === profileId ? {
-      ...profile,
-      customTags: [...new Set([...profile.customTags, tag])]
-    } : profile));
-  };
-  const removeTagFromProfile = (profileId: string, tag: string) => {
-    setBookmarkedProfiles(prev => prev.map(profile => profile.id === profileId ? {
-      ...profile,
-      customTags: profile.customTags.filter(t => t !== tag)
-    } : profile));
-  };
-  const addNewTag = () => {
-    if (newTagInput.trim() && editingTags) {
-      addTagToProfile(editingTags, newTagInput.trim());
-      setNewTagInput('');
-      setShowNewTagInput(false);
+
+  // Remove selected bookmarks
+  const removeSelectedBookmarks = async () => {
+    if (!user || selectedBookmarks.length === 0) return;
+    
+    try {
+      await bookmarksService.bulkRemoveBookmarks(user.id, selectedBookmarks);
+      
+      // Update local state
+      setBookmarks(prev => prev.filter(b => !selectedBookmarks.includes(b.id)));
+      setSelectedBookmarks([]);
+      
+      // Reload stats
+      const newStats = await bookmarksService.getBookmarkStats(user.id);
+      setStats(newStats);
+    } catch (err) {
+      console.error('Error removing bookmarks:', err);
+      setError('Failed to remove bookmarks');
     }
   };
-  const clearAllFilters = () => {
-    setSearchQuery('');
-    setSelectedTags([]);
-    setSortBy('recent');
+
+  // Remove single bookmark
+  const removeBookmark = async (bookmarkId: string) => {
+    if (!user) return;
+    
+    try {
+      const bookmark = bookmarks.find(b => b.id === bookmarkId);
+      if (!bookmark) return;
+      
+      await bookmarksService.removeBookmark(user.id, bookmark.item_id, bookmark.type);
+      
+      // Update local state
+      setBookmarks(prev => prev.filter(b => b.id !== bookmarkId));
+      setSelectedBookmarks(prev => prev.filter(id => id !== bookmarkId));
+      
+      // Reload stats
+      const newStats = await bookmarksService.getBookmarkStats(user.id);
+      setStats(newStats);
+    } catch (err) {
+      console.error('Error removing bookmark:', err);
+      setError('Failed to remove bookmark');
+    }
   };
-  const hasActiveFilters = searchQuery !== '' || selectedTags.length > 0;
-  return <div className="min-h-screen bg-white text-black font-sans">
-      {/* Header */}
-      <header className="w-full px-6 py-8 md:px-12 lg:px-24 border-b border-gray-200">
+
+  // Get item display data
+  const getItemDisplayData = (bookmark: BookmarkType) => {
+    const item = bookmark.profile || bookmark.job || bookmark.investment || bookmark.event;
+    
+    switch (bookmark.type) {
+      case 'profile':
+        return {
+          title: item?.name || 'Unknown Profile',
+          subtitle: `${item?.role || 'Unknown Role'} at ${item?.company || 'Unknown Company'}`,
+          description: item?.current_project || 'No project information',
+          icon: <User size={20} className="text-blue-600" />,
+          type: 'Profile'
+        };
+      case 'job':
+        return {
+          title: item?.title || 'Unknown Job',
+          subtitle: `${item?.company || 'Unknown Company'} • ${item?.location || 'Remote'}`,
+          description: item?.description || 'No description available',
+          icon: <Briefcase size={20} className="text-green-600" />,
+          type: 'Job'
+        };
+      case 'investment':
+        return {
+          title: item?.title || 'Unknown Investment',
+          subtitle: `${item?.company || 'Unknown Company'} • ${item?.stage || 'Unknown Stage'}`,
+          description: item?.description || 'No description available',
+          icon: <TrendingUp size={20} className="text-purple-600" />,
+          type: 'Investment'
+        };
+      case 'event':
+        return {
+          title: item?.title || 'Unknown Event',
+          subtitle: `${item?.location || 'Online'} • ${item?.date ? new Date(item.date).toLocaleDateString() : 'TBD'}`,
+          description: item?.description || 'No description available',
+          icon: <CalendarIcon size={20} className="text-orange-600" />,
+          type: 'Event'
+        };
+      default:
+        return {
+          title: 'Unknown Item',
+          subtitle: 'Unknown details',
+          description: 'No information available',
+          icon: <Bookmark size={20} className="text-gray-600" />,
+          type: 'Unknown'
+        };
+    }
+  };
+
+  // Skeleton component
+  const SkeletonCard = () => (
+    <div className="bg-white border-2 border-gray-200 p-6 animate-pulse">
+      <div className="flex items-start space-x-4">
+        <div className="w-6 h-6 bg-gray-200 rounded"></div>
+        <div className="flex-1">
+          <div className="h-4 bg-gray-200 rounded mb-2"></div>
+          <div className="h-3 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-white text-black font-sans">
+      {/* Main Content */}
+      <main className="px-6 py-8 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              StartupEcosystem.in
-            </h1>
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-lg font-light hover:text-gray-600 transition-colors">Home</a>
-              <a href="#" className="text-lg font-light hover:text-gray-600 transition-colors">Opportunities</a>
-              <a href="#" className="text-lg font-light hover:text-gray-600 transition-colors">Browse Profiles</a>
-              <a href="#" className="text-lg font-semibold border-b-2 border-black">My Bookmarks</a>
-            </nav>
-          </div>
           
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
               My Bookmarks
-            </h2>
-            <p className="text-xl md:text-2xl font-light max-w-3xl">
-              Manage and organize your saved professional connections for easy access and networking.
+            </h1>
+            <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto">
+              Manage your saved profiles, jobs, investments, and events in one place.
             </p>
           </motion.div>
-        </div>
-      </header>
 
-      {/* Search, Filters, and Sort */}
-      <section className="px-6 py-8 md:px-12 lg:px-24 bg-gray-50 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          {/* Search Bar */}
-          <div className="relative mb-6">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input type="text" placeholder="Search bookmarks by name, role, or project..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" />
-          </div>
-
-          {/* Controls Row */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <div className="flex items-center space-x-4">
-              {/* Filter Toggle */}
-              <button onClick={() => setShowFilters(!showFilters)} className="flex items-center space-x-2 px-4 py-2 border-2 border-gray-300 hover:border-black transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10">
-                <Filter size={20} />
-                <span className="font-semibold">Filter by Tags</span>
-                {selectedTags.length > 0 && <span className="bg-black text-white px-2 py-1 text-xs rounded-full">
-                    {selectedTags.length}
-                  </span>}
-              </button>
-
-              {/* Sort Dropdown */}
-              <div className="relative">
-                <button onClick={() => setShowSortDropdown(!showSortDropdown)} className="flex items-center space-x-2 px-4 py-2 border-2 border-gray-300 hover:border-black transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10">
-                  <span className="font-semibold">
-                    Sort: {sortBy === 'recent' ? 'Recent' : sortBy === 'name' ? 'Name' : 'Role'}
-                  </span>
-                  <ChevronDown size={16} />
-                </button>
-                
-                <AnimatePresence>
-                  {showSortDropdown && <motion.div initial={{
-                  opacity: 0,
-                  y: -10
-                }} animate={{
-                  opacity: 1,
-                  y: 0
-                }} exit={{
-                  opacity: 0,
-                  y: -10
-                }} className="absolute top-full left-0 mt-2 bg-white border-2 border-gray-300 shadow-lg z-10 min-w-full">
-                      {[{
-                    value: 'recent',
-                    label: 'Recent'
-                  }, {
-                    value: 'name',
-                    label: 'Name'
-                  }, {
-                    value: 'role',
-                    label: 'Role'
-                  }].map(option => <button key={option.value} onClick={() => {
-                    setSortBy(option.value as 'recent' | 'name' | 'role');
-                    setShowSortDropdown(false);
-                  }} className="w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors">
-                          {option.label}
-                        </button>)}
-                    </motion.div>}
-                </AnimatePresence>
+          {/* Stats */}
+          {stats && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
+            >
+              <div className="bg-gray-50 p-6 border-2 border-gray-200 text-center">
+                <Bookmark size={32} className="mx-auto mb-2 text-gray-600" />
+                <div className="text-2xl font-bold">{stats.total}</div>
+                <div className="text-gray-600">Total Bookmarks</div>
               </div>
+              <div className="bg-gray-50 p-6 border-2 border-gray-200 text-center">
+                <User size={32} className="mx-auto mb-2 text-blue-600" />
+                <div className="text-2xl font-bold">{stats.byType.profile || 0}</div>
+                <div className="text-gray-600">Profiles</div>
+              </div>
+              <div className="bg-gray-50 p-6 border-2 border-gray-200 text-center">
+                <Briefcase size={32} className="mx-auto mb-2 text-green-600" />
+                <div className="text-2xl font-bold">{stats.byType.job || 0}</div>
+                <div className="text-gray-600">Jobs</div>
+              </div>
+              <div className="bg-gray-50 p-6 border-2 border-gray-200 text-center">
+                <Calendar size={32} className="mx-auto mb-2 text-orange-600" />
+                <div className="text-2xl font-bold">{stats.recent}</div>
+                <div className="text-gray-600">Recent (7 days)</div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Search and Filters */}
+          <section className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              {/* Search */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input 
+                  type="text" 
+                  placeholder="Search bookmarks..." 
+                  value={searchQuery} 
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200"
+                />
+              </div>
+
+              {/* Type Filter */}
+              <select 
+                value={selectedType}
+                onChange={e => setSelectedType(e.target.value as any)}
+                className="px-6 py-4 text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200"
+              >
+                <option value="all">All Types</option>
+                <option value="profile">Profiles</option>
+                <option value="job">Jobs</option>
+                <option value="investment">Investments</option>
+                <option value="event">Events</option>
+              </select>
+
+              {/* Filter Toggle */}
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center space-x-2 px-6 py-4 border-2 border-gray-300 hover:border-black transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10"
+              >
+                <Filter size={20} />
+                <span className="font-semibold">Filters</span>
+              </button>
             </div>
 
-            {/* Clear Filters */}
-            {hasActiveFilters && <button onClick={clearAllFilters} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors">
-                <X size={16} />
-                <span>Clear all filters</span>
-              </button>}
-          </div>
-
-          {/* Tag Filters */}
-          <AnimatePresence>
-            {showFilters && <motion.div initial={{
-            opacity: 0,
-            height: 0
-          }} animate={{
-            opacity: 1,
-            height: 'auto'
-          }} exit={{
-            opacity: 0,
-            height: 0
-          }} transition={{
-            duration: 0.3
-          }} className="mb-6">
-                <h3 className="text-lg font-semibold mb-3">Filter by Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {allTags.map(tag => <button key={tag} onClick={() => toggleTagFilter(tag)} className={`px-4 py-2 border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${selectedTags.includes(tag) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
-                      {tag}
-                    </button>)}
-                </div>
-              </motion.div>}
-          </AnimatePresence>
-
-          {/* Bulk Actions */}
-          {selectedProfiles.length > 0 && <motion.div initial={{
-          opacity: 0,
-          y: -10
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} className="bg-black text-white p-4 mb-6 flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <span className="font-semibold">
-                  {selectedProfiles.length} profile{selectedProfiles.length > 1 ? 's' : ''} selected
-                </span>
-                <button onClick={selectAllProfiles} className="text-sm underline hover:no-underline">
-                  Select All
-                </button>
-                <button onClick={deselectAllProfiles} className="text-sm underline hover:no-underline">
-                  Deselect All
-                </button>
-              </div>
-              <div className="flex items-center space-x-2">
-                <button onClick={removeSelectedBookmarks} className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 px-4 py-2 transition-colors">
-                  <Trash2 size={16} />
-                  <span>Remove Selected</span>
-                </button>
-              </div>
-            </motion.div>}
-        </div>
-      </section>
-
-      {/* Results */}
-      <section className="px-6 py-8 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-semibold">
-              {filteredAndSortedProfiles.length} Bookmark{filteredAndSortedProfiles.length !== 1 ? 's' : ''}
-            </h3>
-          </div>
-
-          {/* Empty State */}
-          {filteredAndSortedProfiles.length === 0 && bookmarkedProfiles.length === 0 && <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} className="text-center py-16">
-              <Users size={64} className="mx-auto mb-6 text-gray-400" />
-              <h3 className="text-2xl font-semibold mb-4">No bookmarks yet</h3>
-              <p className="text-lg text-gray-600 mb-6">
-                Browse profiles to start building your network!
-              </p>
-              <button className="bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200">
-                Browse Profiles
-              </button>
-            </motion.div>}
-
-          {/* No Results State */}
-          {filteredAndSortedProfiles.length === 0 && bookmarkedProfiles.length > 0 && <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} className="text-center py-16">
-              <Search size={64} className="mx-auto mb-6 text-gray-400" />
-              <h3 className="text-2xl font-semibold mb-4">No bookmarks found</h3>
-              <p className="text-lg text-gray-600 mb-6">
-                Try adjusting your search criteria or clearing some filters.
-              </p>
-              {hasActiveFilters && <button onClick={clearAllFilters} className="bg-black text-white px-6 py-3 font-semibold hover:bg-gray-900 transition-all duration-200">
-                  Clear All Filters
-                </button>}
-            </motion.div>}
-
-          {/* Bookmarks Grid */}
-          {filteredAndSortedProfiles.length > 0 && <motion.div initial={{
-          opacity: 0
-        }} animate={{
-          opacity: 1
-        }} transition={{
-          duration: 0.5
-        }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAndSortedProfiles.map((profile, index) => <motion.div key={profile.id} initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: index * 0.1
-          }} className={`bg-white border-2 p-6 hover:border-black transition-all duration-300 group relative ${selectedProfiles.includes(profile.id) ? 'border-black bg-gray-50' : 'border-gray-200'}`}>
-                  {/* Selection Checkbox */}
-                  <div className="absolute top-4 left-4">
-                    <button onClick={() => toggleProfileSelection(profile.id)} className={`w-5 h-5 border-2 flex items-center justify-center transition-all duration-200 ${selectedProfiles.includes(profile.id) ? 'bg-black border-black' : 'border-gray-300 hover:border-black'}`}>
-                      {selectedProfiles.includes(profile.id) && <Check size={12} className="text-white" />}
-                    </button>
-                  </div>
-
-                  {/* Remove Bookmark */}
-                  <div className="absolute top-4 right-4">
-                    <button onClick={() => removeBookmark(profile.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors opacity-0 group-hover:opacity-100">
-                      <Trash2 size={16} className="text-gray-400 hover:text-red-500" />
-                    </button>
-                  </div>
-
-                  {/* Profile Header */}
-                  <div className="flex items-center space-x-4 mb-4 mt-6">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200">
-                      <User size={24} className="text-gray-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold">{profile.name}</h4>
-                      <p className="text-gray-600 flex items-center space-x-1">
-                        <Briefcase size={14} />
-                        <span>{profile.role}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Company and Location */}
-                  <div className="mb-4 space-y-1">
-                    <p className="flex items-center space-x-1 text-gray-600">
-                      <Building size={14} />
-                      <span>{profile.company}</span>
-                    </p>
-                    {profile.location && <p className="flex items-center space-x-1 text-gray-600">
-                        <MapPin size={14} />
-                        <span>{profile.location}</span>
-                      </p>}
-                  </div>
-
-                  {/* Current Project */}
-                  <div className="mb-4">
-                    <p className="text-sm font-semibold text-gray-800 mb-2">Currently building:</p>
-                    <p className="text-sm text-gray-600 leading-relaxed">
-                      {profile.currentProject}
-                    </p>
-                  </div>
-
-                  {/* Custom Tags */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-semibold text-gray-800">Tags:</p>
-                      <button onClick={() => setEditingTags(editingTags === profile.id ? null : profile.id)} className="text-xs text-gray-500 hover:text-black transition-colors">
-                        <Tag size={14} />
-                      </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {profile.customTags.map(tag => <div key={tag} className="flex items-center space-x-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200">
-                          <span>{tag}</span>
-                          {editingTags === profile.id && <button onClick={() => removeTagFromProfile(profile.id, tag)} className="text-gray-400 hover:text-red-500">
-                              <X size={10} />
-                            </button>}
-                        </div>)}
-                      
-                      {/* Add New Tag */}
-                      {editingTags === profile.id && <div className="flex items-center space-x-2">
-                          {!showNewTagInput ? <button onClick={() => setShowNewTagInput(true)} className="flex items-center space-x-1 px-2 py-1 border-2 border-dashed border-gray-300 text-gray-500 hover:border-black hover:text-black transition-all duration-200">
-                              <Plus size={10} />
-                              <span className="text-xs">Add Tag</span>
-                            </button> : <div className="flex items-center space-x-1">
-                              <input type="text" value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyPress={e => e.key === 'Enter' && addNewTag()} className="w-20 px-2 py-1 text-xs border border-gray-300 focus:border-black focus:outline-none" placeholder="New tag" autoFocus />
-                              <button onClick={addNewTag} className="text-green-600 hover:text-green-700">
-                                <Check size={12} />
-                              </button>
-                              <button onClick={() => {
-                      setShowNewTagInput(false);
-                      setNewTagInput('');
-                    }} className="text-gray-400 hover:text-red-500">
-                                <X size={12} />
-                              </button>
-                            </div>}
-                        </div>}
-                    </div>
-                  </div>
-
-                  {/* Added Date */}
-                  <div className="mb-6">
-                    <p className="flex items-center space-x-1 text-xs text-gray-500">
-                      <Calendar size={12} />
-                      <span>Added {profile.addedDaysAgo} day{profile.addedDaysAgo !== 1 ? 's' : ''} ago</span>
-                    </p>
-                  </div>
-
-                  {/* View Profile Button */}
-                  <button className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
-                    View Profile
+            {/* Bulk Actions */}
+            {selectedBookmarks.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-between p-4 bg-gray-50 border-2 border-gray-200 mb-6"
+              >
+                <div className="flex items-center space-x-4">
+                  <span className="font-semibold">
+                    {selectedBookmarks.length} bookmark{selectedBookmarks.length !== 1 ? 's' : ''} selected
+                  </span>
+                  <button 
+                    onClick={clearSelection}
+                    className="text-gray-600 hover:text-black transition-colors"
+                  >
+                    Clear selection
                   </button>
-                </motion.div>)}
-            </motion.div>}
-        </div>
-      </section>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <button 
+                    onClick={removeSelectedBookmarks}
+                    className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 font-semibold hover:bg-red-700 transition-all duration-200"
+                  >
+                    <Trash2 size={16} />
+                    <span>Remove Selected</span>
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </section>
 
-      {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
-          </p>
+          {/* Results */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-semibold">
+                {filteredBookmarks.length} {filteredBookmarks.length === 1 ? 'Bookmark' : 'Bookmarks'} Found
+              </h3>
+              {filteredBookmarks.length > 0 && (
+                <div className="flex items-center space-x-3">
+                  <button 
+                    onClick={selectAllBookmarks}
+                    className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors"
+                  >
+                    <CheckSquare size={16} />
+                    <span>Select All</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Error State */}
+            {error && !isLoading && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+                <div className="mb-6">
+                  <AlertCircle size={64} className="mx-auto text-red-300" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-red-600">Error Loading Bookmarks</h3>
+                <p className="text-gray-600 text-lg mb-6">{error}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="bg-black text-white px-6 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200"
+                >
+                  Try Again
+                </button>
+              </motion.div>
+            )}
+
+            {/* Loading State */}
+            {isLoading && (
+              <div className="space-y-6">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!isLoading && !error && filteredBookmarks.length === 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-16"
+              >
+                <Bookmark size={64} className="mx-auto mb-6 text-gray-400" />
+                <h3 className="text-2xl font-semibold mb-4">No bookmarks found</h3>
+                <p className="text-lg text-gray-600 mb-6">
+                  {searchQuery || selectedType !== 'all' 
+                    ? 'Try adjusting your search criteria or filters.'
+                    : 'Start bookmarking profiles, jobs, investments, and events to see them here.'
+                  }
+                </p>
+                {(searchQuery || selectedType !== 'all') && (
+                  <button 
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedType('all');
+                    }}
+                    className="bg-black text-white px-6 py-3 font-semibold hover:bg-gray-900 transition-all duration-200"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </motion.div>
+            )}
+
+            {/* Bookmarks List */}
+            {!isLoading && !error && filteredBookmarks.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-6"
+              >
+                {filteredBookmarks.map((bookmark, index) => {
+                  const displayData = getItemDisplayData(bookmark);
+                  const isSelected = selectedBookmarks.includes(bookmark.id);
+                  
+                  return (
+                    <motion.div 
+                      key={bookmark.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className={`bg-white border-2 p-6 hover:border-black transition-all duration-300 group ${
+                        isSelected ? 'border-black bg-gray-50' : 'border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-start space-x-4">
+                        {/* Selection Checkbox */}
+                        <button 
+                          onClick={() => toggleBookmarkSelection(bookmark.id)}
+                          className="mt-1"
+                        >
+                          {isSelected ? (
+                            <CheckSquare size={20} className="text-black" />
+                          ) : (
+                            <Square size={20} className="text-gray-400 hover:text-gray-600" />
+                          )}
+                        </button>
+
+                        {/* Icon */}
+                        <div className="mt-1">
+                          {displayData.icon}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h4 className="text-xl font-bold">{displayData.title}</h4>
+                              <p className="text-gray-600 flex items-center space-x-1">
+                                <span>{displayData.subtitle}</span>
+                              </p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200">
+                                {displayData.type}
+                              </span>
+                              <button 
+                                onClick={() => removeBookmark(bookmark.id)}
+                                className="p-2 text-gray-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                                title="Remove bookmark"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </div>
+                          
+                          <p className="text-gray-700 leading-relaxed mb-3">
+                            {displayData.description}
+                          </p>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-500">
+                              Bookmarked on {new Date(bookmark.created_at).toLocaleDateString()}
+                            </span>
+                            <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium">
+                              <ExternalLink size={16} />
+                              <span>View Details</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </section>
         </div>
-      </footer>
-    </div>;
+      </main>
+    </div>
+  );
 };
+
 export default BookmarksManagementPage;

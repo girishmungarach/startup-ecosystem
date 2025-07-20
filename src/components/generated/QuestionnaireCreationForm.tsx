@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, User, Building, Plus, Trash2, Eye, Save, Send, ChevronDown, ChevronUp, GripVertical, AlertCircle, CheckCircle } from 'lucide-react';
+import { ChevronLeft, User, Building, Plus, Trash2, Eye, Save, Send, ChevronDown, ChevronUp, GripVertical, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { questionnairesService, Question as ServiceQuestion } from '../../services/questionnaires';
+import { profilesService } from '../../services/profiles';
 interface PersonProfile {
   name: string;
   role: string;
@@ -27,20 +31,71 @@ interface QuestionnaireCreationFormProps {
   onSaveTemplate?: (questions: Question[], templateName: string) => void;
 }
 const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
-  personName = "Sarah Chen",
-  opportunityTitle = "Senior Full Stack Developer",
-  personProfile = {
-    name: "Sarah Chen",
-    role: "Full Stack Developer",
-    company: "TechFlow Solutions",
-    currentProject: "Building a real-time collaboration platform for remote teams using React, Node.js, and WebSocket technology."
-  },
-  prefilledQuestions = ["What relevant experience do you have with React and Node.js?", "Are you available for full-time work?"],
+  personName,
+  opportunityTitle,
+  personProfile,
+  prefilledQuestions = [],
   onBack,
   onSend,
   onSaveTemplate
 }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { opportunityId, userId } = useParams<{ opportunityId: string; userId: string }>();
+  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [opportunity, setOpportunity] = useState<any>(null);
+  const [profile, setProfile] = useState<PersonProfile | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  // Load opportunity and profile data
+  useEffect(() => {
+    const loadData = async () => {
+      if (!user || !opportunityId || !userId) return;
+      
+      try {
+        setLoading(true);
+        
+        // Load opportunity details
+        if (opportunityId) {
+          // You would need to implement getOpportunity in opportunities service
+          // const opportunityData = await opportunitiesService.getOpportunity(opportunityId);
+          // setOpportunity(opportunityData);
+        }
+        
+        // Load profile details
+        const profileData = await profilesService.getProfileById(userId);
+        if (profileData) {
+          setProfile({
+            name: profileData.name,
+            role: profileData.role,
+            company: profileData.company,
+            currentProject: profileData.current_project || 'No project information available'
+          });
+        }
+        
+        // Set prefilled questions from opportunity
+        if (opportunity?.screening_questions) {
+          const questions = opportunity.screening_questions.split('\n').filter((q: string) => q.trim());
+          setPrefilledQuestionsState(questions.map((q: string, index: number) => ({
+            id: `prefilled-${index}`,
+            text: q,
+            type: 'text' as const,
+            required: true
+          })));
+        }
+        
+      } catch (err) {
+        setError('Failed to load data');
+        console.error('Error loading data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [user, opportunityId, userId]);
   const [prefilledQuestionsState, setPrefilledQuestionsState] = useState<Question[]>(prefilledQuestions.map((q, index) => ({
     id: `prefilled-${index}`,
     text: q,
@@ -124,32 +179,56 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
     return errors.length === 0;
   };
   const handleSend = async () => {
-    if (!validateForm()) return;
+    if (!validateForm() || !user || !opportunityId || !userId) return;
     setIsLoading(true);
     const allQuestions = [...prefilledQuestionsState, ...questions];
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    onSend?.(allQuestions);
-    setIsLoading(false);
+    try {
+      await questionnairesService.createQuestionnaire({
+        opportunity_id: opportunityId,
+        recipient_id: userId,
+        questions: allQuestions,
+        expires_in_days: 7
+      });
+
+      // Navigate back to opportunity review
+      navigate(`/opportunities/${opportunityId}/review`);
+    } catch (err) {
+      console.error('Error sending questionnaire:', err);
+      setError('Failed to send questionnaire. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
   const handleSaveTemplate = async () => {
     if (!validateForm() || !templateName.trim()) return;
     setIsLoading(true);
     const allQuestions = [...prefilledQuestionsState, ...questions];
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    onSaveTemplate?.(allQuestions, templateName);
-    setShowSaveTemplate(false);
-    setTemplateName('');
-    setIsLoading(false);
+    try {
+      await questionnairesService.createTemplate({
+        name: templateName,
+        description: `Template for ${opportunity?.title || 'opportunity'}`,
+        questions: allQuestions,
+        is_public: false
+      });
+
+      setShowSaveTemplate(false);
+      setTemplateName('');
+    } catch (err) {
+      console.error('Error saving template:', err);
+      setError('Failed to save template. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
   const handleBack = () => {
     if (onBack) {
       onBack();
+    } else if (opportunityId) {
+      navigate(`/opportunities/${opportunityId}/review`);
     } else {
-      console.log('Navigate back to OpportunityGrabsReview');
+      navigate('/my-opportunities');
     }
   };
   const totalQuestions = prefilledQuestionsState.length + questions.length;
@@ -166,18 +245,18 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
           {/* Back Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
-              <ChevronLeft size={20} />
-              <span className="text-base font-medium">Back to Opportunity Review</span>
+              <ArrowLeft size={20} />
+              <span className="text-base font-medium">Back</span>
             </button>
           </div>
 
           {/* Page Title */}
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              Send questionnaire to {personName}
+              Send questionnaire to {profile?.name || personName || 'Candidate'}
             </h2>
             <p className="text-lg font-light text-gray-600">
-              for {opportunityTitle}
+              for {opportunity?.title || opportunityTitle || 'Opportunity'}
             </p>
           </div>
         </div>
@@ -187,7 +266,38 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
       <main className="px-6 py-8 md:px-12 lg:px-24">
         <div className="max-w-4xl mx-auto">
           
-          {/* Person Profile Summary */}
+          {/* Loading State */}
+          {loading && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+              <div className="mb-6">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Loading questionnaire form...</h3>
+              <p className="text-gray-600 text-lg">Please wait while we load the data.</p>
+            </motion.div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+              <div className="mb-6">
+                <AlertCircle size={64} className="mx-auto text-red-300" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-red-600">Error Loading Data</h3>
+              <p className="text-gray-600 text-lg mb-6">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="bg-black text-white px-6 py-3 text-lg font-semibold hover:bg-gray-900 transition-all duration-200"
+              >
+                Try Again
+              </button>
+            </motion.div>
+          )}
+
+          {/* Content */}
+          {!loading && !error && (
+            <>
+              {/* Person Profile Summary */}
           <motion.div initial={{
           opacity: 0,
           y: 20
@@ -202,18 +312,18 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
                 <User size={32} className="text-gray-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold mb-2">{personProfile.name}</h3>
+                <h3 className="text-2xl font-bold mb-2">{profile?.name || personProfile?.name || 'Candidate'}</h3>
                 <div className="flex items-center space-x-2 text-gray-600 mb-3">
-                  <span className="font-medium">{personProfile.role}</span>
+                  <span className="font-medium">{profile?.role || personProfile?.role || 'Role'}</span>
                   <span>•</span>
                   <div className="flex items-center space-x-1">
                     <Building size={16} />
-                    <span>{personProfile.company}</span>
+                    <span>{profile?.company || personProfile?.company || 'Company'}</span>
                   </div>
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-gray-700 mb-1">Current Project:</h4>
-                  <p className="text-gray-700 leading-relaxed">{personProfile.currentProject}</p>
+                  <p className="text-gray-700 leading-relaxed">{profile?.currentProject || personProfile?.currentProject || 'No project information available'}</p>
                 </div>
               </div>
             </div>
@@ -560,6 +670,8 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
                 </motion.div>
               </motion.div>}
           </AnimatePresence>
+            </>
+          )}
         </div>
       </main>
 
@@ -567,7 +679,7 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>

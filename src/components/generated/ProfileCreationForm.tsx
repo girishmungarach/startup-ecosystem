@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 interface FormData {
   fullName: string;
   email: string;
@@ -29,6 +30,7 @@ const ProfileCreationForm: React.FC = () => {
     opportunities: []
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const navigate = useNavigate();
   const roleOptions = ['Founder', 'Investor', 'Developer', 'Designer', 'Marketing', 'Sales', 'Operations', 'Student', 'Other'];
   const interestOptions = ['Fintech', 'HealthTech', 'EdTech', 'E-commerce', 'AI/ML', 'SaaS', 'Gaming', 'AgriTech', 'Other'];
   const opportunityOptions = ['Jobs', 'Investment', 'Co-founders', 'Mentorship', 'Events', 'Partnerships'];
@@ -80,7 +82,8 @@ const ProfileCreationForm: React.FC = () => {
   };
   const handleSubmit = () => {
     console.log('Profile created:', formData);
-    // Handle form submission
+    // Navigate to opportunities page after profile creation
+    navigate('/opportunities');
   };
   const renderProgressIndicator = () => <div className="flex items-center justify-center mb-12">
       {[1, 2, 3].map(step => <React.Fragment key={step}>
@@ -199,9 +202,18 @@ const ProfileCreationForm: React.FC = () => {
       {/* Header */}
       <header className="w-full px-6 py-8 md:px-12 lg:px-24">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            StartupEcosystem.in
-          </h1>
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200"
+            >
+              <ArrowLeft size={20} />
+              <span className="text-lg font-medium">Back</span>
+            </button>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+              StartupEcosystem.in
+            </h1>
+          </div>
         </div>
       </header>
 
@@ -262,7 +274,7 @@ const ProfileCreationForm: React.FC = () => {
       <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-lg font-light">
-            © 2024 StartupEcosystem.in — Building the future, one connection at a time.
+            © 2025 Startup Ecosystem — Building the future, one connection at a time.
           </p>
         </div>
       </footer>
