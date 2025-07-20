@@ -36,7 +36,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     currentProject: 'Building a real-time collaboration platform for remote teams using React, Node.js, and WebSocket technology.',
     status: 'pending',
     grabbedAt: '2 hours ago',
-    mpid: "41b4f97b-4b0a-420b-9ca9-23f0c6b13423"
+    mpid: "9f39207d-cbe7-4179-8708-bca8e9a0d8d9"
   }, {
     id: '2',
     name: 'Marcus Rodriguez',
@@ -45,7 +45,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     currentProject: 'Developing an AI-powered analytics dashboard that processes millions of data points in real-time.',
     status: 'contact_shared',
     grabbedAt: '5 hours ago',
-    mpid: "b0a3b4ca-f55b-4500-b208-713491fca40f"
+    mpid: "ebd8b452-c6db-4df2-b7a5-c3be54bc6555"
   }, {
     id: '3',
     name: 'Emily Watson',
@@ -54,7 +54,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     currentProject: 'Creating an immersive e-commerce experience with 3D product visualization and AR integration.',
     status: 'questionnaire_sent',
     grabbedAt: '1 day ago',
-    mpid: "ae8fb2f7-b5d1-4ef3-9876-f585458c9dcd"
+    mpid: "3796fe90-4e33-4f32-9bef-2c54662584b4"
   }, {
     id: '4',
     name: 'David Kim',
@@ -63,7 +63,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     currentProject: 'Architecting a multi-cloud infrastructure solution that reduces deployment time by 80%.',
     status: 'declined',
     grabbedAt: '2 days ago',
-    mpid: "1911902c-8751-4615-bc1a-698eb58d8b91"
+    mpid: "a538ea89-52a8-4821-992c-e7700908c2ec"
   }, {
     id: '5',
     name: 'Lisa Thompson',
@@ -72,7 +72,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     currentProject: 'Building a comprehensive project management tool specifically designed for startup teams.',
     status: 'pending',
     grabbedAt: '3 days ago',
-    mpid: "3937aa4d-bd8e-43ae-a14f-9254ebcdac9c"
+    mpid: "7edfddc5-eb93-4581-a483-a46027d04c21"
   }];
 
   // Filter and count by status
