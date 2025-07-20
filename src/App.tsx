@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Container, Theme } from './settings/types';
-import QuestionnaireCreationForm from './components/generated/QuestionnaireCreationForm';
+import QuestionnaireResponseForm from './components/generated/QuestionnaireResponseForm';
 
 let theme: Theme = 'light';
 let container: Container = 'none';
@@ -18,7 +18,7 @@ function App() {
 
   const generatedComponent = useMemo(() => {
     // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <QuestionnaireCreationForm />; // %EXPORT_STATEMENT%
+    return <QuestionnaireResponseForm />; // %EXPORT_STATEMENT%
   }, []);
 
   if (container === 'centered') {

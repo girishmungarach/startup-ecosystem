@@ -29,7 +29,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Join our dynamic team building next-generation fintech solutions. We\'re looking for experienced developers passionate about creating scalable applications.',
     postedAt: '2 days ago',
     isBookmarked: false,
-    mpid: "ba0b3235-1727-489b-b5fb-a743dbd306b5"
+    mpid: "664d4b0c-a6cf-4e91-a0bf-87827612e475"
   }, {
     id: '2',
     title: 'Seed Funding Round - $2M',
@@ -39,7 +39,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Seeking strategic investors for our sustainable energy platform. We\'ve achieved product-market fit and are ready to scale across India.',
     postedAt: '1 day ago',
     isBookmarked: true,
-    mpid: "2a1ec285-7260-49b1-8b47-edad777e4fd8"
+    mpid: "1aa99304-19c0-4220-9ad0-0581d2ff09b3"
   }, {
     id: '3',
     title: 'Co-founder & CTO Needed',
@@ -49,7 +49,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Looking for a technical co-founder to join our healthcare AI venture. Equity-based partnership with proven business model.',
     postedAt: '3 days ago',
     isBookmarked: false,
-    mpid: "293223fa-5f6b-462a-993b-ee34eb8e6973"
+    mpid: "ea9d7dc8-2c5b-4e6f-827d-a24e01e669a0"
   }, {
     id: '4',
     title: 'Product Design Mentorship',
@@ -59,7 +59,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Experienced product designer offering mentorship for early-stage startups. Focus on user experience and design systems.',
     postedAt: '1 week ago',
     isBookmarked: false,
-    mpid: "c977096a-d868-482a-85fe-508fadc617b4"
+    mpid: "48679346-cc8f-4b2e-9e65-380293edb3f0"
   }, {
     id: '5',
     title: 'Startup Pitch Competition',
@@ -69,7 +69,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Annual startup pitch competition with $500K in prizes. Applications open for early-stage startups across all sectors.',
     postedAt: '5 days ago',
     isBookmarked: true,
-    mpid: "5ac6e5aa-ced8-42a3-8a11-fc77edc2d3f6"
+    mpid: "b9a77f98-fc71-437d-beb2-88ba10d7e474"
   }, {
     id: '6',
     title: 'Strategic Partnership - EdTech',
@@ -79,7 +79,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Seeking content partners for our online learning platform. Revenue sharing model with established user base of 100K+ students.',
     postedAt: '4 days ago',
     isBookmarked: false,
-    mpid: "2d90d7d9-31ae-4d6f-9857-4b8f4e541547"
+    mpid: "c1426ebb-1970-4a77-890f-f03d8237f3f2"
   }, {
     id: '7',
     title: 'Frontend Developer - React/Next.js',
@@ -89,7 +89,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Join our fast-growing SaaS startup. Work on cutting-edge web applications with modern tech stack and flexible work culture.',
     postedAt: '6 days ago',
     isBookmarked: false,
-    mpid: "0c7b21cf-5635-434b-b18e-eaa84f8fff79"
+    mpid: "af2f059d-d9a2-42d5-af21-fb6c6836c311"
   }, {
     id: '8',
     title: 'Series A Funding - $10M',
@@ -99,7 +99,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Established logistics startup seeking Series A funding. Strong revenue growth and expanding market presence.',
     postedAt: '1 week ago',
     isBookmarked: false,
-    mpid: "44ebf1a2-c1e1-4658-8b17-c46832df38f5"
+    mpid: "64f37f50-b59e-4070-8edf-2af32666c8a5"
   }, {
     id: '9',
     title: 'Marketing Co-founder',
@@ -109,7 +109,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Food delivery startup seeking marketing co-founder. Proven traction in local market, ready for city-wide expansion.',
     postedAt: '2 weeks ago',
     isBookmarked: true,
-    mpid: "6cdfe8ea-a681-4137-ba99-eccb0e32f0e2"
+    mpid: "a21f6f29-5264-47d2-8cc9-b70de2d2863c"
   }, {
     id: '10',
     title: 'Tech Startup Networking Event',
@@ -119,7 +119,7 @@ const OpportunitiesDashboard: React.FC = () => {
     description: 'Monthly networking event for tech entrepreneurs, investors, and professionals. Great opportunity to connect and collaborate.',
     postedAt: '3 days ago',
     isBookmarked: false,
-    mpid: "f6085353-d3f6-4dd0-a861-3b784ca32d64"
+    mpid: "d04d4cc4-4336-4ad5-bdc7-c3ccd16d5890"
   }];
   const filterOptions = ['All', 'Jobs', 'Investment', 'Co-founder', 'Mentorship', 'Events', 'Partnerships'];
   const filteredOpportunities = useMemo(() => {
