@@ -39,7 +39,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     viewCount: 45,
     description: 'Join our dynamic team building next-generation fintech solutions.',
     hasNotifications: true,
-    mpid: "8963d04a-29b6-4da2-87a2-9929a7b76b80"
+    mpid: "8c2b4917-1a5d-499b-80c1-d6de5ec5333c"
   }, {
     id: '2',
     title: 'Seed Funding Round - $2M',
@@ -50,7 +50,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 7,
     viewCount: 89,
     description: 'Seeking strategic investors for our sustainable energy platform.',
-    mpid: "f9d572e8-6e1e-4600-a451-f7bcc26046af"
+    mpid: "696e890e-72cd-44d1-802a-486e05353e70"
   }, {
     id: '3',
     title: 'Co-founder & CTO Needed',
@@ -61,7 +61,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 0,
     viewCount: 23,
     description: 'Looking for a technical co-founder to join our healthcare AI venture.',
-    mpid: "718146a4-ea87-4283-8bba-3c2b19446d5e"
+    mpid: "6d52821c-77e6-4286-891b-662c01464d85"
   }, {
     id: '4',
     title: 'Product Design Mentorship',
@@ -72,7 +72,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 0,
     viewCount: 0,
     description: 'Experienced product designer offering mentorship for early-stage startups.',
-    mpid: "52055497-7cc8-4ce8-b2da-6ff686f1baa3"
+    mpid: "70bca77f-5100-49c1-827d-d781eb3f57f7"
   }, {
     id: '5',
     title: 'Frontend Developer - React/Next.js',
@@ -83,7 +83,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 12,
     viewCount: 156,
     description: 'Join our fast-growing SaaS startup.',
-    mpid: "acae880a-4929-42be-89af-32b991b11351"
+    mpid: "17ae875c-f139-464c-97ac-6cbda9223343"
   }, {
     id: '6',
     title: 'Series A Funding - $10M',
@@ -94,7 +94,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 8,
     viewCount: 134,
     description: 'Established logistics startup seeking Series A funding.',
-    mpid: "91db394b-de4a-4fa2-8263-86879917a7af"
+    mpid: "d25c5e75-ebd5-4df8-b20b-840b2f94a91d"
   }, {
     id: '7',
     title: 'Marketing Co-founder',
@@ -105,7 +105,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 5,
     viewCount: 78,
     description: 'Food delivery startup seeking marketing co-founder.',
-    mpid: "7433d72a-d712-41fe-9ecf-93dc2fb61684"
+    mpid: "e52ee100-218d-41ae-a6da-aa450c5b2167"
   }, {
     id: '8',
     title: 'Tech Startup Networking Event',
@@ -116,7 +116,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 25,
     viewCount: 234,
     description: 'Monthly networking event for tech entrepreneurs.',
-    mpid: "f61f8c8d-a181-4508-a770-d91bf0b563ff"
+    mpid: "6e8bae0b-5591-4449-842d-bfae950802ec"
   }, {
     id: '9',
     title: 'Strategic Partnership - EdTech',
@@ -127,7 +127,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     grabCount: 4,
     viewCount: 67,
     description: 'Seeking content partners for our online learning platform.',
-    mpid: "8c9e6f49-8c0e-4a31-9b06-9e2a2c90ba8e"
+    mpid: "9575a9d1-984d-4674-8955-1e0d496cf732"
   }];
 
   // Statistics calculation
@@ -140,19 +140,19 @@ const MyOpportunitiesDashboard: React.FC = () => {
       value: totalPosts.toString(),
       icon: <BarChart3 size={24} data-magicpath-id="0" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
       change: '+2 this month',
-      mpid: "fdb896c7-d717-4d45-ac15-64a1ddae05fd"
+      mpid: "7af41069-45fb-4614-acfe-b21eb44ee25a"
     }, {
       title: 'Total Grabs',
       value: totalGrabs.toString(),
       icon: <Users size={24} data-magicpath-id="1" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
       change: '+12 this week',
-      mpid: "475aec3d-81c5-4eb8-a2eb-390cdc8149cf"
+      mpid: "1b853585-01d7-4e10-84ef-b9274a727956"
     }, {
       title: 'Successful Connections',
       value: successfulConnections.toString(),
       icon: <CheckCircle size={24} data-magicpath-id="2" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
       change: '78% success rate',
-      mpid: "4be77b19-d371-4f7a-a162-f2e2b200f317"
+      mpid: "3b0dc93c-0e75-4ba1-be09-f14f64777b1e"
     }];
   }, [mockOpportunities]);
 
@@ -283,15 +283,15 @@ const MyOpportunitiesDashboard: React.FC = () => {
               {[{
               key: 'active',
               label: `Active (${tabCounts.active})`,
-              mpid: "b0d6cd68-a8ce-49cb-826c-2e37254f9a41"
+              mpid: "939ecc8e-2faa-4288-a074-badfa18653dd"
             }, {
               key: 'draft',
               label: `Draft (${tabCounts.draft})`,
-              mpid: "278da930-180b-4d48-8e9d-6ad0c388c154"
+              mpid: "345a3e9e-dac5-4703-8666-57b0e2ec8535"
             }, {
               key: 'closed',
               label: `Closed (${tabCounts.closed})`,
-              mpid: "8b87b047-c439-4a63-9847-b15469d3be29"
+              mpid: "d3f95ce2-bdc9-45bb-97af-474be37bfbc6"
             }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-uuid={(tab as any)["mpid"] ?? "unsafe"} data-magicpath-field="label:unknown" data-magicpath-id="24" data-magicpath-path="MyOpportunitiesDashboard.tsx">
                   {tab.label}
                 </button>)}
