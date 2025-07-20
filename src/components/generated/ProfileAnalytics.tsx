@@ -134,30 +134,35 @@ const ProfileAnalytics: React.FC = () => {
             id,
             created_at,
             requester_id,
-            responder_id,
-            profiles!connections_requester_id_fkey(id, full_name, role),
-            profiles!connections_responder_id_fkey(id, full_name, role)
+            responder_id
           `)
           .or(`requester_id.eq.${user.id},responder_id.eq.${user.id}`)
           .order('created_at', { ascending: false })
           .limit(5);
 
-        const recentActivity: ActivityItem[] = recentConnections?.map(conn => ({
-          id: conn.id,
-          type: 'connection',
-          description: `New connection with ${conn.requester_id === user.id ? 
-            conn.profiles?.full_name : conn.profiles?.full_name}`,
-          timestamp: conn.created_at,
-          user: {
-            id: conn.requester_id === user.id ? conn.responder_id : conn.requester_id,
-            name: conn.requester_id === user.id ? 
-              conn.profiles?.full_name || 'Unknown' : 
-              conn.profiles?.full_name || 'Unknown',
-            role: conn.requester_id === user.id ? 
-              conn.profiles?.role || 'Unknown' : 
-              conn.profiles?.role || 'Unknown'
-          }
-        })) || [];
+        // Load profile names for the connections
+        const recentActivity: ActivityItem[] = [];
+        for (const conn of recentConnections || []) {
+          const otherUserId = conn.requester_id === user.id ? conn.responder_id : conn.requester_id;
+          
+          const { data: otherUser } = await supabase
+            .from('profiles')
+            .select('id, full_name, role')
+            .eq('id', otherUserId)
+            .single();
+
+          recentActivity.push({
+            id: conn.id,
+            type: 'connection',
+            description: `New connection with ${otherUser?.full_name || 'Unknown'}`,
+            timestamp: conn.created_at,
+            user: {
+              id: otherUserId,
+              name: otherUser?.full_name || 'Unknown',
+              role: otherUser?.role || 'Unknown'
+            }
+          });
+        }
 
         // Generate mock data for interests and engagement
         const topInterests: InterestMetric[] = [

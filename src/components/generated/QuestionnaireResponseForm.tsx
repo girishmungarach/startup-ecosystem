@@ -33,6 +33,7 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () =
   const navigate = useNavigate();
   const { user } = useAuth();
   
+  const [opportunityId, setOpportunityId] = useState<string | null>(null);
   const [opportunityTitle, setOpportunityTitle] = useState("Loading...");
   const [posterName, setPosterName] = useState("Loading...");
   const [opportunityDetails, setOpportunityDetails] = useState({
@@ -92,6 +93,7 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () =
         }
 
         // Set opportunity details
+        setOpportunityId(questionnaire.opportunities?.id || null);
         setOpportunityTitle(questionnaire.opportunities?.title || 'Unknown Opportunity');
         setPosterName(questionnaire.opportunities?.profiles?.full_name || 'Unknown Poster');
         setOpportunityDetails({
