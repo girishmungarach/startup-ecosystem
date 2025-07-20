@@ -166,7 +166,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
         }} className="space-y-4">
           <motion.button 
             onClick={onBrowseMore} 
-            className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2"
+            className="w-full bg-black text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2 min-h-[56px]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -175,7 +175,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           </motion.button>
           
           <motion.button 
-            className="w-full bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center justify-center space-x-2"
+            className="w-full bg-white text-black border-2 border-gray-300 px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center justify-center space-x-2 min-h-[56px]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -423,10 +423,10 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
         }} transition={{
           duration: 0.6,
           delay: 0.3
-        }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        }} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
           <motion.button 
             onClick={onReviewAll} 
-            className="w-full sm:w-auto bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2"
+            className="w-full sm:w-auto bg-black text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2 min-h-[56px]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -435,7 +435,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           </motion.button>
           
           <motion.button 
-            className="w-full sm:w-auto bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center space-x-2"
+            className="w-full sm:w-auto bg-white text-black border-2 border-gray-300 px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center justify-center space-x-2 min-h-[56px]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >

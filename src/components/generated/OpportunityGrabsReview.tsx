@@ -356,12 +356,12 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
                   <Users size={20} />
                   <span className="font-medium">{stats.pending} pending candidates</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <button onClick={() => setShowBatchModal('contact')} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 flex items-center space-x-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <button onClick={() => setShowBatchModal('contact')} className="w-full sm:w-auto bg-green-600 text-white px-4 py-3 sm:py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 flex items-center justify-center space-x-2 min-h-[40px]">
                     <Share2 size={16} />
                     <span>Share contact with all</span>
                   </button>
-                  <button onClick={() => setShowBatchModal('questionnaire')} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2">
+                  <button onClick={() => setShowBatchModal('questionnaire')} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-3 sm:py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 flex items-center justify-center space-x-2 min-h-[40px]">
                     <Send size={16} />
                     <span>Send questionnaire to all</span>
                   </button>
@@ -440,18 +440,18 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
                             <span>View Full Profile</span>
                           </button>
                           
-                          <div className="flex items-center space-x-3">
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-4 sm:mt-0">
                             {grabber.status === 'pending' && (
                               <>
-                                <button onClick={() => handleIndividualAction(grabber.id, 'contact')} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2">
+                                <button onClick={() => handleIndividualAction(grabber.id, 'contact')} disabled={isLoading} className="w-full sm:w-auto bg-green-600 text-white px-4 py-3 sm:py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 min-h-[40px]">
                                   <Share2 size={14} />
                                   <span>Share Contact</span>
                                 </button>
-                                <button onClick={() => handleIndividualAction(grabber.id, 'questionnaire')} disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2">
+                                <button onClick={() => handleIndividualAction(grabber.id, 'questionnaire')} disabled={isLoading} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-3 sm:py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 min-h-[40px]">
                                   <Send size={14} />
                                   <span>Send Questionnaire</span>
                                 </button>
-                                <button onClick={() => handleIndividualAction(grabber.id, 'decline')} disabled={isLoading} className="text-gray-500 hover:text-gray-700 transition-colors duration-200 disabled:opacity-50 flex items-center space-x-2">
+                                <button onClick={() => handleIndividualAction(grabber.id, 'decline')} disabled={isLoading} className="w-full sm:w-auto text-gray-500 hover:text-gray-700 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 min-h-[40px] border border-gray-300 hover:border-gray-400 px-4 py-3 sm:py-2">
                                   <X size={14} />
                                   <span>Decline</span>
                                 </button>

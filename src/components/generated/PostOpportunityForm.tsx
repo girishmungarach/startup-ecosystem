@@ -398,11 +398,11 @@ const PostOpportunityForm: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
         {/* Form Section */}
         <div className="space-y-6 md:space-y-8">
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
-            <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
+            <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-3 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto min-h-[48px] flex items-center justify-center ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
               Edit
             </button>
-            <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+            <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-3 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto min-h-[48px] ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
               <Eye size={18} className="md:w-5 md:h-5" />
               <span>Preview</span>
             </button>
@@ -436,12 +436,12 @@ const PostOpportunityForm: React.FC = () => {
             )}
             
             <div className="space-y-4">
-              <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+              <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[56px]">
                 <Send size={20} />
                 <span>{isSubmitting ? 'Posting...' : 'Post Opportunity'}</span>
               </button>
 
-              <button onClick={() => handleSubmit(true)} disabled={isSubmitting} className="w-full bg-white text-black border-2 border-gray-300 px-8 py-4 text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+              <button onClick={() => handleSubmit(true)} disabled={isSubmitting} className="w-full bg-white text-black border-2 border-gray-300 px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[56px]">
                 <Save size={20} />
                 <span>Save as Draft</span>
               </button>

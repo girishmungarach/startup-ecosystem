@@ -238,7 +238,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.2
-        }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
+        }} className="flex flex-col space-y-4 mb-6 md:mb-8">
             {/* Tab Navigation */}
             <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
               {[{
@@ -250,7 +250,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
             }, {
               key: 'closed',
               label: `Closed (${tabCounts.closed})`
-            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium transition-all duration-200 border-2 whitespace-nowrap ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
+            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-4 md:px-6 py-3 md:py-3 text-sm md:text-base font-medium transition-all duration-200 border-2 whitespace-nowrap min-h-[44px] flex items-center justify-center ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
                   {tab.label}
                 </button>)}
             </div>
@@ -258,7 +258,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
             {/* Post New Opportunity Button */}
             <button 
               onClick={() => navigate('/opportunities/post')}
-              className="bg-black text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2 w-full sm:w-auto"
+              className="w-full sm:w-auto bg-black text-white px-4 md:px-6 py-3 md:py-3 text-sm md:text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center justify-center space-x-2 min-h-[44px]"
             >
               <Plus size={18} className="md:w-5 md:h-5" />
               <span>Post New Opportunity</span>
@@ -344,22 +344,22 @@ const MyOpportunitiesDashboard: React.FC = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t border-gray-200 gap-3">
                       <div className="flex items-center space-x-2">
-                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1">
+                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 min-h-[40px]">
                             <Eye size={16} />
                             <span className="text-sm font-medium">View Grabs</span>
                           </button>}
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200" title="Edit">
+                        <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Edit">
                           <Edit size={16} />
                         </button>
                         
-                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200" title="Close">
+                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 rounded-lg hover:bg-red-50 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Close">
                             <X size={16} />
-                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium">
+                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium px-3 py-2 rounded-lg hover:bg-green-50 min-h-[40px]">
                             Reopen
                           </button> : null}
                       </div>

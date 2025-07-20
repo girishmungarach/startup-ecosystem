@@ -293,7 +293,7 @@ const OpportunitiesDashboard: React.FC = () => {
       }} transition={{
         duration: 0.3,
         delay: 0.5
-      }} className="fixed bottom-8 right-8 bg-black text-white p-4 rounded-full shadow-lg hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 z-50" whileHover={{
+      }} className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-black text-white p-4 sm:p-4 rounded-full shadow-lg hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 z-50 min-w-[56px] min-h-[56px] flex items-center justify-center" whileHover={{
         scale: 1.1
       }} whileTap={{
         scale: 0.9

@@ -466,21 +466,21 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () =
         }} transition={{
           duration: 0.6,
           delay: 0.3
-        }} className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 mt-12 p-6 bg-gray-50 border-2 border-gray-200">
-            <div className="flex items-center space-x-2 text-gray-700">
+        }} className="flex flex-col space-y-4 mt-12 p-6 bg-gray-50 border-2 border-gray-200">
+            <div className="flex items-center justify-center sm:justify-start space-x-2 text-gray-700">
               <User size={20} />
-              <span className="font-medium">
+              <span className="font-medium text-center sm:text-left">
                 {questions.filter(q => answers[q.id] && answers[q.id].trim() !== '').length} of {questions.length} questions answered
               </span>
             </div>
 
-            <div className="flex items-center space-x-3">
-              <button onClick={handleSaveProgress} disabled={isSaving} className="border-2 border-gray-300 text-gray-700 px-6 py-3 text-base font-semibold hover:border-black hover:text-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+              <button onClick={handleSaveProgress} disabled={isSaving} className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 px-6 py-4 sm:py-3 text-base font-semibold hover:border-black hover:text-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[48px]">
                 <Save size={16} />
                 <span>{isSaving ? 'Saving...' : 'Save Progress'}</span>
               </button>
 
-              <button onClick={handleSubmit} disabled={isSubmitting} className="bg-black text-white px-8 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
+              <button onClick={handleSubmit} disabled={isSubmitting} className="w-full sm:w-auto bg-black text-white px-8 py-4 sm:py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[48px]">
                 <Send size={16} />
                 <span>{isSubmitting ? 'Submitting...' : 'Submit Answers'}</span>
               </button>

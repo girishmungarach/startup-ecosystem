@@ -253,19 +253,19 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
               <motion.button 
                 onClick={handleBookmarkToggle}
                 disabled={isLoadingActions}
-                className="p-3 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10"
+                className="p-3 sm:p-3 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Bookmark size={24} className={isBookmarked ? 'fill-black text-black' : 'text-gray-400'} />
+                <Bookmark size={20} className={`${isBookmarked ? 'fill-black text-black' : 'text-gray-400'} sm:w-6 sm:h-6`} />
               </motion.button>
               
               <motion.button 
-                className="p-3 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10"
+                className="p-3 sm:p-3 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Share2 size={24} className="text-gray-400" />
+                <Share2 size={20} className="text-gray-400 sm:w-6 sm:h-6" />
               </motion.button>
             </div>
           </div>

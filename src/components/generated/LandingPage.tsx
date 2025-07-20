@@ -62,7 +62,7 @@ const LandingPage: React.FC = () => {
           
           <Link to="/signup">
             <motion.button 
-              className="bg-black text-white px-8 py-4 md:px-12 md:py-6 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-gray-900 transition-all duration-300 border-2 border-black hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 rounded-lg" 
+              className="bg-black text-white px-6 py-4 md:px-12 md:py-6 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-gray-900 transition-all duration-300 border-2 border-black hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 rounded-lg min-h-[56px] md:min-h-[64px] flex items-center justify-center" 
               initial={{
                 opacity: 0,
                 y: 20

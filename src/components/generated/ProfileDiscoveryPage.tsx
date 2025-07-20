@@ -376,7 +376,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                   </div>
 
                   {/* View Profile Button */}
-                  <button className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
+                  <button className="w-full bg-black text-white py-4 sm:py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 min-h-[48px] flex items-center justify-center">
                     View Profile
                   </button>
                 </motion.div>)}
@@ -391,7 +391,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                   setIsLoading(true);
                   setTimeout(() => setIsLoading(false), 1500);
                 }} 
-                className="bg-white text-black border-2 border-black px-8 py-4 text-lg font-semibold hover:bg-black hover:text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20"
+                className="bg-white text-black border-2 border-black px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:bg-black hover:text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 min-h-[56px] flex items-center justify-center mx-auto"
               >
                 Load More Profiles
               </button>
