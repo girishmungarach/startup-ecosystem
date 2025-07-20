@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Container, Theme } from './settings/types';
-import ProfileDetailView from './components/generated/ProfileDetailView';
+import BookmarksManagementPage from './components/generated/BookmarksManagementPage';
 
 let theme: Theme = 'light';
 let container: Container = 'none';
@@ -18,7 +18,7 @@ function App() {
 
   const generatedComponent = useMemo(() => {
     // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <ProfileDetailView />; // %EXPORT_STATEMENT%
+    return <BookmarksManagementPage />; // %EXPORT_STATEMENT%
   }, []);
 
   if (container === 'centered') {
