@@ -33,7 +33,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: false,
     location: 'San Francisco',
-    mpid: "4d2ed655-a4be-4874-b709-72579467fa00"
+    mpid: "321dc50e-5302-441c-809f-c3fa56c441af"
   }, {
     id: '2',
     name: 'Rajesh Kumar',
@@ -44,7 +44,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: true,
     location: 'Bangalore',
-    mpid: "4ea8316a-93e5-4de2-ba8a-908ebe611f29"
+    mpid: "e8eec72b-d7b3-4db0-9cfe-f55068fdb7ae"
   }, {
     id: '3',
     name: 'Emily Rodriguez',
@@ -55,7 +55,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Looking for opportunities',
     isBookmarked: false,
     location: 'New York',
-    mpid: "e89bf4ae-f2c1-4db9-907e-4908d2446010"
+    mpid: "b99051ca-5f3b-4651-b37e-de78a73e0a4e"
   }, {
     id: '4',
     name: 'David Park',
@@ -66,7 +66,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: false,
     location: 'Seoul',
-    mpid: "caae799c-f87d-41dc-98bc-dca019d25d75"
+    mpid: "bb903747-04a5-44c3-b9ad-a7a0bf9ef1c2"
   }, {
     id: '5',
     name: 'Priya Sharma',
@@ -77,7 +77,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Exploring ideas',
     isBookmarked: true,
     location: 'Mumbai',
-    mpid: "f54175ef-1058-4e71-b60b-f1850a1a5475"
+    mpid: "c8c6f6c9-eebb-4449-abec-641a0c66aba0"
   }, {
     id: '6',
     name: 'Alex Thompson',
@@ -88,7 +88,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Exploring ideas',
     isBookmarked: false,
     location: 'Palo Alto',
-    mpid: "f9858044-dbab-44a4-92ff-003757e94ad5"
+    mpid: "d84baf25-ac84-458a-a0b6-717b2f066327"
   }, {
     id: '7',
     name: 'Maria Santos',
@@ -99,7 +99,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: false,
     location: 'São Paulo',
-    mpid: "d3b8ebf2-972e-447e-b24c-0c9ba6ba1105"
+    mpid: "0219db5b-cc00-43b8-81fb-ffac89ae0ad4"
   }, {
     id: '8',
     name: 'James Wilson',
@@ -110,7 +110,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: false,
     location: 'London',
-    mpid: "fc9b5744-7f89-48d6-8def-5cc141a8cbd0"
+    mpid: "2ab7f214-b695-4039-8012-76becf354b33"
   }, {
     id: '9',
     name: 'Lisa Zhang',
@@ -121,7 +121,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: true,
     location: 'Toronto',
-    mpid: "e3f548a2-65c0-4f37-86e7-4193bd563949"
+    mpid: "f07aeb4d-5bbd-4a55-a3aa-dd17fc7694ef"
   }, {
     id: '10',
     name: 'Ahmed Hassan',
@@ -132,7 +132,7 @@ const ProfileDiscoveryPage: React.FC = () => {
     buildingStatus: 'Actively building',
     isBookmarked: false,
     location: 'Dubai',
-    mpid: "7a92d33c-59d7-4454-9567-f535368c37a8"
+    mpid: "da233c1b-5f46-436f-8048-73453fa10ec8"
   }]);
   const roleOptions = ['All', 'Founders', 'Investors', 'Developers', 'Designers', 'Marketing', 'Sales', 'Operations', 'Students'];
   const interestOptions = ['Fintech', 'HealthTech', 'EdTech', 'AI/ML', 'SaaS', 'E-commerce', 'Gaming', 'AgriTech', 'Other'];

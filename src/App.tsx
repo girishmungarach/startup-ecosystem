@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Container, Theme } from './settings/types';
-import ProfileDiscoveryPage from './components/generated/ProfileDiscoveryPage';
+import ProfileDetailView from './components/generated/ProfileDetailView';
 
 let theme: Theme = 'light';
 let container: Container = 'none';
@@ -18,7 +18,7 @@ function App() {
 
   const generatedComponent = useMemo(() => {
     // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <ProfileDiscoveryPage />; // %EXPORT_STATEMENT%
+    return <ProfileDetailView />; // %EXPORT_STATEMENT%
   }, []);
 
   if (container === 'centered') {
