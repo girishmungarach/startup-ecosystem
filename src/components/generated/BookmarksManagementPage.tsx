@@ -31,7 +31,7 @@ const BookmarksManagementPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState<'all' | 'profile' | 'job' | 'investment' | 'event'>('all');
+  const [selectedType, setSelectedType] = useState<'all' | 'profile' | 'opportunity'>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
   const [stats, setStats] = useState<{
@@ -70,11 +70,17 @@ const BookmarksManagementPage: React.FC = () => {
   // Filter bookmarks
   const filteredBookmarks = useMemo(() => {
     return bookmarks.filter(bookmark => {
-      const matchesType = selectedType === 'all' || bookmark.type === selectedType;
+      const matchesType = selectedType === 'all' || bookmark.bookmark_type === selectedType;
       
-      const item = bookmark.profile || bookmark.job || bookmark.investment || bookmark.event;
+      let item;
+      if (bookmark.bookmark_type === 'profile') {
+        item = bookmark.bookmarked_profile;
+      } else if (bookmark.bookmark_type === 'opportunity') {
+        item = bookmark.opportunity;
+      }
+      
       const matchesSearch = searchQuery === '' || 
-        (item?.name || item?.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item?.full_name || item?.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item?.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item?.company || '').toLowerCase().includes(searchQuery.toLowerCase());
       
@@ -129,7 +135,7 @@ const BookmarksManagementPage: React.FC = () => {
       const bookmark = bookmarks.find(b => b.id === bookmarkId);
       if (!bookmark) return;
       
-      await bookmarksService.removeBookmark(user.id, bookmark.item_id, bookmark.type);
+      await bookmarksService.removeBookmark(user.id, bookmark.bookmarked_user_id, bookmark.bookmark_type, bookmark.opportunity_id);
       
       // Update local state
       setBookmarks(prev => prev.filter(b => b.id !== bookmarkId));
@@ -146,40 +152,24 @@ const BookmarksManagementPage: React.FC = () => {
 
   // Get item display data
   const getItemDisplayData = (bookmark: BookmarkType) => {
-    const item = bookmark.profile || bookmark.job || bookmark.investment || bookmark.event;
-    
-    switch (bookmark.type) {
+    switch (bookmark.bookmark_type) {
       case 'profile':
+        const profile = bookmark.bookmarked_profile;
         return {
-          title: item?.name || 'Unknown Profile',
-          subtitle: `${item?.role || 'Unknown Role'} at ${item?.company || 'Unknown Company'}`,
-          description: item?.current_project || 'No project information',
+          title: profile?.full_name || 'Unknown Profile',
+          subtitle: `${profile?.role || 'Unknown Role'} at ${profile?.company || 'Unknown Company'}`,
+          description: profile?.building || 'No project information',
           icon: <User size={20} className="text-blue-600" />,
           type: 'Profile'
         };
-      case 'job':
+      case 'opportunity':
+        const opportunity = bookmark.opportunity;
         return {
-          title: item?.title || 'Unknown Job',
-          subtitle: `${item?.company || 'Unknown Company'} • ${item?.location || 'Remote'}`,
-          description: item?.description || 'No description available',
+          title: opportunity?.title || 'Unknown Opportunity',
+          subtitle: `${opportunity?.company || 'Unknown Company'} • ${opportunity?.location || 'Remote'}`,
+          description: opportunity?.description || 'No description available',
           icon: <Briefcase size={20} className="text-green-600" />,
-          type: 'Job'
-        };
-      case 'investment':
-        return {
-          title: item?.title || 'Unknown Investment',
-          subtitle: `${item?.company || 'Unknown Company'} • ${item?.stage || 'Unknown Stage'}`,
-          description: item?.description || 'No description available',
-          icon: <TrendingUp size={20} className="text-purple-600" />,
-          type: 'Investment'
-        };
-      case 'event':
-        return {
-          title: item?.title || 'Unknown Event',
-          subtitle: `${item?.location || 'Online'} • ${item?.date ? new Date(item.date).toLocaleDateString() : 'TBD'}`,
-          description: item?.description || 'No description available',
-          icon: <CalendarIcon size={20} className="text-orange-600" />,
-          type: 'Event'
+          type: 'Opportunity'
         };
       default:
         return {
@@ -247,8 +237,8 @@ const BookmarksManagementPage: React.FC = () => {
               </div>
               <div className="bg-gray-50 p-6 border-2 border-gray-200 text-center">
                 <Briefcase size={32} className="mx-auto mb-2 text-green-600" />
-                <div className="text-2xl font-bold">{stats.byType.job || 0}</div>
-                <div className="text-gray-600">Jobs</div>
+                <div className="text-2xl font-bold">{stats.byType.opportunity || 0}</div>
+                <div className="text-gray-600">Opportunities</div>
               </div>
               <div className="bg-gray-50 p-6 border-2 border-gray-200 text-center">
                 <Calendar size={32} className="mx-auto mb-2 text-orange-600" />
@@ -281,9 +271,7 @@ const BookmarksManagementPage: React.FC = () => {
               >
                 <option value="all">All Types</option>
                 <option value="profile">Profiles</option>
-                <option value="job">Jobs</option>
-                <option value="investment">Investments</option>
-                <option value="event">Events</option>
+                <option value="opportunity">Opportunities</option>
               </select>
 
               {/* Filter Toggle */}

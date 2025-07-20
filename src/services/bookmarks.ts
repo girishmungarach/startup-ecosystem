@@ -3,18 +3,18 @@ import { supabase } from './supabase';
 export interface Bookmark {
   id: string;
   user_id: string;
-  item_id: string;
-  type: 'profile' | 'job' | 'investment' | 'event';
+  bookmarked_user_id: string;
+  bookmark_type: 'profile' | 'opportunity';
+  opportunity_id?: string;
+  notes?: string;
   created_at: string;
   // Joined data
-  profile?: any;
-  job?: any;
-  investment?: any;
-  event?: any;
+  bookmarked_profile?: any;
+  opportunity?: any;
 }
 
 export interface BookmarkFilters {
-  type?: 'profile' | 'job' | 'investment' | 'event';
+  type?: 'profile' | 'opportunity';
   search?: string;
   date_range?: {
     start: string;
@@ -29,17 +29,33 @@ export const bookmarksService = {
       .from('bookmarks')
       .select(`
         *,
-        profiles!inner(*),
-        jobs!inner(*),
-        investments!inner(*),
-        events!inner(*)
+        bookmarked_profile:profiles!bookmarks_bookmarked_user_id_fkey (
+          id,
+          full_name,
+          email,
+          company,
+          role,
+          building,
+          interests,
+          avatar_url,
+          bio,
+          location
+        ),
+        opportunity:opportunities (
+          id,
+          title,
+          type,
+          company,
+          description,
+          location
+        )
       `)
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     // Apply type filter
     if (filters?.type) {
-      query = query.eq('type', filters.type);
+      query = query.eq('bookmark_type', filters.type);
     }
 
     // Apply date range filter
@@ -60,15 +76,34 @@ export const bookmarksService = {
   },
 
   // Get bookmarks by type
-  async getBookmarksByType(userId: string, type: 'profile' | 'job' | 'investment' | 'event'): Promise<Bookmark[]> {
+  async getBookmarksByType(userId: string, type: 'profile' | 'opportunity'): Promise<Bookmark[]> {
     const { data, error } = await supabase
       .from('bookmarks')
       .select(`
         *,
-        ${type}s!inner(*)
+        bookmarked_profile:profiles!bookmarks_bookmarked_user_id_fkey (
+          id,
+          full_name,
+          email,
+          company,
+          role,
+          building,
+          interests,
+          avatar_url,
+          bio,
+          location
+        ),
+        opportunity:opportunities (
+          id,
+          title,
+          type,
+          company,
+          description,
+          location
+        )
       `)
       .eq('user_id', userId)
-      .eq('type', type)
+      .eq('bookmark_type', type)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -80,13 +115,14 @@ export const bookmarksService = {
   },
 
   // Add a bookmark
-  async addBookmark(userId: string, itemId: string, itemType: 'profile' | 'job' | 'investment' | 'event'): Promise<void> {
+  async addBookmark(userId: string, bookmarkedUserId: string, bookmarkType: 'profile' | 'opportunity', opportunityId?: string): Promise<void> {
     const { error } = await supabase
       .from('bookmarks')
       .insert({
         user_id: userId,
-        item_id: itemId,
-        type: itemType
+        bookmarked_user_id: bookmarkedUserId,
+        bookmark_type: bookmarkType,
+        opportunity_id: opportunityId
       });
 
     if (error) {
@@ -96,13 +132,19 @@ export const bookmarksService = {
   },
 
   // Remove a bookmark
-  async removeBookmark(userId: string, itemId: string, itemType: 'profile' | 'job' | 'investment' | 'event'): Promise<void> {
-    const { error } = await supabase
+  async removeBookmark(userId: string, bookmarkedUserId: string, bookmarkType: 'profile' | 'opportunity', opportunityId?: string): Promise<void> {
+    let query = supabase
       .from('bookmarks')
       .delete()
       .eq('user_id', userId)
-      .eq('item_id', itemId)
-      .eq('type', itemType);
+      .eq('bookmarked_user_id', bookmarkedUserId)
+      .eq('bookmark_type', bookmarkType);
+
+    if (opportunityId) {
+      query = query.eq('opportunity_id', opportunityId);
+    }
+
+    const { error } = await query;
 
     if (error) {
       console.error('Error removing bookmark:', error);
@@ -111,36 +153,46 @@ export const bookmarksService = {
   },
 
   // Toggle bookmark (add if not exists, remove if exists)
-  async toggleBookmark(userId: string, itemId: string, itemType: 'profile' | 'job' | 'investment' | 'event'): Promise<boolean> {
+  async toggleBookmark(userId: string, bookmarkedUserId: string, bookmarkType: 'profile' | 'opportunity', opportunityId?: string): Promise<boolean> {
     // Check if bookmark exists
-    const { data: existingBookmark } = await supabase
+    let query = supabase
       .from('bookmarks')
       .select('id')
       .eq('user_id', userId)
-      .eq('item_id', itemId)
-      .eq('type', itemType)
-      .single();
+      .eq('bookmarked_user_id', bookmarkedUserId)
+      .eq('bookmark_type', bookmarkType);
+
+    if (opportunityId) {
+      query = query.eq('opportunity_id', opportunityId);
+    }
+
+    const { data: existingBookmark } = await query.single();
 
     if (existingBookmark) {
       // Remove bookmark
-      await this.removeBookmark(userId, itemId, itemType);
+      await this.removeBookmark(userId, bookmarkedUserId, bookmarkType, opportunityId);
       return false; // Bookmark was removed
     } else {
       // Add bookmark
-      await this.addBookmark(userId, itemId, itemType);
+      await this.addBookmark(userId, bookmarkedUserId, bookmarkType, opportunityId);
       return true; // Bookmark was added
     }
   },
 
   // Check if an item is bookmarked
-  async isBookmarked(userId: string, itemId: string, itemType: 'profile' | 'job' | 'investment' | 'event'): Promise<boolean> {
-    const { data, error } = await supabase
+  async isBookmarked(userId: string, bookmarkedUserId: string, bookmarkType: 'profile' | 'opportunity', opportunityId?: string): Promise<boolean> {
+    let query = supabase
       .from('bookmarks')
       .select('id')
       .eq('user_id', userId)
-      .eq('item_id', itemId)
-      .eq('type', itemType)
-      .single();
+      .eq('bookmarked_user_id', bookmarkedUserId)
+      .eq('bookmark_type', bookmarkType);
+
+    if (opportunityId) {
+      query = query.eq('opportunity_id', opportunityId);
+    }
+
+    const { data, error } = await query.single();
 
     if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
       console.error('Error checking bookmark status:', error);
@@ -158,7 +210,7 @@ export const bookmarksService = {
   }> {
     const { data, error } = await supabase
       .from('bookmarks')
-      .select('type, created_at')
+      .select('bookmark_type, created_at')
       .eq('user_id', userId);
 
     if (error) {
@@ -172,7 +224,7 @@ export const bookmarksService = {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     bookmarks.forEach(bookmark => {
-      byType[bookmark.type] = (byType[bookmark.type] || 0) + 1;
+      byType[bookmark.bookmark_type] = (byType[bookmark.bookmark_type] || 0) + 1;
     });
 
     const recent = bookmarks.filter(bookmark => 
