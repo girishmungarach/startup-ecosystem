@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, MapPin, Clock, Bookmark, Filter } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 interface Opportunity {
   id: string;
   title: string;
@@ -21,6 +22,7 @@ const OpportunitiesDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Load opportunities from database
   useEffect(() => {
@@ -110,9 +112,38 @@ const OpportunitiesDashboard: React.FC = () => {
     // Handle bookmark functionality
     console.log('Bookmark toggled for opportunity:', id);
   };
-  const handleGrabIt = (opportunity: Opportunity) => {
-    // Navigate to status page showing opportunity grabbed
-    navigate(`/status/opportunity-grabbed?title=${encodeURIComponent(opportunity.title)}&company=${encodeURIComponent(opportunity.company)}`);
+  const handleGrabIt = async (opportunity: Opportunity) => {
+    if (!user) {
+      console.error('No authenticated user');
+      return;
+    }
+
+    try {
+      // Save the opportunity grab to database
+      const { data, error } = await supabase
+        .from('opportunity_grabs')
+        .insert({
+          opportunity_id: opportunity.id,
+          user_id: user.id,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error grabbing opportunity:', error);
+        // You could show an error message to the user here
+        return;
+      }
+
+      console.log('Opportunity grabbed successfully:', data);
+      
+      // Navigate to status page showing opportunity grabbed
+      navigate(`/status/opportunity-grabbed?title=${encodeURIComponent(opportunity.title)}&company=${encodeURIComponent(opportunity.company)}`);
+    } catch (error) {
+      console.error('Failed to grab opportunity:', error);
+      // You could show an error message to the user here
+    }
   };
   return <div className="min-h-screen bg-white text-black font-sans">
       {/* Header Navigation */}

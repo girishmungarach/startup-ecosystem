@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, User, Building, ExternalLink, Share2, Send, X, CheckCircle, Clock, AlertCircle, Users, Mail, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { opportunitiesService, OpportunityGrabber, OpportunityStats } from '../../services/opportunities';
+import { supabase } from '../../services/supabase';
 interface GrabberProfile {
   id: string;
   name: string;
@@ -41,12 +42,57 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
       
       try {
         setLoading(true);
-        const [grabbersData, statsData] = await Promise.all([
-          opportunitiesService.getOpportunityGrabbers(opportunityId),
-          opportunitiesService.getOpportunityStats(opportunityId)
-        ]);
         
-        setGrabbers(grabbersData);
+        // Load opportunity grabs from database
+        const { data: grabsData, error: grabsError } = await supabase
+          .from('opportunity_grabs')
+          .select(`
+            *,
+            profiles!opportunity_grabs_user_id_fkey (
+              id,
+              full_name,
+              company,
+              role,
+              building
+            )
+          `)
+          .eq('opportunity_id', opportunityId)
+          .order('created_at', { ascending: false });
+
+        if (grabsError) {
+          console.error('Error loading grabs:', grabsError);
+          setError('Failed to load opportunity grabbers');
+          return;
+        }
+
+        // Transform data to match expected format
+        const transformedGrabbers: OpportunityGrabber[] = (grabsData || []).map(grab => ({
+          id: grab.id,
+          opportunity_id: grab.opportunity_id,
+          user_id: grab.user_id,
+          status: grab.status as 'pending' | 'contact_shared' | 'questionnaire_sent' | 'declined',
+          created_at: grab.created_at,
+          updated_at: grab.updated_at,
+          user: grab.profiles ? {
+            id: grab.profiles.id,
+            name: grab.profiles.full_name || 'Unknown User',
+            role: grab.profiles.role || 'Member',
+            company: grab.profiles.company || 'Unknown Company',
+            profile_image: undefined,
+            current_project: grab.profiles.building || 'No project information'
+          } : undefined
+        }));
+
+        setGrabbers(transformedGrabbers);
+
+        // Calculate stats
+        const statsData: OpportunityStats = {
+          pending: transformedGrabbers.filter(g => g.status === 'pending').length,
+          contact_shared: transformedGrabbers.filter(g => g.status === 'contact_shared').length,
+          questionnaire_sent: transformedGrabbers.filter(g => g.status === 'questionnaire_sent').length,
+          declined: transformedGrabbers.filter(g => g.status === 'declined').length
+        };
+        
         setStats(statsData);
       } catch (err) {
         setError('Failed to load opportunity grabbers');
@@ -89,27 +135,88 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     setLoadingActions(prev => [...prev, `${grabberId}-${action}`]);
 
     try {
+      let newStatus: string;
+      
       switch (action) {
         case 'contact':
-          await opportunitiesService.shareContact(grabberId);
+          newStatus = 'contact_shared';
           break;
         case 'questionnaire':
-          const questionnaireId = 'default-questionnaire-id'; // This should come from props or state
-          await opportunitiesService.sendQuestionnaire(grabberId, questionnaireId);
+          newStatus = 'questionnaire_sent';
           break;
         case 'decline':
-          await opportunitiesService.declineGrabber(grabberId);
+          newStatus = 'declined';
           break;
+        default:
+          throw new Error('Invalid action');
       }
-      
-      // Refresh data
-      const [grabbersData, statsData] = await Promise.all([
-        opportunitiesService.getOpportunityGrabbers(opportunityId),
-        opportunitiesService.getOpportunityStats(opportunityId)
-      ]);
-      
-      setGrabbers(grabbersData);
-      setStats(statsData);
+
+      // Update the grab status in database
+      const { error } = await supabase
+        .from('opportunity_grabs')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', grabberId);
+
+      if (error) {
+        console.error(`Error updating grab status:`, error);
+        throw error;
+      }
+
+      // Refresh the data by reloading
+      const loadGrabbers = async () => {
+        const { data: grabsData, error: grabsError } = await supabase
+          .from('opportunity_grabs')
+          .select(`
+            *,
+            profiles!opportunity_grabs_user_id_fkey (
+              id,
+              full_name,
+              company,
+              role,
+              building
+            )
+          `)
+          .eq('opportunity_id', opportunityId)
+          .order('created_at', { ascending: false });
+
+        if (grabsError) {
+          console.error('Error loading grabs:', grabsError);
+          return;
+        }
+
+        const transformedGrabbers: OpportunityGrabber[] = (grabsData || []).map(grab => ({
+          id: grab.id,
+          opportunity_id: grab.opportunity_id,
+          user_id: grab.user_id,
+          status: grab.status as 'pending' | 'contact_shared' | 'questionnaire_sent' | 'declined',
+          created_at: grab.created_at,
+          updated_at: grab.updated_at,
+          user: grab.profiles ? {
+            id: grab.profiles.id,
+            name: grab.profiles.full_name || 'Unknown User',
+            role: grab.profiles.role || 'Member',
+            company: grab.profiles.company || 'Unknown Company',
+            profile_image: undefined,
+            current_project: grab.profiles.building || 'No project information'
+          } : undefined
+        }));
+
+        setGrabbers(transformedGrabbers);
+
+        const statsData: OpportunityStats = {
+          pending: transformedGrabbers.filter(g => g.status === 'pending').length,
+          contact_shared: transformedGrabbers.filter(g => g.status === 'contact_shared').length,
+          questionnaire_sent: transformedGrabbers.filter(g => g.status === 'questionnaire_sent').length,
+          declined: transformedGrabbers.filter(g => g.status === 'declined').length
+        };
+        
+        setStats(statsData);
+      };
+
+      await loadGrabbers();
     } catch (err) {
       console.error(`Error performing ${action} action:`, err);
       // You could add a toast notification here
