@@ -36,7 +36,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleSignOut = async () => {
     try {
       await signOut()
-      navigate('/')
+      // The signOut function now handles navigation and clearing
     } catch (error) {
       console.error('Error signing out:', error)
     }

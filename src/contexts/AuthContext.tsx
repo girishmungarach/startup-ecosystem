@@ -90,7 +90,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      // Sign out from Supabase
+      await supabase.auth.signOut()
+      
+      // Clear local state
+      setUser(null)
+      setSession(null)
+      
+      // Clear any cached data
+      localStorage.clear()
+      sessionStorage.clear()
+      
+      // Force page reload to clear any remaining state
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Error signing out:', error)
+      // Even if there's an error, clear local state
+      setUser(null)
+      setSession(null)
+      localStorage.clear()
+      sessionStorage.clear()
+      window.location.href = '/'
+    }
   };
 
   const value = {
