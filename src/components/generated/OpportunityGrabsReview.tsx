@@ -81,22 +81,22 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
     const configs = {
       pending: {
         label: 'Pending',
-        icon: <Clock size={16} data-magicpath-id="0" data-magicpath-path="OpportunityGrabsReview.tsx" />,
+        icon: <Clock size={16} />,
         className: 'bg-orange-100 text-orange-800 border-orange-200'
       },
       contact_shared: {
         label: 'Contact Shared',
-        icon: <CheckCircle size={16} data-magicpath-id="1" data-magicpath-path="OpportunityGrabsReview.tsx" />,
+        icon: <CheckCircle size={16} />,
         className: 'bg-green-100 text-green-800 border-green-200'
       },
       questionnaire_sent: {
         label: 'Questionnaire Sent',
-        icon: <Send size={16} data-magicpath-id="2" data-magicpath-path="OpportunityGrabsReview.tsx" />,
+        icon: <Send size={16} />,
         className: 'bg-blue-100 text-blue-800 border-blue-200'
       },
       declined: {
         label: 'Declined',
-        icon: <X size={16} data-magicpath-id="3" data-magicpath-path="OpportunityGrabsReview.tsx" />,
+        icon: <X size={16} />,
         className: 'bg-gray-100 text-gray-600 border-gray-200'
       }
     };
@@ -125,30 +125,30 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
       console.log('Navigate back to My Opportunities');
     }
   };
-  return <div className="min-h-screen bg-white text-black font-sans" data-magicpath-id="4" data-magicpath-path="OpportunityGrabsReview.tsx">
+  return <div className="min-h-screen bg-white text-black font-sans">
       {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200" data-magicpath-id="5" data-magicpath-path="OpportunityGrabsReview.tsx">
-        <div className="max-w-7xl mx-auto" data-magicpath-id="6" data-magicpath-path="OpportunityGrabsReview.tsx">
-          <div className="flex items-center justify-between mb-6" data-magicpath-id="7" data-magicpath-path="OpportunityGrabsReview.tsx">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight" data-magicpath-id="8" data-magicpath-path="OpportunityGrabsReview.tsx">
+      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               StartupEcosystem.in
             </h1>
           </div>
           
           {/* Back Navigation */}
-          <div className="flex items-center space-x-4 mb-6" data-magicpath-id="9" data-magicpath-path="OpportunityGrabsReview.tsx">
-            <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200" data-magicpath-id="10" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <ChevronLeft size={20} data-magicpath-id="11" data-magicpath-path="OpportunityGrabsReview.tsx" />
-              <span className="text-base font-medium" data-magicpath-id="12" data-magicpath-path="OpportunityGrabsReview.tsx">My Opportunities</span>
+          <div className="flex items-center space-x-4 mb-6">
+            <button onClick={handleBack} className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors duration-200">
+              <ChevronLeft size={20} />
+              <span className="text-base font-medium">My Opportunities</span>
             </button>
           </div>
 
           {/* Page Title */}
-          <div data-magicpath-id="13" data-magicpath-path="OpportunityGrabsReview.tsx">
-            <h2 className="text-3xl md:text-4xl font-bold mb-2" data-magicpath-id="14" data-magicpath-path="OpportunityGrabsReview.tsx">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-2">
               People Interested in: {opportunityTitle}
             </h2>
-            <p className="text-lg font-light text-gray-600" data-magicpath-id="15" data-magicpath-path="OpportunityGrabsReview.tsx">
+            <p className="text-lg font-light text-gray-600">
               Review and manage candidates who have grabbed this opportunity
             </p>
           </div>
@@ -156,8 +156,8 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24" data-magicpath-id="16" data-magicpath-path="OpportunityGrabsReview.tsx">
-        <div className="max-w-7xl mx-auto" data-magicpath-id="17" data-magicpath-path="OpportunityGrabsReview.tsx">
+      <main className="px-6 py-8 md:px-12 lg:px-24">
+        <div className="max-w-7xl mx-auto">
           
           {/* Stats Overview */}
           <motion.div initial={{
@@ -168,22 +168,22 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" data-magicpath-id="18" data-magicpath-path="OpportunityGrabsReview.tsx">
-            <div className="border-2 border-gray-200 p-4 text-center" data-magicpath-id="19" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <div className="text-2xl font-bold text-orange-600" data-magicpath-id="20" data-magicpath-path="OpportunityGrabsReview.tsx">{statusCounts.pending}</div>
-              <div className="text-sm text-gray-600" data-magicpath-id="21" data-magicpath-path="OpportunityGrabsReview.tsx">Pending</div>
+        }} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="border-2 border-gray-200 p-4 text-center">
+              <div className="text-2xl font-bold text-orange-600">{statusCounts.pending}</div>
+              <div className="text-sm text-gray-600">Pending</div>
             </div>
-            <div className="border-2 border-gray-200 p-4 text-center" data-magicpath-id="22" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <div className="text-2xl font-bold text-green-600" data-magicpath-id="23" data-magicpath-path="OpportunityGrabsReview.tsx">{statusCounts.contact_shared}</div>
-              <div className="text-sm text-gray-600" data-magicpath-id="24" data-magicpath-path="OpportunityGrabsReview.tsx">Contact Shared</div>
+            <div className="border-2 border-gray-200 p-4 text-center">
+              <div className="text-2xl font-bold text-green-600">{statusCounts.contact_shared}</div>
+              <div className="text-sm text-gray-600">Contact Shared</div>
             </div>
-            <div className="border-2 border-gray-200 p-4 text-center" data-magicpath-id="25" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <div className="text-2xl font-bold text-blue-600" data-magicpath-id="26" data-magicpath-path="OpportunityGrabsReview.tsx">{statusCounts.questionnaire_sent}</div>
-              <div className="text-sm text-gray-600" data-magicpath-id="27" data-magicpath-path="OpportunityGrabsReview.tsx">Questionnaire Sent</div>
+            <div className="border-2 border-gray-200 p-4 text-center">
+              <div className="text-2xl font-bold text-blue-600">{statusCounts.questionnaire_sent}</div>
+              <div className="text-sm text-gray-600">Questionnaire Sent</div>
             </div>
-            <div className="border-2 border-gray-200 p-4 text-center" data-magicpath-id="28" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <div className="text-2xl font-bold text-gray-600" data-magicpath-id="29" data-magicpath-path="OpportunityGrabsReview.tsx">{statusCounts.declined}</div>
-              <div className="text-sm text-gray-600" data-magicpath-id="30" data-magicpath-path="OpportunityGrabsReview.tsx">Declined</div>
+            <div className="border-2 border-gray-200 p-4 text-center">
+              <div className="text-2xl font-bold text-gray-600">{statusCounts.declined}</div>
+              <div className="text-sm text-gray-600">Declined</div>
             </div>
           </motion.div>
 
@@ -197,30 +197,30 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
         }} transition={{
           duration: 0.6,
           delay: 0.1
-        }} className="flex flex-wrap items-center gap-4 mb-8 p-6 bg-gray-50 border-2 border-gray-200" data-magicpath-id="31" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <div className="flex items-center space-x-2 text-gray-700" data-magicpath-id="32" data-magicpath-path="OpportunityGrabsReview.tsx">
-                <Users size={20} data-magicpath-id="33" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                <span className="font-medium" data-magicpath-id="34" data-magicpath-path="OpportunityGrabsReview.tsx">{statusCounts.pending} pending candidates</span>
+        }} className="flex flex-wrap items-center gap-4 mb-8 p-6 bg-gray-50 border-2 border-gray-200">
+              <div className="flex items-center space-x-2 text-gray-700">
+                <Users size={20} />
+                <span className="font-medium">{statusCounts.pending} pending candidates</span>
               </div>
-              <div className="flex items-center space-x-3" data-magicpath-id="35" data-magicpath-path="OpportunityGrabsReview.tsx">
-                <button onClick={() => setShowBatchModal('contact')} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 flex items-center space-x-2" data-magicpath-id="36" data-magicpath-path="OpportunityGrabsReview.tsx">
-                  <Share2 size={16} data-magicpath-id="37" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                  <span data-magicpath-id="38" data-magicpath-path="OpportunityGrabsReview.tsx">Share contact with all</span>
+              <div className="flex items-center space-x-3">
+                <button onClick={() => setShowBatchModal('contact')} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 flex items-center space-x-2">
+                  <Share2 size={16} />
+                  <span>Share contact with all</span>
                 </button>
-                <button onClick={() => setShowBatchModal('questionnaire')} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2" data-magicpath-id="39" data-magicpath-path="OpportunityGrabsReview.tsx">
-                  <Send size={16} data-magicpath-id="40" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                  <span data-magicpath-id="41" data-magicpath-path="OpportunityGrabsReview.tsx">Send questionnaire to all</span>
+                <button onClick={() => setShowBatchModal('questionnaire')} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2">
+                  <Send size={16} />
+                  <span>Send questionnaire to all</span>
                 </button>
               </div>
             </motion.div>}
 
           {/* Grabbers List */}
-          <AnimatePresence data-magicpath-id="42" data-magicpath-path="OpportunityGrabsReview.tsx">
+          <AnimatePresence>
             {mockGrabbers.length > 0 ? <motion.div initial={{
             opacity: 0
           }} animate={{
             opacity: 1
-          }} className="space-y-6" data-magicpath-id="43" data-magicpath-path="OpportunityGrabsReview.tsx">
+          }} className="space-y-6">
                 {mockGrabbers.map((grabber, index) => {
               const statusConfig = getStatusConfig(grabber.status);
               const isLoading = loadingActions.some(action => action.startsWith(grabber.id));
@@ -233,83 +233,83 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
               }} transition={{
                 duration: 0.4,
                 delay: index * 0.1
-              }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg" data-magicpath-id="44" data-magicpath-path="OpportunityGrabsReview.tsx">
+              }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg">
                       {/* Header */}
-                      <div className="flex items-start justify-between mb-4" data-magicpath-id="45" data-magicpath-path="OpportunityGrabsReview.tsx">
-                        <div className="flex items-center space-x-4" data-magicpath-id="46" data-magicpath-path="OpportunityGrabsReview.tsx">
-                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center" data-magicpath-id="47" data-magicpath-path="OpportunityGrabsReview.tsx">
-                            <User size={24} className="text-gray-600" data-magicpath-id="48" data-magicpath-path="OpportunityGrabsReview.tsx" />
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                            <User size={24} className="text-gray-600" />
                           </div>
-                          <div data-magicpath-id="49" data-magicpath-path="OpportunityGrabsReview.tsx">
-                            <h3 className="text-xl font-bold" data-magicpath-id="50" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <div>
+                            <h3 className="text-xl font-bold">
                               {grabber.name}
                             </h3>
-                            <div className="flex items-center space-x-2 text-gray-600" data-magicpath-id="51" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <span data-magicpath-id="52" data-magicpath-path="OpportunityGrabsReview.tsx">{grabber.role}</span>
-                              <span data-magicpath-id="53" data-magicpath-path="OpportunityGrabsReview.tsx">•</span>
-                              <div className="flex items-center space-x-1" data-magicpath-id="54" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <Building size={14} data-magicpath-id="55" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-id="56" data-magicpath-path="OpportunityGrabsReview.tsx">{grabber.company}</span>
+                            <div className="flex items-center space-x-2 text-gray-600">
+                              <span>{grabber.role}</span>
+                              <span>•</span>
+                              <div className="flex items-center space-x-1">
+                                <Building size={14} />
+                                <span>{grabber.company}</span>
                               </div>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center space-x-3" data-magicpath-id="57" data-magicpath-path="OpportunityGrabsReview.tsx">
-                          <span className={`px-3 py-1 text-sm font-medium border flex items-center space-x-1 ${statusConfig.className}`} data-magicpath-id="58" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <div className="flex items-center space-x-3">
+                          <span className={`px-3 py-1 text-sm font-medium border flex items-center space-x-1 ${statusConfig.className}`}>
                             {statusConfig.icon}
-                            <span data-magicpath-id="59" data-magicpath-path="OpportunityGrabsReview.tsx">{statusConfig.label}</span>
+                            <span>{statusConfig.label}</span>
                           </span>
-                          <span className="text-sm text-gray-500" data-magicpath-id="60" data-magicpath-path="OpportunityGrabsReview.tsx">
+                          <span className="text-sm text-gray-500">
                             {grabber.grabbedAt}
                           </span>
                         </div>
                       </div>
 
                       {/* Current Project */}
-                      <div className="mb-6" data-magicpath-id="61" data-magicpath-path="OpportunityGrabsReview.tsx">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2" data-magicpath-id="62" data-magicpath-path="OpportunityGrabsReview.tsx">Current Project:</h4>
-                        <p className="text-gray-700 leading-relaxed" data-magicpath-id="63" data-magicpath-path="OpportunityGrabsReview.tsx">
+                      <div className="mb-6">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Current Project:</h4>
+                        <p className="text-gray-700 leading-relaxed">
                           {grabber.currentProject}
                         </p>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-id="64" data-magicpath-path="OpportunityGrabsReview.tsx">
-                        <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium" data-magicpath-id="65" data-magicpath-path="OpportunityGrabsReview.tsx">
-                          <ExternalLink size={16} data-magicpath-id="66" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                          <span data-magicpath-id="67" data-magicpath-path="OpportunityGrabsReview.tsx">View Full Profile</span>
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                        <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium">
+                          <ExternalLink size={16} />
+                          <span>View Full Profile</span>
                         </button>
                         
-                        <div className="flex items-center space-x-3" data-magicpath-id="68" data-magicpath-path="OpportunityGrabsReview.tsx">
+                        <div className="flex items-center space-x-3">
                           {grabber.status === 'pending' && <>
-                              <button onClick={() => handleIndividualAction(grabber.id, 'contact')} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-id="69" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <Share2 size={14} data-magicpath-id="70" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-id="71" data-magicpath-path="OpportunityGrabsReview.tsx">Share Contact</span>
+                              <button onClick={() => handleIndividualAction(grabber.id, 'contact')} disabled={isLoading} className="bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2">
+                                <Share2 size={14} />
+                                <span>Share Contact</span>
                               </button>
-                              <button onClick={() => handleIndividualAction(grabber.id, 'questionnaire')} disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-id="72" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <Send size={14} data-magicpath-id="73" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-id="74" data-magicpath-path="OpportunityGrabsReview.tsx">Send Questionnaire</span>
+                              <button onClick={() => handleIndividualAction(grabber.id, 'questionnaire')} disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2">
+                                <Send size={14} />
+                                <span>Send Questionnaire</span>
                               </button>
-                              <button onClick={() => handleIndividualAction(grabber.id, 'decline')} disabled={isLoading} className="text-gray-500 hover:text-gray-700 transition-colors duration-200 disabled:opacity-50 flex items-center space-x-2" data-magicpath-id="75" data-magicpath-path="OpportunityGrabsReview.tsx">
-                                <X size={14} data-magicpath-id="76" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                                <span data-magicpath-id="77" data-magicpath-path="OpportunityGrabsReview.tsx">Decline</span>
+                              <button onClick={() => handleIndividualAction(grabber.id, 'decline')} disabled={isLoading} className="text-gray-500 hover:text-gray-700 transition-colors duration-200 disabled:opacity-50 flex items-center space-x-2">
+                                <X size={14} />
+                                <span>Decline</span>
                               </button>
                             </>}
                           
-                          {grabber.status === 'contact_shared' && <div className="flex items-center space-x-2 text-green-600" data-magicpath-id="78" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <CheckCircle size={16} data-magicpath-id="79" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                              <span className="text-sm font-medium" data-magicpath-id="80" data-magicpath-path="OpportunityGrabsReview.tsx">Contact information shared</span>
+                          {grabber.status === 'contact_shared' && <div className="flex items-center space-x-2 text-green-600">
+                              <CheckCircle size={16} />
+                              <span className="text-sm font-medium">Contact information shared</span>
                             </div>}
                           
-                          {grabber.status === 'questionnaire_sent' && <div className="flex items-center space-x-2 text-blue-600" data-magicpath-id="81" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <Mail size={16} data-magicpath-id="82" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                              <span className="text-sm font-medium" data-magicpath-id="83" data-magicpath-path="OpportunityGrabsReview.tsx">Questionnaire sent</span>
+                          {grabber.status === 'questionnaire_sent' && <div className="flex items-center space-x-2 text-blue-600">
+                              <Mail size={16} />
+                              <span className="text-sm font-medium">Questionnaire sent</span>
                             </div>}
                           
-                          {grabber.status === 'declined' && <div className="flex items-center space-x-2 text-gray-500" data-magicpath-id="84" data-magicpath-path="OpportunityGrabsReview.tsx">
-                              <X size={16} data-magicpath-id="85" data-magicpath-path="OpportunityGrabsReview.tsx" />
-                              <span className="text-sm font-medium" data-magicpath-id="86" data-magicpath-path="OpportunityGrabsReview.tsx">Declined</span>
+                          {grabber.status === 'declined' && <div className="flex items-center space-x-2 text-gray-500">
+                              <X size={16} />
+                              <span className="text-sm font-medium">Declined</span>
                             </div>}
                         </div>
                       </div>
@@ -321,14 +321,14 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
             opacity: 0
           }} animate={{
             opacity: 1
-          }} className="text-center py-16" data-magicpath-id="87" data-magicpath-path="OpportunityGrabsReview.tsx">
-                <div className="mb-6" data-magicpath-id="88" data-magicpath-path="OpportunityGrabsReview.tsx">
-                  <AlertCircle size={64} className="mx-auto text-gray-300" data-magicpath-id="89" data-magicpath-path="OpportunityGrabsReview.tsx" />
+          }} className="text-center py-16">
+                <div className="mb-6">
+                  <AlertCircle size={64} className="mx-auto text-gray-300" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4" data-magicpath-id="90" data-magicpath-path="OpportunityGrabsReview.tsx">
+                <h3 className="text-2xl font-bold mb-4">
                   No one has grabbed this opportunity yet
                 </h3>
-                <p className="text-gray-600 text-lg max-w-md mx-auto" data-magicpath-id="91" data-magicpath-path="OpportunityGrabsReview.tsx">
+                <p className="text-gray-600 text-lg max-w-md mx-auto">
                   When people grab your opportunity, they'll appear here for you to review and connect with.
                 </p>
               </motion.div>}
@@ -337,14 +337,14 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
       </main>
 
       {/* Batch Action Confirmation Modals */}
-      <AnimatePresence data-magicpath-id="92" data-magicpath-path="OpportunityGrabsReview.tsx">
+      <AnimatePresence>
         {showBatchModal && <motion.div initial={{
         opacity: 0
       }} animate={{
         opacity: 1
       }} exit={{
         opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" data-magicpath-id="93" data-magicpath-path="OpportunityGrabsReview.tsx">
+      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <motion.div initial={{
           scale: 0.9,
           opacity: 0
@@ -354,18 +354,18 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
         }} exit={{
           scale: 0.9,
           opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200" data-magicpath-id="94" data-magicpath-path="OpportunityGrabsReview.tsx">
-              <h3 className="text-2xl font-bold mb-4" data-magicpath-id="95" data-magicpath-path="OpportunityGrabsReview.tsx">
+        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+              <h3 className="text-2xl font-bold mb-4">
                 {showBatchModal === 'contact' ? 'Share Contact with All?' : 'Send Questionnaire to All?'}
               </h3>
-              <p className="text-gray-600 mb-6" data-magicpath-id="96" data-magicpath-path="OpportunityGrabsReview.tsx">
+              <p className="text-gray-600 mb-6">
                 {showBatchModal === 'contact' ? `This will share your contact information with all ${statusCounts.pending} pending candidates.` : `This will send a questionnaire to all ${statusCounts.pending} pending candidates.`}
               </p>
-              <div className="flex items-center justify-end space-x-4" data-magicpath-id="97" data-magicpath-path="OpportunityGrabsReview.tsx">
-                <button onClick={() => setShowBatchModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200" data-magicpath-id="98" data-magicpath-path="OpportunityGrabsReview.tsx">
+              <div className="flex items-center justify-end space-x-4">
+                <button onClick={() => setShowBatchModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
                   Cancel
                 </button>
-                <button onClick={() => handleBatchAction(showBatchModal)} className={`px-6 py-3 text-base font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-opacity-20 ${showBatchModal === 'contact' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-600' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-600'}`} data-magicpath-id="99" data-magicpath-path="OpportunityGrabsReview.tsx">
+                <button onClick={() => handleBatchAction(showBatchModal)} className={`px-6 py-3 text-base font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-opacity-20 ${showBatchModal === 'contact' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-600' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-600'}`}>
                   {showBatchModal === 'contact' ? 'Share Contact' : 'Send Questionnaire'}
                 </button>
               </div>
@@ -374,9 +374,9 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16" data-magicpath-id="100" data-magicpath-path="OpportunityGrabsReview.tsx">
-        <div className="max-w-7xl mx-auto text-center" data-magicpath-id="101" data-magicpath-path="OpportunityGrabsReview.tsx">
-          <p className="text-lg font-light" data-magicpath-id="102" data-magicpath-path="OpportunityGrabsReview.tsx">
+      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-lg font-light">
             © 2024 StartupEcosystem.in — Building the future, one connection at a time.
           </p>
         </div>

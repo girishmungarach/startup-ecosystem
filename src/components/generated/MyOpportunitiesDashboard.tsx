@@ -127,17 +127,17 @@ const MyOpportunitiesDashboard: React.FC = () => {
     return [{
       title: 'Total Posts',
       value: totalPosts.toString(),
-      icon: <BarChart3 size={24} data-magicpath-id="0" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
+      icon: <BarChart3 size={24} />,
       change: '+2 this month'
     }, {
       title: 'Total Grabs',
       value: totalGrabs.toString(),
-      icon: <Users size={24} data-magicpath-id="1" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
+      icon: <Users size={24} />,
       change: '+12 this week'
     }, {
       title: 'Successful Connections',
       value: successfulConnections.toString(),
-      icon: <CheckCircle size={24} data-magicpath-id="2" data-magicpath-path="MyOpportunitiesDashboard.tsx" />,
+      icon: <CheckCircle size={24} />,
       change: '78% success rate'
     }];
   }, [mockOpportunities]);
@@ -179,18 +179,18 @@ const MyOpportunitiesDashboard: React.FC = () => {
   const handleReopenOpportunity = (opportunityId: string) => {
     console.log('Reopen opportunity:', opportunityId);
   };
-  return <div className="min-h-screen bg-white text-black font-sans" data-magicpath-id="3" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+  return <div className="min-h-screen bg-white text-black font-sans">
       {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200" data-magicpath-id="4" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-        <div className="max-w-7xl mx-auto" data-magicpath-id="5" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-          <div className="flex items-center justify-between mb-6" data-magicpath-id="6" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight" data-magicpath-id="7" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               StartupEcosystem.in
             </h1>
           </div>
           
           {/* Navigation Menu */}
-          <nav className="flex flex-wrap items-center gap-8" data-magicpath-id="8" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+          <nav className="flex flex-wrap items-center gap-8">
             <a href="#" className="text-lg font-light text-gray-600 hover:text-black transition-colors duration-200">
               Opportunities
             </a>
@@ -208,8 +208,8 @@ const MyOpportunitiesDashboard: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24" data-magicpath-id="9" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-        <div className="max-w-7xl mx-auto" data-magicpath-id="10" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+      <main className="px-6 py-8 md:px-12 lg:px-24">
+        <div className="max-w-7xl mx-auto">
           {/* Page Title */}
           <motion.div initial={{
           opacity: 0,
@@ -219,11 +219,11 @@ const MyOpportunitiesDashboard: React.FC = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="mb-8" data-magicpath-id="11" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" data-magicpath-id="12" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+        }} className="mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
               My Opportunities
             </h2>
-            <p className="text-xl font-light text-gray-600 max-w-2xl" data-magicpath-id="13" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+            <p className="text-xl font-light text-gray-600 max-w-2xl">
               Manage your posted opportunities, track engagement, and connect with interested candidates.
             </p>
           </motion.div>
@@ -238,18 +238,18 @@ const MyOpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.1
-        }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" data-magicpath-id="14" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-            {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300" data-magicpath-id="15" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                <div className="flex items-center justify-between mb-4" data-magicpath-id="16" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                  <div className="text-gray-600" data-magicpath-id="17" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+        }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {stats.map((stat, index) => <div key={stat.title} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-gray-600">
                     {stat.icon}
                   </div>
-                  <div className="text-right" data-magicpath-id="18" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                    <div className="text-3xl font-bold" data-magicpath-id="19" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.value}</div>
-                    {stat.change && <div className="text-sm text-gray-500 mt-1" data-magicpath-id="20" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.change}</div>}
+                  <div className="text-right">
+                    <div className="text-3xl font-bold">{stat.value}</div>
+                    {stat.change && <div className="text-sm text-gray-500 mt-1">{stat.change}</div>}
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold" data-magicpath-id="21" data-magicpath-path="MyOpportunitiesDashboard.tsx">{stat.title}</h3>
+                <h3 className="text-lg font-semibold">{stat.title}</h3>
               </div>)}
           </motion.div>
 
@@ -263,9 +263,9 @@ const MyOpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.2
-        }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8" data-magicpath-id="22" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+        }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             {/* Tab Navigation */}
-            <div className="flex flex-wrap gap-2" data-magicpath-id="23" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+            <div className="flex flex-wrap gap-2">
               {[{
               key: 'active',
               label: `Active (${tabCounts.active})`
@@ -275,27 +275,27 @@ const MyOpportunitiesDashboard: React.FC = () => {
             }, {
               key: 'closed',
               label: `Closed (${tabCounts.closed})`
-            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-id="24" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+            }].map(tab => <button key={tab.key} onClick={() => setActiveTab(tab.key as 'active' | 'draft' | 'closed')} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeTab === tab.key ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
                   {tab.label}
                 </button>)}
             </div>
 
             {/* Post New Opportunity Button */}
-            <button className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2" data-magicpath-id="25" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-              <Plus size={20} data-magicpath-id="26" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-              <span data-magicpath-id="27" data-magicpath-path="MyOpportunitiesDashboard.tsx">Post New Opportunity</span>
+            <button className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2">
+              <Plus size={20} />
+              <span>Post New Opportunity</span>
             </button>
           </motion.div>
 
           {/* Opportunities Grid */}
-          <AnimatePresence mode="wait" data-magicpath-id="28" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+          <AnimatePresence mode="wait">
             {filteredOpportunities.length > 0 ? <motion.div initial={{
             opacity: 0
           }} animate={{
             opacity: 1
           }} exit={{
             opacity: 0
-          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-magicpath-id="29" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredOpportunities.map((opportunity, index) => <motion.div key={opportunity.id} initial={{
               opacity: 0,
               y: 20
@@ -305,83 +305,83 @@ const MyOpportunitiesDashboard: React.FC = () => {
             }} transition={{
               duration: 0.4,
               delay: index * 0.1
-            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group relative" data-magicpath-id="30" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group relative">
                     {/* Notification Badge */}
-                    {opportunity.hasNotifications && <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full" data-magicpath-id="31" data-magicpath-path="MyOpportunitiesDashboard.tsx"></div>}
+                    {opportunity.hasNotifications && <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full"></div>}
 
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-4" data-magicpath-id="32" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`} data-magicpath-id="33" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="flex items-start justify-between mb-4">
+                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`}>
                         {opportunity.type}
                       </span>
-                      <div className="flex items-center space-x-2" data-magicpath-id="34" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        {opportunity.status === 'active' && <div className="w-2 h-2 bg-green-500 rounded-full" data-magicpath-id="35" data-magicpath-path="MyOpportunitiesDashboard.tsx"></div>}
-                        {opportunity.status === 'draft' && <Clock size={16} className="text-orange-500" data-magicpath-id="36" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
-                        {opportunity.status === 'closed' && <X size={16} className="text-gray-500" data-magicpath-id="37" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
+                      <div className="flex items-center space-x-2">
+                        {opportunity.status === 'active' && <div className="w-2 h-2 bg-green-500 rounded-full"></div>}
+                        {opportunity.status === 'draft' && <Clock size={16} className="text-orange-500" />}
+                        {opportunity.status === 'closed' && <X size={16} className="text-gray-500" />}
                       </div>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200" data-magicpath-id="38" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200">
                       {opportunity.title}
                     </h3>
 
                     {/* Company and Date */}
-                    <div className="space-y-2 mb-4" data-magicpath-id="39" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <p className="text-base font-semibold text-gray-800" data-magicpath-id="40" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="space-y-2 mb-4">
+                      <p className="text-base font-semibold text-gray-800">
                         {opportunity.company}
                       </p>
-                      <p className="text-sm text-gray-600" data-magicpath-id="41" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                      <p className="text-sm text-gray-600">
                         Posted {opportunity.postedAt}
                       </p>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-2" data-magicpath-id="42" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-2">
                       {opportunity.description}
                     </p>
 
                     {/* Stats */}
-                    <div className="flex items-center justify-between mb-4 text-sm text-gray-600" data-magicpath-id="43" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <div className="flex items-center space-x-4" data-magicpath-id="44" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        <span data-magicpath-id="45" data-magicpath-path="MyOpportunitiesDashboard.tsx">{opportunity.viewCount} views</span>
-                        <span className="flex items-center space-x-1" data-magicpath-id="46" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <Users size={14} data-magicpath-id="47" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          <span data-magicpath-id="48" data-magicpath-path="MyOpportunitiesDashboard.tsx">{opportunity.grabCount} grabs</span>
+                    <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
+                      <div className="flex items-center space-x-4">
+                        <span>{opportunity.viewCount} views</span>
+                        <span className="flex items-center space-x-1">
+                          <Users size={14} />
+                          <span>{opportunity.grabCount} grabs</span>
                         </span>
                       </div>
                     </div>
 
                     {/* Status Indicator */}
-                    <div className="mb-4" data-magicpath-id="49" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      {opportunity.grabCount > 0 ? <div className="flex items-center space-x-2 text-green-600" data-magicpath-id="50" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <CheckCircle size={16} data-magicpath-id="51" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          <span className="text-sm font-medium" data-magicpath-id="52" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                    <div className="mb-4">
+                      {opportunity.grabCount > 0 ? <div className="flex items-center space-x-2 text-green-600">
+                          <CheckCircle size={16} />
+                          <span className="text-sm font-medium">
                             {opportunity.grabCount} people grabbed this
                           </span>
-                        </div> : <div className="flex items-center space-x-2 text-gray-500" data-magicpath-id="53" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <AlertCircle size={16} data-magicpath-id="54" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          <span className="text-sm" data-magicpath-id="55" data-magicpath-path="MyOpportunitiesDashboard.tsx">No grabs yet</span>
+                        </div> : <div className="flex items-center space-x-2 text-gray-500">
+                          <AlertCircle size={16} />
+                          <span className="text-sm">No grabs yet</span>
                         </div>}
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-id="56" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                      <div className="flex items-center space-x-2" data-magicpath-id="57" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1" data-magicpath-id="58" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                            <Eye size={16} data-magicpath-id="59" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                            <span className="text-sm font-medium" data-magicpath-id="60" data-magicpath-path="MyOpportunitiesDashboard.tsx">View Grabs</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                      <div className="flex items-center space-x-2">
+                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1">
+                            <Eye size={16} />
+                            <span className="text-sm font-medium">View Grabs</span>
                           </button>}
                       </div>
                       
-                      <div className="flex items-center space-x-2" data-magicpath-id="61" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                        <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200" title="Edit" data-magicpath-id="62" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                          <Edit size={16} data-magicpath-id="63" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
+                      <div className="flex items-center space-x-2">
+                        <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200" title="Edit">
+                          <Edit size={16} />
                         </button>
                         
-                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200" title="Close" data-magicpath-id="64" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                            <X size={16} data-magicpath-id="65" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium" data-magicpath-id="66" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200" title="Close">
+                            <X size={16} />
+                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium">
                             Reopen
                           </button> : null}
                       </div>
@@ -395,23 +395,23 @@ const MyOpportunitiesDashboard: React.FC = () => {
             opacity: 1
           }} exit={{
             opacity: 0
-          }} className="text-center py-16" data-magicpath-id="67" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                <div className="mb-6" data-magicpath-id="68" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                  {activeTab === 'active' && <TrendingUp size={64} className="mx-auto text-gray-300" data-magicpath-id="69" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
-                  {activeTab === 'draft' && <Clock size={64} className="mx-auto text-gray-300" data-magicpath-id="70" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
-                  {activeTab === 'closed' && <CheckCircle size={64} className="mx-auto text-gray-300" data-magicpath-id="71" data-magicpath-path="MyOpportunitiesDashboard.tsx" />}
+          }} className="text-center py-16">
+                <div className="mb-6">
+                  {activeTab === 'active' && <TrendingUp size={64} className="mx-auto text-gray-300" />}
+                  {activeTab === 'draft' && <Clock size={64} className="mx-auto text-gray-300" />}
+                  {activeTab === 'closed' && <CheckCircle size={64} className="mx-auto text-gray-300" />}
                 </div>
-                <h3 className="text-2xl font-bold mb-4" data-magicpath-id="72" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                <h3 className="text-2xl font-bold mb-4">
                   No {activeTab} opportunities
                 </h3>
-                <p className="text-gray-600 text-lg max-w-md mx-auto mb-6" data-magicpath-id="73" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                <p className="text-gray-600 text-lg max-w-md mx-auto mb-6">
                   {activeTab === 'active' && "You don't have any active opportunities. Post one to get started!"}
                   {activeTab === 'draft' && "No draft opportunities found. Create a new opportunity and save it as draft."}
                   {activeTab === 'closed' && "No closed opportunities yet. Your completed opportunities will appear here."}
                 </p>
-                {activeTab !== 'closed' && <button className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2 mx-auto" data-magicpath-id="74" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                    <Plus size={20} data-magicpath-id="75" data-magicpath-path="MyOpportunitiesDashboard.tsx" />
-                    <span data-magicpath-id="76" data-magicpath-path="MyOpportunitiesDashboard.tsx">Post New Opportunity</span>
+                {activeTab !== 'closed' && <button className="bg-black text-white px-6 py-3 text-base font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 flex items-center space-x-2 mx-auto">
+                    <Plus size={20} />
+                    <span>Post New Opportunity</span>
                   </button>}
               </motion.div>}
           </AnimatePresence>
@@ -419,14 +419,14 @@ const MyOpportunitiesDashboard: React.FC = () => {
       </main>
 
       {/* Close Confirmation Modal */}
-      <AnimatePresence data-magicpath-id="77" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+      <AnimatePresence>
         {showCloseModal && <motion.div initial={{
         opacity: 0
       }} animate={{
         opacity: 1
       }} exit={{
         opacity: 0
-      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" data-magicpath-id="78" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+      }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <motion.div initial={{
           scale: 0.9,
           opacity: 0
@@ -436,16 +436,16 @@ const MyOpportunitiesDashboard: React.FC = () => {
         }} exit={{
           scale: 0.9,
           opacity: 0
-        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200" data-magicpath-id="79" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-              <h3 className="text-2xl font-bold mb-4" data-magicpath-id="80" data-magicpath-path="MyOpportunitiesDashboard.tsx">Close Opportunity?</h3>
-              <p className="text-gray-600 mb-6" data-magicpath-id="81" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+        }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+              <h3 className="text-2xl font-bold mb-4">Close Opportunity?</h3>
+              <p className="text-gray-600 mb-6">
                 This will close the opportunity and stop accepting new applications. You can reopen it later if needed.
               </p>
-              <div className="flex items-center justify-end space-x-4" data-magicpath-id="82" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-                <button onClick={() => setShowCloseModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200" data-magicpath-id="83" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+              <div className="flex items-center justify-end space-x-4">
+                <button onClick={() => setShowCloseModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
                   Cancel
                 </button>
-                <button onClick={() => handleCloseOpportunity(showCloseModal)} className="bg-red-600 text-white px-6 py-3 text-base font-semibold hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20" data-magicpath-id="84" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+                <button onClick={() => handleCloseOpportunity(showCloseModal)} className="bg-red-600 text-white px-6 py-3 text-base font-semibold hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20">
                   Close Opportunity
                 </button>
               </div>
@@ -454,9 +454,9 @@ const MyOpportunitiesDashboard: React.FC = () => {
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16" data-magicpath-id="85" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-        <div className="max-w-7xl mx-auto text-center" data-magicpath-id="86" data-magicpath-path="MyOpportunitiesDashboard.tsx">
-          <p className="text-lg font-light" data-magicpath-id="87" data-magicpath-path="MyOpportunitiesDashboard.tsx">
+      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-lg font-light">
             © 2024 StartupEcosystem.in — Building the future, one connection at a time.
           </p>
         </div>

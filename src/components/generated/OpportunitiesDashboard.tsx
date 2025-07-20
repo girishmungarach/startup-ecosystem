@@ -141,18 +141,18 @@ const OpportunitiesDashboard: React.FC = () => {
     // Handle "Grab It" action
     console.log('Grab It clicked for:', opportunity.title);
   };
-  return <div className="min-h-screen bg-white text-black font-sans" data-magicpath-id="0" data-magicpath-path="OpportunitiesDashboard.tsx">
+  return <div className="min-h-screen bg-white text-black font-sans">
       {/* Header Navigation */}
-      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200" data-magicpath-id="1" data-magicpath-path="OpportunitiesDashboard.tsx">
-        <div className="max-w-7xl mx-auto" data-magicpath-id="2" data-magicpath-path="OpportunitiesDashboard.tsx">
-          <div className="flex items-center justify-between mb-6" data-magicpath-id="3" data-magicpath-path="OpportunitiesDashboard.tsx">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight" data-magicpath-id="4" data-magicpath-path="OpportunitiesDashboard.tsx">
+      <header className="w-full px-6 py-6 md:px-12 lg:px-24 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               StartupEcosystem.in
             </h1>
           </div>
           
           {/* Navigation Menu */}
-          <nav className="flex flex-wrap items-center gap-8" data-magicpath-id="5" data-magicpath-path="OpportunitiesDashboard.tsx">
+          <nav className="flex flex-wrap items-center gap-8">
             <a href="#" className="text-lg font-semibold text-black border-b-2 border-black pb-1">
               Opportunities
             </a>
@@ -170,8 +170,8 @@ const OpportunitiesDashboard: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-6 py-8 md:px-12 lg:px-24" data-magicpath-id="6" data-magicpath-path="OpportunitiesDashboard.tsx">
-        <div className="max-w-7xl mx-auto" data-magicpath-id="7" data-magicpath-path="OpportunitiesDashboard.tsx">
+      <main className="px-6 py-8 md:px-12 lg:px-24">
+        <div className="max-w-7xl mx-auto">
           {/* Page Title */}
           <motion.div initial={{
           opacity: 0,
@@ -181,11 +181,11 @@ const OpportunitiesDashboard: React.FC = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="mb-8" data-magicpath-id="8" data-magicpath-path="OpportunitiesDashboard.tsx">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" data-magicpath-id="9" data-magicpath-path="OpportunitiesDashboard.tsx">
+        }} className="mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Latest Opportunities
             </h2>
-            <p className="text-xl font-light text-gray-600 max-w-2xl" data-magicpath-id="10" data-magicpath-path="OpportunitiesDashboard.tsx">
+            <p className="text-xl font-light text-gray-600 max-w-2xl">
               Discover jobs, investments, partnerships, and more from India's most innovative startups.
             </p>
           </motion.div>
@@ -200,23 +200,23 @@ const OpportunitiesDashboard: React.FC = () => {
         }} transition={{
           duration: 0.6,
           delay: 0.1
-        }} className="mb-8 space-y-6" data-magicpath-id="11" data-magicpath-path="OpportunitiesDashboard.tsx">
+        }} className="mb-8 space-y-6">
             {/* Search Bar */}
-            <div className="relative max-w-2xl" data-magicpath-id="12" data-magicpath-path="OpportunitiesDashboard.tsx">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} data-magicpath-id="13" data-magicpath-path="OpportunitiesDashboard.tsx" />
-              <input type="text" placeholder="Search opportunities..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" data-magicpath-id="14" data-magicpath-path="OpportunitiesDashboard.tsx" />
+            <div className="relative max-w-2xl">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <input type="text" placeholder="Search opportunities..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-300 focus:border-black focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 transition-all duration-200" />
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2" data-magicpath-id="15" data-magicpath-path="OpportunitiesDashboard.tsx">
-              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`} data-magicpath-id="16" data-magicpath-path="OpportunitiesDashboard.tsx">
+            <div className="flex flex-wrap gap-2">
+              {filterOptions.map(filter => <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-6 py-3 text-base font-medium transition-all duration-200 border-2 ${activeFilter === filter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black hover:bg-gray-50'}`}>
                   {filter}
                 </button>)}
             </div>
           </motion.div>
 
           {/* Opportunities Grid */}
-          <AnimatePresence mode="wait" data-magicpath-id="17" data-magicpath-path="OpportunitiesDashboard.tsx">
+          <AnimatePresence mode="wait">
             {isLoading ?
           // Loading Skeleton
           <motion.div initial={{
@@ -225,13 +225,13 @@ const OpportunitiesDashboard: React.FC = () => {
             opacity: 1
           }} exit={{
             opacity: 0
-          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-magicpath-id="18" data-magicpath-path="OpportunitiesDashboard.tsx">
-                {[...Array(6)].map((_, index) => <div key={index} className="border-2 border-gray-200 p-6 animate-pulse" data-magicpath-id="19" data-magicpath-path="OpportunitiesDashboard.tsx">
-                    <div className="h-4 bg-gray-200 rounded mb-4" data-magicpath-id="20" data-magicpath-path="OpportunitiesDashboard.tsx"></div>
-                    <div className="h-3 bg-gray-200 rounded mb-2" data-magicpath-id="21" data-magicpath-path="OpportunitiesDashboard.tsx"></div>
-                    <div className="h-3 bg-gray-200 rounded mb-4" data-magicpath-id="22" data-magicpath-path="OpportunitiesDashboard.tsx"></div>
-                    <div className="h-20 bg-gray-200 rounded mb-4" data-magicpath-id="23" data-magicpath-path="OpportunitiesDashboard.tsx"></div>
-                    <div className="h-8 bg-gray-200 rounded" data-magicpath-id="24" data-magicpath-path="OpportunitiesDashboard.tsx"></div>
+          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, index) => <div key={index} className="border-2 border-gray-200 p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-3 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-20 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-8 bg-gray-200 rounded"></div>
                   </div>)}
               </motion.div> : filteredOpportunities.length > 0 ? <motion.div initial={{
             opacity: 0
@@ -239,7 +239,7 @@ const OpportunitiesDashboard: React.FC = () => {
             opacity: 1
           }} exit={{
             opacity: 0
-          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-magicpath-id="25" data-magicpath-path="OpportunitiesDashboard.tsx">
+          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredOpportunities.map((opportunity, index) => <motion.div key={opportunity.id} initial={{
               opacity: 0,
               y: 20
@@ -249,45 +249,45 @@ const OpportunitiesDashboard: React.FC = () => {
             }} transition={{
               duration: 0.4,
               delay: index * 0.1
-            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group" data-magicpath-id="26" data-magicpath-path="OpportunitiesDashboard.tsx">
+            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group">
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-4" data-magicpath-id="27" data-magicpath-path="OpportunitiesDashboard.tsx">
-                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`} data-magicpath-id="28" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <div className="flex items-start justify-between mb-4">
+                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`}>
                         {opportunity.type}
                       </span>
-                      <button onClick={() => handleBookmark(opportunity.id)} className="text-gray-400 hover:text-black transition-colors duration-200" data-magicpath-id="29" data-magicpath-path="OpportunitiesDashboard.tsx">
-                        <Bookmark size={20} className={opportunity.isBookmarked ? 'fill-current text-black' : ''} data-magicpath-id="30" data-magicpath-path="OpportunitiesDashboard.tsx" />
+                      <button onClick={() => handleBookmark(opportunity.id)} className="text-gray-400 hover:text-black transition-colors duration-200">
+                        <Bookmark size={20} className={opportunity.isBookmarked ? 'fill-current text-black' : ''} />
                       </button>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200" data-magicpath-id="31" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200">
                       {opportunity.title}
                     </h3>
 
                     {/* Company and Location */}
-                    <div className="space-y-2 mb-4" data-magicpath-id="32" data-magicpath-path="OpportunitiesDashboard.tsx">
-                      <p className="text-base font-semibold text-gray-800" data-magicpath-id="33" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <div className="space-y-2 mb-4">
+                      <p className="text-base font-semibold text-gray-800">
                         {opportunity.company}
                       </p>
-                      <div className="flex items-center text-gray-600" data-magicpath-id="34" data-magicpath-path="OpportunitiesDashboard.tsx">
-                        <MapPin size={16} className="mr-2" data-magicpath-id="35" data-magicpath-path="OpportunitiesDashboard.tsx" />
-                        <span className="text-sm" data-magicpath-id="36" data-magicpath-path="OpportunitiesDashboard.tsx">{opportunity.location}</span>
+                      <div className="flex items-center text-gray-600">
+                        <MapPin size={16} className="mr-2" />
+                        <span className="text-sm">{opportunity.location}</span>
                       </div>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3" data-magicpath-id="37" data-magicpath-path="OpportunitiesDashboard.tsx">
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3">
                       {opportunity.description}
                     </p>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200" data-magicpath-id="38" data-magicpath-path="OpportunitiesDashboard.tsx">
-                      <div className="flex items-center text-gray-500" data-magicpath-id="39" data-magicpath-path="OpportunitiesDashboard.tsx">
-                        <Clock size={14} className="mr-1" data-magicpath-id="40" data-magicpath-path="OpportunitiesDashboard.tsx" />
-                        <span className="text-xs" data-magicpath-id="41" data-magicpath-path="OpportunitiesDashboard.tsx">Posted {opportunity.postedAt}</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                      <div className="flex items-center text-gray-500">
+                        <Clock size={14} className="mr-1" />
+                        <span className="text-xs">Posted {opportunity.postedAt}</span>
                       </div>
-                      <button onClick={() => handleGrabIt(opportunity)} className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20" data-magicpath-id="42" data-magicpath-path="OpportunitiesDashboard.tsx">
+                      <button onClick={() => handleGrabIt(opportunity)} className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
                         Grab It
                       </button>
                     </div>
@@ -300,10 +300,10 @@ const OpportunitiesDashboard: React.FC = () => {
             opacity: 1
           }} exit={{
             opacity: 0
-          }} className="text-center py-16" data-magicpath-id="43" data-magicpath-path="OpportunitiesDashboard.tsx">
-                <Filter size={64} className="mx-auto text-gray-300 mb-6" data-magicpath-id="44" data-magicpath-path="OpportunitiesDashboard.tsx" />
-                <h3 className="text-2xl font-bold mb-4" data-magicpath-id="45" data-magicpath-path="OpportunitiesDashboard.tsx">No opportunities found</h3>
-                <p className="text-gray-600 text-lg max-w-md mx-auto" data-magicpath-id="46" data-magicpath-path="OpportunitiesDashboard.tsx">
+          }} className="text-center py-16">
+                <Filter size={64} className="mx-auto text-gray-300 mb-6" />
+                <h3 className="text-2xl font-bold mb-4">No opportunities found</h3>
+                <p className="text-gray-600 text-lg max-w-md mx-auto">
                   Try adjusting your search or filters to find more opportunities.
                 </p>
               </motion.div>}
@@ -323,15 +323,15 @@ const OpportunitiesDashboard: React.FC = () => {
       scale: 1.1
     }} whileTap={{
       scale: 0.9
-    }} data-magicpath-id="47" data-magicpath-path="OpportunitiesDashboard.tsx">
-        <Plus size={24} data-magicpath-id="48" data-magicpath-path="OpportunitiesDashboard.tsx" />
-        <span className="sr-only" data-magicpath-id="49" data-magicpath-path="OpportunitiesDashboard.tsx">Post New Opportunity</span>
+    }}>
+        <Plus size={24} />
+        <span className="sr-only">Post New Opportunity</span>
       </motion.button>
 
       {/* Footer */}
-      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16" data-magicpath-id="50" data-magicpath-path="OpportunitiesDashboard.tsx">
-        <div className="max-w-7xl mx-auto text-center" data-magicpath-id="51" data-magicpath-path="OpportunitiesDashboard.tsx">
-          <p className="text-lg font-light" data-magicpath-id="52" data-magicpath-path="OpportunitiesDashboard.tsx">
+      <footer className="px-6 py-12 md:px-12 lg:px-24 border-t border-black mt-16">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-lg font-light">
             © 2024 StartupEcosystem.in — Building the future, one connection at a time.
           </p>
         </div>
