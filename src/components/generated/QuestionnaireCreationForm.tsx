@@ -68,9 +68,9 @@ const QuestionnaireCreationForm: React.FC<QuestionnaireCreationFormProps> = ({
         const profileData = await profilesService.getProfileById(userId);
         if (profileData) {
           setProfile({
-            name: profileData.name,
-            role: profileData.role,
-            company: profileData.company,
+            name: profileData.name || 'Unknown',
+            role: profileData.role || 'Unknown',
+            company: profileData.company || 'Unknown',
             currentProject: profileData.current_project || 'No project information available'
           });
         }

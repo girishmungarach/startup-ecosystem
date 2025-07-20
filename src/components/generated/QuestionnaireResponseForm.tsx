@@ -193,7 +193,7 @@ const QuestionnaireResponseForm: React.FC<QuestionnaireResponseFormProps> = () =
           status: 'questionnaire_completed',
           updated_at: new Date().toISOString()
         })
-        .eq('opportunity_id', opportunityDetails.id)
+        .eq('opportunity_id', opportunityId)
         .eq('user_id', user.id);
 
       if (grabError) {

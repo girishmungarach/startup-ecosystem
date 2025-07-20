@@ -54,9 +54,9 @@ const ProfileDiscoveryPage: React.FC = () => {
   const filteredProfiles = useMemo(() => {
     return profiles.filter(profile => {
       const matchesSearch = searchQuery === '' || 
-        profile.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        profile.company.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        profile.current_project.toLowerCase().includes(searchQuery.toLowerCase());
+        (profile.name?.toLowerCase().includes(searchQuery.toLowerCase()) || false) || 
+        (profile.company?.toLowerCase().includes(searchQuery.toLowerCase()) || false) || 
+        (profile.current_project?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
       
       const matchesRole = selectedRoles.length === 0 || 
         selectedRoles.includes('All') || 
@@ -70,11 +70,11 @@ const ProfileDiscoveryPage: React.FC = () => {
         });
       
       const matchesInterests = selectedInterests.length === 0 || 
-        selectedInterests.some(interest => profile.interests.includes(interest));
+        selectedInterests.some(interest => profile.interests?.includes(interest) || false);
       
       const matchesBuildingStatus = selectedBuildingStatus.length === 0 || 
         selectedBuildingStatus.includes('All') || 
-        selectedBuildingStatus.includes(profile.building_status);
+        (profile.building_status && selectedBuildingStatus.includes(profile.building_status));
       
       return matchesSearch && matchesRole && matchesInterests && matchesBuildingStatus;
     });

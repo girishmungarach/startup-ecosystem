@@ -262,11 +262,11 @@ export const bookmarksService = {
       // Convert to CSV format
       const headers = ['Type', 'Title', 'Description', 'Date Added'];
       const rows = bookmarks.map(bookmark => {
-        const item = bookmark.profile || bookmark.job || bookmark.investment || bookmark.event;
+        const item = bookmark.bookmarked_profile || bookmark.opportunity;
         return [
-          bookmark.type,
-          item?.title || item?.name || 'N/A',
-          item?.description || 'N/A',
+          bookmark.bookmark_type,
+          item?.title || item?.name || item?.full_name || 'N/A',
+          item?.description || item?.bio || 'N/A',
           new Date(bookmark.created_at).toLocaleDateString()
         ];
       });
