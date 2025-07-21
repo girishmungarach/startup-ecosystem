@@ -360,7 +360,7 @@ const OpportunitiesDashboard: React.FC = () => {
                     {/* Title */}
                     <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200">
                       <button 
-                        onClick={() => navigate(`/opportunities/${opportunity.id}`)}
+                        onClick={() => window.location.href = `/opportunities/${opportunity.id}`}
                         className="text-left hover:text-gray-600 transition-colors duration-200"
                       >
                         {opportunity.title}

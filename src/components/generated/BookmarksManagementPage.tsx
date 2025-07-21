@@ -24,9 +24,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { bookmarksService, Bookmark as BookmarkType, BookmarkFilters } from '../../services/bookmarks';
+import { useNavigate } from 'react-router-dom';
 
 const BookmarksManagementPage: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -395,27 +397,27 @@ const BookmarksManagementPage: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="space-y-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {filteredBookmarks.map((bookmark, index) => {
                   const displayData = getItemDisplayData(bookmark);
                   const isSelected = selectedBookmarks.includes(bookmark.id);
-                  
+                  const isProfile = bookmark.bookmark_type === 'profile';
+                  const isOpportunity = bookmark.bookmark_type === 'opportunity';
                   return (
                     <motion.div 
                       key={bookmark.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className={`bg-white border-2 p-6 hover:border-black transition-all duration-300 group ${
-                        isSelected ? 'border-black bg-gray-50' : 'border-gray-200'
-                      }`}
+                      className={`bg-white border-2 p-6 hover:border-black transition-all duration-300 group rounded-2xl flex flex-col justify-between min-h-[320px] ${isSelected ? 'border-black bg-gray-50' : 'border-gray-200'}`}
                     >
-                      <div className="flex items-start space-x-4">
+                      <div className="flex items-start space-x-4 mb-4">
                         {/* Selection Checkbox */}
                         <button 
                           onClick={() => toggleBookmarkSelection(bookmark.id)}
                           className="mt-1"
+                          aria-label={isSelected ? 'Deselect bookmark' : 'Select bookmark'}
                         >
                           {isSelected ? (
                             <CheckSquare size={20} className="text-black" />
@@ -423,47 +425,51 @@ const BookmarksManagementPage: React.FC = () => {
                             <Square size={20} className="text-gray-400 hover:text-gray-600" />
                           )}
                         </button>
-
                         {/* Icon */}
-                        <div className="mt-1">
-                          {displayData.icon}
-                        </div>
-
+                        <div className="mt-1">{displayData.icon}</div>
                         {/* Content */}
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h4 className="text-xl font-bold">{displayData.title}</h4>
-                              <p className="text-gray-600 flex items-center space-x-1">
-                                <span>{displayData.subtitle}</span>
-                              </p>
+                              <h4 className="text-xl font-bold mb-1">{displayData.title}</h4>
+                              <p className="text-gray-600 flex items-center space-x-1 text-sm">{displayData.subtitle}</p>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200">
-                                {displayData.type}
-                              </span>
+                              <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">{displayData.type}</span>
                               <button 
                                 onClick={() => removeBookmark(bookmark.id)}
                                 className="p-2 text-gray-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
                                 title="Remove bookmark"
+                                aria-label="Remove bookmark"
                               >
                                 <Trash2 size={16} />
                               </button>
                             </div>
                           </div>
-                          
-                          <p className="text-gray-700 leading-relaxed mb-3">
-                            {displayData.description}
-                          </p>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">
-                              Bookmarked on {new Date(bookmark.created_at).toLocaleDateString()}
-                            </span>
-                            <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium">
-                              <ExternalLink size={16} />
-                              <span>View Details</span>
-                            </button>
+                          <p className="text-gray-700 leading-relaxed mb-3 text-sm">{displayData.description}</p>
+                          <div className="flex items-center justify-between mt-auto">
+                            <span className="text-xs text-gray-500">Bookmarked on {new Date(bookmark.created_at).toLocaleDateString()}</span>
+                            {/* View Details Button */}
+                            {isProfile && (
+                              <button
+                                className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium"
+                                onClick={() => window.location.href = `/profiles/${bookmark.bookmarked_user_id}`}
+                                aria-label="View Profile"
+                              >
+                                <ExternalLink size={16} />
+                                <span>View Profile</span>
+                              </button>
+                            )}
+                            {isOpportunity && (
+                              <button
+                                className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium"
+                                onClick={() => window.location.href = `/opportunities/${bookmark.opportunity_id}`}
+                                aria-label="View Opportunity"
+                              >
+                                <ExternalLink size={16} />
+                                <span>View Opportunity</span>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>

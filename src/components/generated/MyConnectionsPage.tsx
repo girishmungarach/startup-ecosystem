@@ -388,7 +388,7 @@ const MyConnectionsPage: React.FC = () => {
 
                       {/* Action Buttons */}
                       <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 ml-4">
-                        <button onClick={() => handleViewProfile(connection.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium">
+                        <button onClick={() => window.location.href = `/profiles/${connection.connected_user?.id}`} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium">
                           <Eye size={16} />
                           <span>View Profile</span>
                         </button>

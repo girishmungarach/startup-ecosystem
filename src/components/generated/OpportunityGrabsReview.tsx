@@ -435,10 +435,7 @@ const OpportunityGrabsReview: React.FC<OpportunityGrabsReviewProps> = ({
 
                         {/* Actions */}
                         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                          <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium">
-                            <ExternalLink size={16} />
-                            <span>View Full Profile</span>
-                          </button>
+                          <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-2 font-medium" onClick={() => window.location.href = `/profiles/${grabber.user?.id}`}> <ExternalLink size={16} /> <span>View Profile</span> </button>
                           
                           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-4 sm:mt-0">
                             {grabber.status === 'pending' && (

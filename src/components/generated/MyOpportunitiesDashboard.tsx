@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Eye, Edit, MoreHorizontal, Users, TrendingUp, CheckCircle, Clock, AlertCircle, X, BarChart3, Trash2 } from 'lucide-react';
+import { Plus, Eye, Edit, MoreHorizontal, Users, TrendingUp, CheckCircle, Clock, AlertCircle, X, BarChart3, Trash2, Lock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -33,6 +33,8 @@ const MyOpportunitiesDashboard: React.FC = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
+  const [showOpportunityModal, setShowOpportunityModal] = useState(false);
 
   // Load user's opportunities from database
   useEffect(() => {
@@ -230,6 +232,13 @@ const MyOpportunitiesDashboard: React.FC = () => {
       setIsDeleting(false);
     }
   };
+
+  // Helper: check if user is authorized to view full contact info
+  const canViewContact = (opportunity: Opportunity) => {
+    // Example: Only allow if opportunity.status === 'active' and user is the owner
+    if (!user || !opportunity) return false;
+    return user.id === opportunity.id; // Replace with your actual logic
+  };
   return (
     <>
       {/* Statistics Cards */}
@@ -302,7 +311,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
             opacity: 1
           }} exit={{
             opacity: 0
-          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredOpportunities.map((opportunity, index) => <motion.div key={opportunity.id} initial={{
               opacity: 0,
               y: 20
@@ -312,15 +321,13 @@ const MyOpportunitiesDashboard: React.FC = () => {
             }} transition={{
               duration: 0.4,
               delay: index * 0.1
-            }} className="border-2 border-gray-200 p-6 hover:border-black transition-all duration-300 hover:shadow-lg group relative">
+            }} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-lg hover:border-black transition-all duration-300 group flex flex-col justify-between min-h-[420px]">
                     {/* Notification Badge */}
                     {opportunity.hasNotifications && <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full"></div>}
 
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
-                      <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`}>
-                        {opportunity.type}
-                      </span>
+                      <span className={`px-3 py-1 text-sm font-medium border rounded-full ${getTypeColor(opportunity.type)}`}>{opportunity.type}</span>
                       <div className="flex items-center space-x-2">
                         {opportunity.status === 'active' && <div className="w-2 h-2 bg-green-500 rounded-full"></div>}
                         {opportunity.status === 'draft' && <Clock size={16} className="text-orange-500" />}
@@ -329,27 +336,19 @@ const MyOpportunitiesDashboard: React.FC = () => {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200">
-                      {opportunity.title}
-                    </h3>
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-gray-700 transition-colors duration-200 cursor-pointer" onClick={() => { setSelectedOpportunity(opportunity); setShowOpportunityModal(true); }}>{opportunity.title}</h3>
 
                     {/* Company and Date */}
-                    <div className="space-y-2 mb-4">
-                      <p className="text-base font-semibold text-gray-800">
-                        {opportunity.company}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Posted {opportunity.postedAt}
-                      </p>
+                    <div className="space-y-1 mb-3">
+                      <p className="text-base font-semibold text-gray-800">{opportunity.company}</p>
+                      <p className="text-sm text-gray-600">Posted {opportunity.postedAt}</p>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-2">
-                      {opportunity.description}
-                    </p>
+                    <p className="text-gray-700 text-sm leading-relaxed mb-3 line-clamp-2">{opportunity.description}</p>
 
                     {/* Stats */}
-                    <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
+                    <div className="flex items-center justify-between mb-3 text-sm text-gray-600">
                       <div className="flex items-center space-x-4">
                         <span>{opportunity.viewCount} views</span>
                         <span className="flex items-center space-x-1">
@@ -360,12 +359,10 @@ const MyOpportunitiesDashboard: React.FC = () => {
                     </div>
 
                     {/* Status Indicator */}
-                    <div className="mb-4">
+                    <div className="mb-3">
                       {opportunity.grabCount > 0 ? <div className="flex items-center space-x-2 text-green-600">
                           <CheckCircle size={16} />
-                          <span className="text-sm font-medium">
-                            {opportunity.grabCount} people grabbed this
-                          </span>
+                          <span className="text-sm font-medium">{opportunity.grabCount} people grabbed this</span>
                         </div> : <div className="flex items-center space-x-2 text-gray-500">
                           <AlertCircle size={16} />
                           <span className="text-sm">No grabs yet</span>
@@ -373,19 +370,14 @@ const MyOpportunitiesDashboard: React.FC = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t border-gray-200 gap-3">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t border-gray-200 gap-3 mt-auto">
                       <div className="flex items-center space-x-2">
-                        {opportunity.grabCount > 0 && <button onClick={() => handleViewGrabs(opportunity.id)} className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 min-h-[40px]">
-                            <Eye size={16} />
-                            <span className="text-sm font-medium">View Grabs</span>
-                          </button>}
+                        <button className="text-black hover:text-gray-600 transition-colors duration-200 flex items-center space-x-1 text-sm font-medium" onClick={() => window.location.href = `/opportunities/${opportunity.id}`}> <Eye size={16} /> <span>View Opportunity</span> </button>
                       </div>
-                      
                       <div className="flex items-center space-x-2">
                         <button onClick={() => handleEdit(opportunity.id)} className="text-gray-600 hover:text-black transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Edit">
                           <Edit size={16} />
                         </button>
-                        
                         {opportunity.status === 'active' ? (
                           <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 rounded-lg hover:bg-red-50 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Close">
                             <X size={16} />
@@ -395,7 +387,6 @@ const MyOpportunitiesDashboard: React.FC = () => {
                             Reopen
                           </button>
                         ) : null}
-                        
                         <button onClick={() => setShowDeleteModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 rounded-lg hover:bg-red-50 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Delete">
                           <Trash2 size={16} />
                         </button>
@@ -432,6 +423,71 @@ const MyOpportunitiesDashboard: React.FC = () => {
                     <span>Post New Opportunity</span>
                   </button>}
               </motion.div>}
+          </AnimatePresence>
+
+          {/* Big Card Modal for Opportunity */}
+          <AnimatePresence>
+            {showOpportunityModal && selectedOpportunity && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[2000] bg-black bg-opacity-50 flex items-center justify-center p-4"
+                onClick={() => setShowOpportunityModal(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative flex flex-col"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <button
+                    className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+                    onClick={() => setShowOpportunityModal(false)}
+                    aria-label="Close"
+                  >
+                    <X size={24} />
+                  </button>
+                  <div className="mb-6">
+                    <span className={`px-3 py-1 text-sm font-medium border rounded-full ${getTypeColor(selectedOpportunity.type)}`}>{selectedOpportunity.type}</span>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1 mt-2">{selectedOpportunity.title}</h2>
+                    <p className="text-gray-600 font-semibold">{selectedOpportunity.company}</p>
+                    <p className="text-gray-600 text-sm">Posted {selectedOpportunity.postedAt}</p>
+                  </div>
+                  <div className="mb-4">
+                    <p className="text-sm font-semibold text-gray-800 mb-2">Description</p>
+                    <p className="text-sm text-gray-600 leading-relaxed">{selectedOpportunity.description}</p>
+                  </div>
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    <span className="text-xs text-gray-600">{selectedOpportunity.viewCount} views</span>
+                    <span className="text-xs text-gray-600">{selectedOpportunity.grabCount} grabs</span>
+                  </div>
+                  {/* Blurred Email/Contact Info */}
+                  <div className="mb-6">
+                    <p className="text-sm font-semibold text-gray-800 mb-2 flex items-center">Contact Email</p>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-base font-mono px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 ${canViewContact(selectedOpportunity) ? '' : 'blur-sm select-none pointer-events-none'}`}>example@email.com</span>
+                      {!canViewContact(selectedOpportunity) && (
+                        <span className="inline-flex items-center text-gray-400"><Lock size={16} className="mr-1" /> Blurred</span>
+                      )}
+                    </div>
+                    {!canViewContact(selectedOpportunity) && (
+                      <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-all duration-200" onClick={() => {/* trigger connect/request access flow */}}>
+                        Request Access
+                      </button>
+                    )}
+                  </div>
+                  {/* Microfunctions: Bookmark, Grab, Edit, Delete, etc. */}
+                  <div className="flex flex-wrap gap-3 mt-4">
+                    <button className="px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-all duration-200">Bookmark</button>
+                    <button className="px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-all duration-200">Grab Opportunity</button>
+                    <button className="px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-all duration-200">Edit</button>
+                    <button className="px-4 py-2 bg-white text-black border border-black rounded-lg font-semibold hover:bg-gray-100 transition-all duration-200">Delete</button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
           </AnimatePresence>
 
           {/* Close Confirmation Modal */}
