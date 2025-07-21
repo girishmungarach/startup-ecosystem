@@ -64,10 +64,15 @@ const ProfileCreationForm: React.FC = () => {
           .eq('id', user.id)
           .single();
 
+        setFormData(prev => ({
+          ...prev,
+          email: user.email || '',
+        }));
+
         if (profile && !error) {
           setFormData({
             fullName: profile.full_name || '',
-            email: profile.email || user.email || '',
+            email: user.email || '',
             company: profile.company || '',
             role: profile.role || '',
             interests: profile.interests || [],
@@ -88,15 +93,15 @@ const ProfileCreationForm: React.FC = () => {
   }, [user]);
 
   const roleOptions = [
-    { value: 'Founder', icon: '🚀', description: 'Building and leading startups' },
-    { value: 'Investor', icon: '💰', description: 'Funding and supporting startups' },
-    { value: 'Developer', icon: '💻', description: 'Technical development and engineering' },
-    { value: 'Designer', icon: '🎨', description: 'UI/UX and product design' },
-    { value: 'Marketing', icon: '📢', description: 'Growth and marketing strategies' },
-    { value: 'Sales', icon: '🤝', description: 'Business development and sales' },
-    { value: 'Operations', icon: '⚙️', description: 'Business operations and management' },
-    { value: 'Student', icon: '🎓', description: 'Learning and exploring opportunities' },
-    { value: 'Other', icon: '✨', description: 'Other professional roles' }
+    { value: 'Founder', description: 'Building and leading startups' },
+    { value: 'Investor', description: 'Funding and supporting startups' },
+    { value: 'Developer', description: 'Technical development and engineering' },
+    { value: 'Designer', description: 'UI/UX and product design' },
+    { value: 'Marketing', description: 'Growth and marketing strategies' },
+    { value: 'Sales', description: 'Business development and sales' },
+    { value: 'Operations', description: 'Business operations and management' },
+    { value: 'Student', description: 'Learning and exploring opportunities' },
+    { value: 'Other', description: 'Other professional roles' }
   ];
 
   const interestOptions = [
@@ -315,7 +320,7 @@ const ProfileCreationForm: React.FC = () => {
         <label htmlFor="email" className="block text-lg font-semibold mb-3">
           Email Address *
         </label>
-        <input id="email" type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className={`w-full px-4 py-4 text-lg border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} placeholder="Enter your email address" />
+        <input id="email" type="email" value={formData.email} readOnly className={`w-full px-4 py-4 text-lg border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} placeholder="Enter your email address" />
         {errors.email && <p className="text-red-500 text-sm mt-2"><AlertCircle className="inline-block mr-1" size={16} /> {errors.email}</p>}
       </div>
 
@@ -345,7 +350,7 @@ const ProfileCreationForm: React.FC = () => {
         </label>
         <select id="role" value={formData.role} onChange={e => handleInputChange('role', e.target.value)} className={`w-full px-4 py-4 text-lg border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 ${errors.role ? 'border-red-500' : 'border-gray-300 focus:border-black'}`}>
           <option value="">Select your role</option>
-          {roleOptions.map(role => <option key={role.value} value={role.value}>{role.icon} {role.value} - {role.description}</option>)}
+          {roleOptions.map(role => <option key={role.value} value={role.value}>{role.value} - {role.description}</option>)}
         </select>
         {errors.role && <p className="text-red-500 text-sm mt-2"><AlertCircle className="inline-block mr-1" size={16} /> {errors.role}</p>}
       </div>

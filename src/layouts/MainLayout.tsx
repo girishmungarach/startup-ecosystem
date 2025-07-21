@@ -24,6 +24,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false)
+  const userMenuRef = React.useRef<HTMLDivElement>(null)
+
+  // Close user menu on outside click
+  React.useEffect(() => {
+    if (!userMenuOpen) return;
+    function handleClick(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [userMenuOpen])
 
   const navigation = [
     { name: 'Opportunities', href: '/opportunities', icon: Briefcase },
@@ -60,63 +74,81 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div className="flex items-center space-x-4">
               {/* User Menu */}
               {user && (
-                <div className="relative group">
-                  <button className="bg-black text-white p-2 md:p-3 rounded-full shadow-lg hover:bg-gray-900 transition-colors duration-200">
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    className="bg-black text-white p-2 md:p-3 rounded-full shadow-lg hover:bg-gray-900 active:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black touch-manipulation"
+                    aria-haspopup="true"
+                    aria-expanded={userMenuOpen}
+                    aria-label="Open user menu"
+                    onClick={() => {
+                      setUserMenuOpen((open) => !open);
+                      setMobileMenuOpen(false); // Close mobile menu when user menu is opened
+                    }}
+                    onTouchEnd={(e) => {
+                      e.preventDefault();
+                      setUserMenuOpen((open) => !open);
+                      setMobileMenuOpen(false); // Close mobile menu when user menu is opened
+                    }}
+                    tabIndex={0}
+                  >
                     <User size={18} className="md:w-5 md:h-5" />
                   </button>
-                  
                   {/* Dropdown Menu */}
-                  <div className="absolute top-full right-0 mt-2 w-56 md:w-64 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="p-4 border-b border-gray-200">
-                      <p className="font-semibold text-black">
-                        {user.email}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        User
-                      </p>
+                  {userMenuOpen && (
+                    <div className="absolute top-full right-0 mt-2 w-56 md:w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-fadeIn transform origin-top-right">
+                      <div className="p-4 border-b border-gray-200">
+                        <p className="font-semibold text-black">
+                          {user.email}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          User
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        <Link
+                          to="/profile/settings"
+                          className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <User size={16} />
+                          <div>
+                            <span className="block">My Profile</span>
+                            <span className="text-xs text-gray-500">View and edit your profile</span>
+                          </div>
+                        </Link>
+                        <Link
+                          to="/profile/settings?tab=settings"
+                          className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Settings size={16} />
+                          <div>
+                            <span className="block">Settings</span>
+                            <span className="text-xs text-gray-500">Account and privacy settings</span>
+                          </div>
+                        </Link>
+                        <button
+                          onClick={handleSignOut}
+                          className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 w-full"
+                        >
+                          <LogOut size={16} />
+                          <div>
+                            <span className="block">Sign Out</span>
+                            <span className="text-xs text-gray-500">Sign out of your account</span>
+                          </div>
+                        </button>
+                      </div>
                     </div>
-                    
-                    <div className="p-2">
-                      <Link
-                        to="/profile/settings"
-                        className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
-                      >
-                        <User size={16} />
-                        <div>
-                          <span className="block">My Profile</span>
-                          <span className="text-xs text-gray-500">View and edit your profile</span>
-                        </div>
-                      </Link>
-                      
-                      <Link
-                        to="/profile/settings?tab=settings"
-                        className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
-                      >
-                        <Settings size={16} />
-                        <div>
-                          <span className="block">Settings</span>
-                          <span className="text-xs text-gray-500">Account and privacy settings</span>
-                        </div>
-                      </Link>
-                      
-                      <button
-                        onClick={handleSignOut}
-                        className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 w-full"
-                      >
-                        <LogOut size={16} />
-                        <div>
-                          <span className="block">Sign Out</span>
-                          <span className="text-xs text-gray-500">Sign out of your account</span>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
               
               {/* Mobile menu button */}
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={() => {
+                  setMobileMenuOpen(!mobileMenuOpen);
+                  setUserMenuOpen(false); // Close user menu when mobile menu is opened
+                }}
                 className="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -171,6 +203,60 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </Link>
                 )
               })}
+              
+              {/* Mobile User Menu Items */}
+              {user && (
+                <>
+                  <div className="border-t border-gray-200 pt-4 mt-4">
+                    <div className="px-3 py-2 mb-2">
+                      <p className="font-semibold text-black text-sm">
+                        {user.email}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        User
+                      </p>
+                    </div>
+                    
+                    <Link
+                      to="/profile/settings"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 px-4 py-4 text-gray-700 hover:bg-gray-100 active:bg-gray-200 rounded-md transition-colors duration-200 touch-manipulation"
+                    >
+                      <User size={20} />
+                      <div>
+                        <span className="block text-base font-medium">My Profile</span>
+                        <span className="text-xs text-gray-500">View and edit your profile</span>
+                      </div>
+                    </Link>
+                    
+                    <Link
+                      to="/profile/settings?tab=settings"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 px-4 py-4 text-gray-700 hover:bg-gray-100 active:bg-gray-200 rounded-md transition-colors duration-200 touch-manipulation"
+                    >
+                      <Settings size={20} />
+                      <div>
+                        <span className="block text-base font-medium">Settings</span>
+                        <span className="text-xs text-gray-500">Account and privacy settings</span>
+                      </div>
+                    </Link>
+                    
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        handleSignOut();
+                      }}
+                      className="flex items-center space-x-3 px-4 py-4 text-gray-700 hover:bg-gray-100 active:bg-gray-200 rounded-md transition-colors duration-200 w-full text-left touch-manipulation"
+                    >
+                      <LogOut size={20} />
+                      <div>
+                        <span className="block text-base font-medium">Sign Out</span>
+                        <span className="text-xs text-gray-500">Sign out of your account</span>
+                      </div>
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.nav>
           )}
         </div>

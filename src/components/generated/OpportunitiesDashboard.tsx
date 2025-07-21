@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, MapPin, Clock, Bookmark, Filter } from 'lucide-react';
+import { Search, Plus, MapPin, Clock, Bookmark, Filter, CheckCircle, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -15,12 +15,15 @@ interface Opportunity {
   description: string;
   postedAt: string;
   isBookmarked?: boolean;
+  isGrabbed?: boolean;
 }
 const OpportunitiesDashboard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [grabbingOpportunityId, setGrabbingOpportunityId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -32,9 +35,12 @@ const OpportunitiesDashboard: React.FC = () => {
   // Load opportunities from database
   useEffect(() => {
     const loadOpportunities = async () => {
+      if (!user) return;
+      
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
+        // Load opportunities
+        const { data: opportunitiesData, error: opportunitiesError } = await supabase
           .from('opportunities')
           .select(`
             id,
@@ -48,12 +54,28 @@ const OpportunitiesDashboard: React.FC = () => {
           .eq('is_active', true)
           .order('created_at', { ascending: false });
 
-        if (error) {
-          console.error('Error loading opportunities:', error);
-          return;
+              if (opportunitiesError) {
+        console.error('Error loading opportunities:', opportunitiesError);
+        setError('Failed to load opportunities. Please try again.');
+        return;
+      }
+
+        // Load user's grabs to check which opportunities they've already grabbed
+        const { data: grabsData, error: grabsError } = await supabase
+          .from('opportunity_grabs')
+          .select('opportunity_id')
+          .eq('user_id', user.id);
+
+        if (grabsError) {
+          console.error('Error loading user grabs:', grabsError);
         }
 
-        const formattedOpportunities: Opportunity[] = data?.map(opp => ({
+        const userGrabbedIds = new Set(grabsData?.map(grab => grab.opportunity_id) || []);
+
+        // Filter out opportunities posted by the current user
+        const filteredOpportunitiesData = opportunitiesData?.filter(opp => opp.user_id !== user.id) || [];
+
+        const formattedOpportunities: Opportunity[] = filteredOpportunitiesData.map(opp => ({
           id: opp.id,
           title: opp.title,
           type: opp.type,
@@ -61,19 +83,21 @@ const OpportunitiesDashboard: React.FC = () => {
           location: opp.location,
           description: opp.description,
           postedAt: formatTimeAgo(opp.created_at),
-          isBookmarked: false // TODO: Implement bookmark functionality
-        })) || [];
+          isBookmarked: false, // TODO: Implement bookmark functionality
+          isGrabbed: userGrabbedIds.has(opp.id)
+        }));
 
         setOpportunities(formattedOpportunities);
       } catch (error) {
         console.error('Failed to load opportunities:', error);
+        setError('Failed to load opportunities. Please try again.');
       } finally {
         setIsLoading(false);
       }
     };
 
     loadOpportunities();
-  }, []);
+  }, [user]);
 
   // Helper function to format time ago
   const formatTimeAgo = (dateString: string): string => {
@@ -123,7 +147,28 @@ const OpportunitiesDashboard: React.FC = () => {
       return;
     }
 
+    setGrabbingOpportunityId(opportunity.id);
+
     try {
+      // First check if user has already grabbed this opportunity
+      const { data: existingGrab, error: checkError } = await supabase
+        .from('opportunity_grabs')
+        .select('id')
+        .eq('opportunity_id', opportunity.id)
+        .eq('user_id', user.id)
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing grab:', checkError);
+        return;
+      }
+
+      if (existingGrab) {
+        // User has already grabbed this opportunity
+        alert('You have already shown interest in this opportunity!');
+        return;
+      }
+
       // Save the opportunity grab to database
       const { data, error } = await supabase
         .from('opportunity_grabs')
@@ -137,17 +182,24 @@ const OpportunitiesDashboard: React.FC = () => {
 
       if (error) {
         console.error('Error grabbing opportunity:', error);
-        // You could show an error message to the user here
+        alert('Failed to show interest. Please try again.');
         return;
       }
 
       console.log('Opportunity grabbed successfully:', data);
       
+      // Update local state to show the opportunity as grabbed
+      setOpportunities(prev => prev.map(opp => 
+        opp.id === opportunity.id ? { ...opp, isGrabbed: true } : opp
+      ));
+      
       // Navigate to status page showing opportunity grabbed
       navigate(`/status/opportunity-grabbed?title=${encodeURIComponent(opportunity.title)}&company=${encodeURIComponent(opportunity.company)}`);
     } catch (error) {
       console.error('Failed to grab opportunity:', error);
-      // You could show an error message to the user here
+      alert('Failed to show interest. Please try again.');
+    } finally {
+      setGrabbingOpportunityId(null);
     }
   };
   return (
@@ -189,6 +241,27 @@ const OpportunitiesDashboard: React.FC = () => {
             </button>)}
         </div>
       </motion.div>
+
+          {/* Error Display */}
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 border-2 border-red-200 p-6 rounded-lg mb-6"
+            >
+              <div className="flex items-center space-x-2 text-red-800 mb-2">
+                <AlertCircle size={20} />
+                <span className="font-medium">Error</span>
+              </div>
+              <p className="text-red-700">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="text-red-600 hover:text-red-800 text-sm mt-2 underline"
+              >
+                Try again
+              </button>
+            </motion.div>
+          )}
 
           {/* Opportunities Grid */}
           <AnimatePresence mode="wait">
@@ -237,7 +310,12 @@ const OpportunitiesDashboard: React.FC = () => {
 
                     {/* Title */}
                     <h3 className="text-xl font-bold mb-3 group-hover:text-gray-700 transition-colors duration-200">
-                      {opportunity.title}
+                      <button 
+                        onClick={() => navigate(`/opportunities/${opportunity.id}`)}
+                        className="text-left hover:text-gray-600 transition-colors duration-200"
+                      >
+                        {opportunity.title}
+                      </button>
                     </h3>
 
                     {/* Company and Location */}
@@ -262,9 +340,27 @@ const OpportunitiesDashboard: React.FC = () => {
                         <Clock size={14} className="mr-1" />
                         <span className="text-xs">Posted {opportunity.postedAt}</span>
                       </div>
-                      <button onClick={() => handleGrabIt(opportunity)} className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20">
-                        Grab It
-                      </button>
+                      {opportunity.isGrabbed ? (
+                        <div className="flex items-center space-x-2 text-green-600">
+                          <CheckCircle size={16} />
+                          <span className="text-sm font-medium">Interest Sent</span>
+                        </div>
+                      ) : (
+                        <button 
+                          onClick={() => handleGrabIt(opportunity)} 
+                          disabled={grabbingOpportunityId === opportunity.id}
+                          className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                        >
+                          {grabbingOpportunityId === opportunity.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              <span>Grabbing...</span>
+                            </>
+                          ) : (
+                            'Grab It'
+                          )}
+                        </button>
+                      )}
                     </div>
                   </motion.div>)}
               </motion.div> :

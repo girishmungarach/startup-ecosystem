@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Eye, Save, Send, AlertCircle, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Eye, Save, Send, AlertCircle, ArrowLeft, CheckCircle } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+
 interface FormData {
   title: string;
   type: string;
@@ -16,12 +17,19 @@ interface FormData {
   contactPreference: 'direct' | 'review';
   screeningQuestions: string;
 }
+
 interface FormErrors {
   title?: string;
   type?: string;
   description?: string;
 }
-const PostOpportunityForm: React.FC = () => {
+
+interface PostOpportunityFormProps {
+  isEditMode?: boolean;
+  opportunityId?: string;
+}
+
+const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = false, opportunityId }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>({
@@ -37,8 +45,55 @@ const PostOpportunityForm: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(isEditMode);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+
   const opportunityTypes = ['Jobs', 'Investment', 'Co-founder', 'Mentorship', 'Events', 'Partnerships'];
+
+  // Load existing opportunity data if in edit mode
+  useEffect(() => {
+    const loadOpportunity = async () => {
+      if (!isEditMode || !opportunityId || !user) return;
+
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('opportunities')
+          .select('*')
+          .eq('id', opportunityId)
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error loading opportunity:', error);
+          setSubmitError('Failed to load opportunity. You may not have permission to edit this opportunity.');
+          return;
+        }
+
+        if (data) {
+          setFormData({
+            title: data.title || '',
+            type: data.type || '',
+            location: data.location || '',
+            description: data.description || '',
+            requirements: data.requirements || '',
+            compensation: data.compensation || '',
+            contactPreference: data.contact_preference || 'direct',
+            screeningQuestions: data.screening_questions || ''
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load opportunity:', error);
+        setSubmitError('Failed to load opportunity data.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOpportunity();
+  }, [isEditMode, opportunityId, user]);
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     if (!formData.title.trim()) {
@@ -80,6 +135,8 @@ const PostOpportunityForm: React.FC = () => {
     }
 
     setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
 
     try {
       // First, ensure user has a profile
@@ -95,10 +152,13 @@ const PostOpportunityForm: React.FC = () => {
           .from('profiles')
           .insert({
             id: user.id,
-            name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-            role: 'Member',
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            email: user.email,
             company: 'Your Company',
-            email: user.email
+            role: 'Member',
+            interests: [],
+            building: '',
+            opportunities: [],
           })
           .select('company')
           .single();
@@ -124,28 +184,49 @@ const PostOpportunityForm: React.FC = () => {
         requirements: formData.requirements || null,
         compensation: formData.compensation || null,
         contact_email: user.email,
-        is_active: !isDraft
+        is_active: !isDraft,
+        contact_preference: formData.contactPreference,
+        screening_questions: formData.screeningQuestions || null,
+        status: isDraft ? 'draft' : 'active',
+        updated_at: new Date().toISOString()
       };
 
-      const { data, error } = await supabase
-        .from('opportunities')
-        .insert(opportunityData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error posting opportunity:', error);
-        throw error;
+      let result;
+      if (isEditMode && opportunityId) {
+        // Update existing opportunity
+        result = await supabase
+          .from('opportunities')
+          .update(opportunityData)
+          .eq('id', opportunityId)
+          .eq('user_id', user.id) // Ensure user owns the opportunity
+          .select()
+          .single();
+      } else {
+        // Create new opportunity
+        result = await supabase
+          .from('opportunities')
+          .insert(opportunityData)
+          .select()
+          .single();
       }
 
-      console.log('Opportunity posted successfully:', data);
+      if (result.error) {
+        console.error('Error saving opportunity:', result.error);
+        throw result.error;
+      }
+
+      console.log('Opportunity saved successfully:', result.data);
       
-      // Navigate to my opportunities page
-      navigate('/my-opportunities');
+      setSubmitSuccess(isEditMode ? 'Opportunity updated successfully!' : 'Opportunity posted successfully!');
+      
+      // Navigate to my opportunities page after a short delay
+      setTimeout(() => {
+        navigate('/my-opportunities');
+      }, 1500);
       
     } catch (error) {
-      console.error('Failed to post opportunity:', error);
-      setSubmitError(error instanceof Error ? error.message : 'Failed to post opportunity. Please try again.');
+      console.error('Failed to save opportunity:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Failed to save opportunity. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -378,87 +459,116 @@ const PostOpportunityForm: React.FC = () => {
         </button>
       </div>
 
-      <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.6
-      }} className="mb-6 md:mb-8">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-          Post an Opportunity
-        </h2>
-        <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
-          Share your opportunity with India's most innovative startup community and connect with the right talent.
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-        {/* Form Section */}
-        <div className="space-y-6 md:space-y-8">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
-            <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-3 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto min-h-[48px] flex items-center justify-center ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
-              Edit
-            </button>
-            <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-3 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto min-h-[48px] ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
-              <Eye size={18} className="md:w-5 md:h-5" />
-              <span>Preview</span>
-            </button>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+            <p className="text-lg">Loading opportunity...</p>
           </div>
-
-          <AnimatePresence mode="wait">
-            {isPreviewMode ? renderPreview() : renderForm()}
-          </AnimatePresence>
         </div>
+      ) : (
+        <>
+          <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.6
+          }} className="mb-6 md:mb-8">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
+              {isEditMode ? 'Edit Opportunity' : 'Post an Opportunity'}
+            </h2>
+            <p className="text-lg md:text-xl font-light text-gray-600 max-w-2xl">
+              {isEditMode 
+                ? 'Update your opportunity details and republish to the community.'
+                : 'Share your opportunity with India\'s most innovative startup community and connect with the right talent.'
+              }
+            </p>
+          </motion.div>
 
-        {/* Action Buttons Section */}
-        <div className="lg:sticky lg:top-8 lg:self-start">
-          <div className="bg-gray-50 border-2 border-gray-200 p-8 space-y-6">
-            <h3 className="text-2xl font-bold mb-4">Ready to post?</h3>
-            
-            {/* Error Display */}
-            {submitError && (
-              <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
-                <div className="flex items-center space-x-2 text-red-800">
-                  <AlertCircle size={20} />
-                  <span className="font-medium">Error</span>
-                </div>
-                <p className="text-red-700 mt-2 text-sm">{submitError}</p>
-                <button 
-                  onClick={() => setSubmitError(null)}
-                  className="text-red-600 hover:text-red-800 text-sm mt-2 underline"
-                >
-                  Dismiss
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+            {/* Form Section */}
+            <div className="space-y-6 md:space-y-8">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
+                <button onClick={() => setIsPreviewMode(false)} className={`px-4 md:px-6 py-3 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 w-full sm:w-auto min-h-[48px] flex items-center justify-center ${!isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+                  Edit
+                </button>
+                <button onClick={() => setIsPreviewMode(true)} className={`px-4 md:px-6 py-3 md:py-3 text-base md:text-lg font-semibold transition-all duration-200 border-2 flex items-center justify-center space-x-2 w-full sm:w-auto min-h-[48px] ${isPreviewMode ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}>
+                  <Eye size={18} className="md:w-5 md:h-5" />
+                  <span>Preview</span>
                 </button>
               </div>
-            )}
-            
-            <div className="space-y-4">
-              <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[56px]">
-                <Send size={20} />
-                <span>{isSubmitting ? 'Posting...' : 'Post Opportunity'}</span>
-              </button>
 
-              <button onClick={() => handleSubmit(true)} disabled={isSubmitting} className="w-full bg-white text-black border-2 border-gray-300 px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[56px]">
-                <Save size={20} />
-                <span>Save as Draft</span>
-              </button>
+              <AnimatePresence mode="wait">
+                {isPreviewMode ? renderPreview() : renderForm()}
+              </AnimatePresence>
             </div>
 
-            <div className="pt-6 border-t border-gray-300">
-              <h4 className="font-semibold mb-3">What happens next?</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>• Your opportunity will be reviewed within 24 hours</li>
-                <li>• Once approved, it'll be visible to our community</li>
-                <li>• You'll receive notifications when people show interest</li>
-                <li>• Track engagement through your dashboard</li>
-              </ul>
+            {/* Action Buttons Section */}
+            <div className="lg:sticky lg:top-8 lg:self-start">
+              <div className="bg-gray-50 border-2 border-gray-200 p-8 space-y-6">
+                <h3 className="text-2xl font-bold mb-4">
+                  {isEditMode ? 'Ready to update?' : 'Ready to post?'}
+                </h3>
+                
+                {/* Success Display */}
+                {submitSuccess && (
+                  <div className="bg-green-50 border-2 border-green-200 p-4 rounded-lg">
+                    <div className="flex items-center space-x-2 text-green-800">
+                      <CheckCircle size={20} />
+                      <span className="font-medium">Success</span>
+                    </div>
+                    <p className="text-green-700 mt-2 text-sm">{submitSuccess}</p>
+                  </div>
+                )}
+                
+                {/* Error Display */}
+                {submitError && (
+                  <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
+                    <div className="flex items-center space-x-2 text-red-800">
+                      <AlertCircle size={20} />
+                      <span className="font-medium">Error</span>
+                    </div>
+                    <p className="text-red-700 mt-2 text-sm">{submitError}</p>
+                    <button 
+                      onClick={() => setSubmitError(null)}
+                      className="text-red-600 hover:text-red-800 text-sm mt-2 underline"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
+                
+                <div className="space-y-4">
+                  <button onClick={() => handleSubmit(false)} disabled={isSubmitting} className="w-full bg-black text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:bg-gray-900 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[56px]">
+                    <Send size={20} />
+                    <span>{isSubmitting ? (isEditMode ? 'Updating...' : 'Posting...') : (isEditMode ? 'Update Opportunity' : 'Post Opportunity')}</span>
+                  </button>
+
+                  <button onClick={() => handleSubmit(true)} disabled={isSubmitting} className="w-full bg-white text-black border-2 border-gray-300 px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[56px]">
+                    <Save size={20} />
+                    <span>Save as Draft</span>
+                  </button>
+                </div>
+
+                <div className="pt-6 border-t border-gray-300">
+                  <h4 className="font-semibold mb-3">What happens next?</h4>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Your opportunity will be reviewed within 24 hours</li>
+                    <li>• Once approved, it'll be visible to our community</li>
+                    <li>• You'll receive notifications when people show interest</li>
+                    <li>• Track engagement through your dashboard</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
+
+
     </>
   );
 };

@@ -11,6 +11,7 @@ import OpportunitiesDashboard from './components/generated/OpportunitiesDashboar
 import PostOpportunityForm from './components/generated/PostOpportunityForm'
 import MyOpportunitiesDashboard from './components/generated/MyOpportunitiesDashboard'
 import OpportunityGrabsReview from './components/generated/OpportunityGrabsReview'
+import OpportunityDetailView from './components/generated/OpportunityDetailView'
 import QuestionnaireCreationForm from './components/generated/QuestionnaireCreationForm'
 import QuestionnaireResponseForm from './components/generated/QuestionnaireResponseForm'
 import QuestionnaireResponseReview from './components/generated/QuestionnaireResponseReview'
@@ -85,6 +86,15 @@ const OpportunityGrabsReviewWrapper: React.FC = () => {
   return <OpportunityGrabsReview opportunityId={id || ''} />;
 };
 
+// Wrapper component for PostOpportunityForm with edit mode support
+const PostOpportunityFormWrapper: React.FC = () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const isEditMode = searchParams.get('edit') === 'true';
+  const opportunityId = searchParams.get('id') || '';
+  
+  return <PostOpportunityForm isEditMode={isEditMode} opportunityId={opportunityId} />;
+};
+
 // Main App Component
 const AppContent: React.FC = () => {
   return (
@@ -146,7 +156,16 @@ const AppContent: React.FC = () => {
           path="/opportunities/post" 
           element={
             <ProtectedRoute>
-              <PostOpportunityForm />
+              <PostOpportunityFormWrapper />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/post-opportunity" 
+          element={
+            <ProtectedRoute>
+              <PostOpportunityFormWrapper />
             </ProtectedRoute>
           } 
         />
@@ -156,6 +175,15 @@ const AppContent: React.FC = () => {
           element={
             <ProtectedRoute>
               <MyOpportunitiesDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/opportunities/:id" 
+          element={
+            <ProtectedRoute>
+              <OpportunityDetailView />
             </ProtectedRoute>
           } 
         />

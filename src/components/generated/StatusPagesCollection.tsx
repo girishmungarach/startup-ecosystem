@@ -175,6 +175,7 @@ const StatusPagesCollection: React.FC<StatusPagesCollectionProps> = ({
           </motion.button>
           
           <motion.button 
+            onClick={() => window.location.href = '/my-opportunities'}
             className="w-full bg-white text-black border-2 border-gray-300 px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold hover:border-black hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-10 flex items-center justify-center space-x-2 min-h-[56px]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

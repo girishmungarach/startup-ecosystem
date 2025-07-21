@@ -14,6 +14,7 @@ interface ProfileData {
   linkedin_url?: string;
   twitter_url?: string;
   website_url?: string;
+  avatar_url?: string; // Add avatar_url for profile picture
 }
 
 interface SettingsData {
@@ -30,6 +31,7 @@ const ProfileSettings: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [uploading, setUploading] = useState(false);
   
   const [profileData, setProfileData] = useState<ProfileData>({
     full_name: '',
@@ -39,7 +41,8 @@ const ProfileSettings: React.FC = () => {
     bio: '',
     linkedin_url: '',
     twitter_url: '',
-    website_url: ''
+    website_url: '',
+    avatar_url: '', // Add avatar_url for profile picture
   });
 
   const [settingsData, setSettingsData] = useState<SettingsData>({
@@ -54,6 +57,9 @@ const ProfileSettings: React.FC = () => {
     new_password: '',
     confirm_password: ''
   });
+
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
 
   // Load profile data
   useEffect(() => {
@@ -82,7 +88,8 @@ const ProfileSettings: React.FC = () => {
             bio: data.bio || '',
             linkedin_url: data.linkedin_url || '',
             twitter_url: data.twitter_url || '',
-            website_url: data.website_url || ''
+            website_url: data.website_url || '',
+            avatar_url: data.avatar_url || '',
           });
         }
       } catch (error) {
@@ -99,6 +106,8 @@ const ProfileSettings: React.FC = () => {
     if (!user) return;
 
     setIsSaving(true);
+    setProfileError(null);
+    setProfileSuccess(null);
     try {
       const { error } = await supabase
         .from('profiles')
@@ -109,15 +118,13 @@ const ProfileSettings: React.FC = () => {
         });
 
       if (error) {
-        console.error('Error saving profile:', error);
+        setProfileError(error.message || 'Failed to save profile. Please try again.');
         return;
       }
 
-      // Show success message
-      alert('Profile updated successfully!');
+      setProfileSuccess('Profile updated successfully!');
     } catch (error) {
-      console.error('Failed to save profile:', error);
-      alert('Failed to save profile. Please try again.');
+      setProfileError(error instanceof Error ? error.message : 'Failed to save profile. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -186,6 +193,40 @@ const ProfileSettings: React.FC = () => {
       alert('Failed to save settings. Please try again.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user || !event.target.files || event.target.files.length === 0) return;
+    setUploading(true);
+    setProfileError(null);
+    try {
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `avatars/${user.id}.${fileExt}`;
+      // Upload to Supabase Storage
+      let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+      if (uploadError) {
+        setProfileError(uploadError.message || 'Failed to upload image.');
+        setUploading(false);
+        return;
+      }
+      // Get public URL
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      const publicUrl = data.publicUrl;
+      // Update profile with new avatar_url
+      const { error: updateError } = await supabase.from('profiles').update({ avatar_url: publicUrl, updated_at: new Date().toISOString() }).eq('id', user.id);
+      if (updateError) {
+        setProfileError(updateError.message || 'Failed to update profile with image.');
+        setUploading(false);
+        return;
+      }
+      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+      setProfileSuccess('Profile picture updated!');
+    } catch (error) {
+      setProfileError(error instanceof Error ? error.message : 'Failed to upload image.');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -265,14 +306,19 @@ const ProfileSettings: React.FC = () => {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold mb-4">Profile Picture</h3>
                 <div className="flex items-center space-x-6">
-                  <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center">
-                    <User size={48} className="text-gray-600" />
+                  <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
+                    {profileData.avatar_url ? (
+                      <img src={profileData.avatar_url} alt="Profile" className="w-24 h-24 object-cover rounded-full" />
+                    ) : (
+                      <User size={48} className="text-gray-600" />
+                    )}
                   </div>
                   <div>
-                    <button className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center space-x-2">
+                    <label className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center space-x-2 cursor-pointer">
                       <Camera size={16} />
-                      <span>Upload Photo</span>
-                    </button>
+                      <span>{uploading ? 'Uploading...' : 'Upload Photo'}</span>
+                      <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploading} />
+                    </label>
                     <p className="text-sm text-gray-600 mt-2">
                       JPG, PNG or GIF. Max size 2MB.
                     </p>
@@ -393,6 +439,22 @@ const ProfileSettings: React.FC = () => {
                   <span>{isSaving ? 'Saving...' : 'Save Profile'}</span>
                 </button>
               </div>
+              {profileError && (
+                <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg mb-6">
+                  <div className="flex items-center space-x-2 text-red-800">
+                    <span className="font-medium">Error</span>
+                  </div>
+                  <p className="text-red-700 mt-2 text-sm">{profileError}</p>
+                </div>
+              )}
+              {profileSuccess && (
+                <div className="bg-green-50 border-2 border-green-200 p-4 rounded-lg mb-6">
+                  <div className="flex items-center space-x-2 text-green-800">
+                    <span className="font-medium">Success</span>
+                  </div>
+                  <p className="text-green-700 mt-2 text-sm">{profileSuccess}</p>
+                </div>
+              )}
             </motion.div>
           )}
 

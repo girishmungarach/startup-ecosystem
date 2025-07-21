@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Eye, Edit, MoreHorizontal, Users, TrendingUp, CheckCircle, Clock, AlertCircle, X, BarChart3 } from 'lucide-react';
+import { Plus, Eye, Edit, MoreHorizontal, Users, TrendingUp, CheckCircle, Clock, AlertCircle, X, BarChart3, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -29,8 +29,10 @@ const MyOpportunitiesDashboard: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'active' | 'draft' | 'closed'>('active');
   const [showCloseModal, setShowCloseModal] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Load user's opportunities from database
   useEffect(() => {
@@ -154,8 +156,7 @@ const MyOpportunitiesDashboard: React.FC = () => {
     navigate(`/opportunities/${opportunityId}/review`);
   };
   const handleEdit = (opportunityId: string) => {
-    // TODO: Implement edit functionality
-    console.log('Edit opportunity:', opportunityId);
+    navigate(`/post-opportunity?edit=true&id=${opportunityId}`);
   };
   const handleCloseOpportunity = async (opportunityId: string) => {
     try {
@@ -199,6 +200,34 @@ const MyOpportunitiesDashboard: React.FC = () => {
       setOpportunities(updatedOpportunities);
     } catch (error) {
       console.error('Failed to reopen opportunity:', error);
+    }
+  };
+
+  const handleDeleteOpportunity = async (opportunityId: string) => {
+    if (!user) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('opportunities')
+        .delete()
+        .eq('id', opportunityId)
+        .eq('user_id', user.id); // Ensure user owns the opportunity
+
+      if (error) {
+        console.error('Error deleting opportunity:', error);
+        return;
+      }
+
+      // Remove from local state
+      const updatedOpportunities = opportunities.filter(opp => opp.id !== opportunityId);
+      setOpportunities(updatedOpportunities);
+      
+      setShowDeleteModal(null);
+    } catch (error) {
+      console.error('Failed to delete opportunity:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
   return (
@@ -357,11 +386,19 @@ const MyOpportunitiesDashboard: React.FC = () => {
                           <Edit size={16} />
                         </button>
                         
-                        {opportunity.status === 'active' ? <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 rounded-lg hover:bg-red-50 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Close">
+                        {opportunity.status === 'active' ? (
+                          <button onClick={() => setShowCloseModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 rounded-lg hover:bg-red-50 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Close">
                             <X size={16} />
-                          </button> : opportunity.status === 'closed' ? <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium px-3 py-2 rounded-lg hover:bg-green-50 min-h-[40px]">
+                          </button>
+                        ) : opportunity.status === 'closed' ? (
+                          <button onClick={() => handleReopenOpportunity(opportunity.id)} className="text-green-600 hover:text-green-800 transition-colors duration-200 text-sm font-medium px-3 py-2 rounded-lg hover:bg-green-50 min-h-[40px]">
                             Reopen
-                          </button> : null}
+                          </button>
+                        ) : null}
+                        
+                        <button onClick={() => setShowDeleteModal(opportunity.id)} className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 rounded-lg hover:bg-red-50 min-w-[40px] min-h-[40px] flex items-center justify-center" title="Delete">
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </div>
                   </motion.div>)}
@@ -426,6 +463,45 @@ const MyOpportunitiesDashboard: React.FC = () => {
                   </button>
                   <button onClick={() => handleCloseOpportunity(showCloseModal)} className="bg-red-600 text-white px-6 py-3 text-base font-semibold hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20">
                     Close Opportunity
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>}
+          </AnimatePresence>
+
+          {/* Delete Confirmation Modal */}
+          <AnimatePresence>
+            {showDeleteModal && <motion.div initial={{
+              opacity: 0
+            }} animate={{
+              opacity: 1
+            }} exit={{
+              opacity: 0
+            }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <motion.div initial={{
+                scale: 0.9,
+                opacity: 0
+              }} animate={{
+                scale: 1,
+                opacity: 1
+              }} exit={{
+                scale: 0.9,
+                opacity: 0
+              }} className="bg-white p-8 max-w-md w-full border-2 border-gray-200">
+                <h3 className="text-2xl font-bold mb-4">Delete Opportunity?</h3>
+                <p className="text-gray-600 mb-6">
+                  This action cannot be undone. The opportunity and all associated data will be permanently deleted.
+                </p>
+                <div className="flex items-center justify-end space-x-4">
+                  <button onClick={() => setShowDeleteModal(null)} className="px-6 py-3 text-base font-medium text-gray-600 hover:text-black transition-colors duration-200">
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteOpportunity(showDeleteModal)} 
+                    disabled={isDeleting}
+                    className="bg-red-600 text-white px-6 py-3 text-base font-semibold hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isDeleting ? 'Deleting...' : 'Delete Opportunity'}
                   </button>
                 </div>
               </motion.div>
