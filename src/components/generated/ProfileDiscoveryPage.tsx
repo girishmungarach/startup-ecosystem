@@ -312,7 +312,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-lg hover:border-black transition-all duration-300 group flex flex-col justify-between min-h-[420px]"
+                  className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 hover:shadow-lg hover:border-black transition-all duration-300 group flex flex-col justify-between min-h-[460px]"
                 >
                   {/* Profile Header */}
                   <div className="flex items-center justify-between mb-4">
@@ -328,14 +328,14 @@ const ProfileDiscoveryPage: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => toggleBookmark(profile.id)}
-                      className={`p-2 rounded-full transition-all duration-200 ${profile.is_bookmarked ? 'bg-black text-white hover:bg-gray-800' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
-                      title={profile.is_bookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
-                    >
-                      <Bookmark size={20} className={profile.is_bookmarked ? 'fill-current' : ''} />
-                    </button>
                   </div>
+                  <button
+                    onClick={() => toggleBookmark(profile.id)}
+                    className={`p-2 rounded-full transition-all duration-200 ${profile.is_bookmarked ? 'bg-black text-white hover:bg-gray-800' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                    title={profile.is_bookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
+                  >
+                    <Bookmark size={20} className={profile.is_bookmarked ? 'fill-current' : ''} />
+                  </button>
 
                   {/* Company and Location */}
                   <div className="mb-4 space-y-1">
