@@ -305,14 +305,14 @@ const ProfileDiscoveryPage: React.FC = () => {
 
           {/* Profile Grid */}
           {!isLoading && !error && filteredProfiles.length > 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
               {filteredProfiles.map((profile, index) => (
                 <motion.div
                   key={profile.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 hover:shadow-lg hover:border-black transition-all duration-300 group flex flex-col justify-between min-h-[460px]"
+                  className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-lg hover:border-black transition-all duration-300 group flex flex-col justify-between min-h-[480px] max-w-sm mx-auto"
                 >
                   {/* Profile Header */}
                   <div className="flex items-center justify-between mb-4">
