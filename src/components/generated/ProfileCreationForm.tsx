@@ -48,6 +48,7 @@ const ProfileCreationForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -210,26 +211,28 @@ const ProfileCreationForm: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      setSubmitError(null);
+      const upsertData = {
+        id: user.id,
+        full_name: formData.fullName.trim() || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+        email: formData.email.trim() || user.email,
+        company: formData.company.trim() || 'Independent',
+        role: formData.role || 'Member',
+        interests: formData.interests,
+        building: formData.building || '',
+        opportunities: formData.opportunities,
+        bio: formData.bio,
+        location: formData.location,
+        linkedin_url: formData.linkedin_url,
+        website_url: formData.website_url,
+        updated_at: new Date().toISOString()
+      };
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
-          full_name: formData.fullName,
-          email: formData.email,
-          company: formData.company,
-          role: formData.role,
-          interests: formData.interests,
-          building: formData.building,
-          opportunities: formData.opportunities,
-          bio: formData.bio,
-          location: formData.location,
-          linkedin_url: formData.linkedin_url,
-          website_url: formData.website_url,
-          updated_at: new Date().toISOString()
-        });
+        .upsert(upsertData);
 
       if (error) {
-        console.error('Error saving profile:', error);
+        setSubmitError(error.message || 'Failed to save profile. Please try again.');
         throw error;
       }
 
@@ -238,6 +241,7 @@ const ProfileCreationForm: React.FC = () => {
         navigate('/opportunities');
       }, 2000);
     } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Failed to save profile. Please try again.');
       console.error('Failed to save profile:', error);
     } finally {
       setIsSubmitting(false);
@@ -661,6 +665,15 @@ const ProfileCreationForm: React.FC = () => {
             </motion.button>
           )}
         </div>
+        {submitError && (
+          <div className="bg-red-50 border-2 border-red-200 p-4 rounded-lg mb-6">
+            <div className="flex items-center space-x-2 text-red-800">
+              <AlertCircle size={20} />
+              <span className="font-medium">Error</span>
+            </div>
+            <p className="text-red-700 mt-2 text-sm">{submitError}</p>
+          </div>
+        )}
       </div>
     </>
   );
