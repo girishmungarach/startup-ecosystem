@@ -60,31 +60,33 @@ const LandingPage: React.FC = () => {
             The premier networking platform where startups, investors, and talent converge to create the future.
           </motion.p>
           
-          <Link to="/signup">
-            <motion.button 
-              className="bg-black text-white px-6 py-4 md:px-12 md:py-6 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-gray-900 transition-all duration-300 border-2 border-black hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 rounded-lg min-h-[56px] md:min-h-[64px] flex items-center justify-center" 
-              initial={{
-                opacity: 0,
-                y: 20
-              }} 
-              animate={{
-                opacity: 1,
-                y: 0
-              }} 
-              transition={{
-                duration: 0.8,
-                delay: 0.4
-              }} 
-              whileHover={{
-                scale: 1.05
-              }} 
-              whileTap={{
-                scale: 0.95
-              }}
-            >
-              Jump In
-            </motion.button>
-          </Link>
+          <div className="flex justify-center">
+            <Link to="/signup">
+              <motion.button 
+                className="bg-black text-white px-6 py-4 md:px-12 md:py-6 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-gray-900 transition-all duration-300 border-2 border-black hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 rounded-lg min-h-[56px] md:min-h-[64px] flex items-center justify-center" 
+                initial={{
+                  opacity: 0,
+                  y: 20
+                }} 
+                animate={{
+                  opacity: 1,
+                  y: 0
+                }} 
+                transition={{
+                  duration: 0.8,
+                  delay: 0.4
+                }} 
+                whileHover={{
+                  scale: 1.05
+                }} 
+                whileTap={{
+                  scale: 0.95
+                }}
+              >
+                Jump In
+              </motion.button>
+            </Link>
+          </div>
         </div>
       </section>
 
