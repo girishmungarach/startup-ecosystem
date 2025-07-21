@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../contexts/AuthContext'
 import NotificationsDropdown from '../components/NotificationsDropdown'
 import { useNotifications } from '../hooks/useNotifications'
+import { AnimatePresence } from 'framer-motion'
 // TestPanel removed for production
 
 interface MainLayoutProps {
@@ -31,18 +32,94 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false)
   const [notificationsOpen, setNotificationsOpen] = React.useState(false)
   const userMenuRef = React.useRef<HTMLDivElement>(null)
+  const userMenuButtonRef = React.useRef<HTMLButtonElement>(null)
+  const userMenuDropdownRef = React.useRef<HTMLDivElement>(null)
 
-  // Close user menu on outside click
+  // Helper to get user initials
+  const getUserInitials = () => {
+    if (!user) return '';
+    // Supabase user object: full_name is usually in user_metadata
+    const fullName = user.user_metadata?.full_name;
+    if (fullName) {
+      return fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+    }
+    if (user.email) {
+      return user.email[0].toUpperCase();
+    }
+    return '';
+  };
+
+  // Close user menu on outside click or tab out
   React.useEffect(() => {
     if (!userMenuOpen) return;
     function handleClick(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
         setUserMenuOpen(false)
       }
     }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setUserMenuOpen(false)
+        userMenuButtonRef.current?.focus()
+      }
+      // Trap focus inside dropdown
+      if (event.key === 'Tab' && userMenuDropdownRef.current) {
+        const focusableEls = userMenuDropdownRef.current.querySelectorAll<HTMLElement>(
+          'a, button, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstEl = focusableEls[0];
+        const lastEl = focusableEls[focusableEls.length - 1];
+        if (!event.shiftKey && document.activeElement === lastEl) {
+          event.preventDefault();
+          firstEl.focus();
+        } else if (event.shiftKey && document.activeElement === firstEl) {
+          event.preventDefault();
+          lastEl.focus();
+        }
+      }
+    }
     document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [userMenuOpen])
+
+  // Prevent background scroll on mobile when menu is open
+  React.useEffect(() => {
+    if (userMenuOpen && window.innerWidth < 768) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [userMenuOpen]);
+
+  // Focus first menu item when opened
+  React.useEffect(() => {
+    if (userMenuOpen && userMenuDropdownRef.current) {
+      const firstItem = userMenuDropdownRef.current.querySelector<HTMLElement>('a, button');
+      firstItem?.focus();
+    }
+  }, [userMenuOpen]);
+
+  // Keyboard open/close
+  const handleUserMenuButtonKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setUserMenuOpen((open) => !open);
+      setMobileMenuOpen(false);
+    } else if (e.key === 'ArrowDown' && !userMenuOpen) {
+      setUserMenuOpen(true);
+      setMobileMenuOpen(false);
+    }
+  };
 
   const navigation = [
     { name: 'Opportunities', href: '/opportunities', icon: Briefcase },
@@ -107,35 +184,59 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               {user && (
                 <div className="relative" ref={userMenuRef}>
                   <button
-                    className="bg-black text-white p-2 md:p-3 rounded-full shadow-lg hover:bg-gray-900 active:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black touch-manipulation"
-                    aria-haspopup="true"
+                    ref={userMenuButtonRef}
+                    className={`bg-black text-white p-2 md:p-3 rounded-full shadow-lg hover:bg-gray-900 active:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black touch-manipulation flex items-center justify-center ${userMenuOpen ? 'ring-2 ring-black ring-offset-2' : ''} min-w-[44px] min-h-[44px]`}
+                    aria-haspopup="menu"
                     aria-expanded={userMenuOpen}
+                    aria-controls="user-menu-dropdown"
                     aria-label="Open user menu"
                     onClick={() => {
                       setUserMenuOpen((open) => !open);
-                      setMobileMenuOpen(false); // Close mobile menu when user menu is opened
-                    }}
-                    onTouchEnd={(e) => {
-                      e.preventDefault();
-                      setUserMenuOpen((open) => !open);
-                      setMobileMenuOpen(false); // Close mobile menu when user menu is opened
+                      setMobileMenuOpen(false);
                     }}
                     tabIndex={0}
                   >
-                    <User size={18} className="md:w-5 md:h-5" />
+                    <span className="font-bold text-lg md:text-xl select-none" aria-hidden="true">{getUserInitials() || <User size={18} className="md:w-5 md:h-5" />}</span>
                   </button>
                   {/* Dropdown Menu */}
+                  <AnimatePresence>
                   {userMenuOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-56 md:w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-fadeIn transform origin-top-right">
-                      <div className="p-4 border-b border-gray-200">
-                        <p className="font-semibold text-black">
-                          {user.email}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          User
-                        </p>
+                    <motion.div
+                      ref={userMenuDropdownRef}
+                      id="user-menu-dropdown"
+                      initial={window.innerWidth < 768 ? { opacity: 0, y: -32 } : { opacity: 0, scale: 0.98, y: -8 }}
+                      animate={window.innerWidth < 768 ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+                      exit={window.innerWidth < 768 ? { opacity: 0, y: -32 } : { opacity: 0, scale: 0.98, y: -8 }}
+                      transition={{ duration: 0.18 }}
+                      className={
+                        window.innerWidth < 768
+                          ? 'fixed inset-0 top-0 left-0 w-full h-full bg-white z-[1000] flex flex-col md:hidden pointer-events-auto'
+                          : 'absolute top-full right-0 mt-2 w-56 md:w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-[1000] animate-fadeIn transform origin-top-right focus:outline-none pointer-events-auto'
+                      }
+                      tabIndex={-1}
+                      aria-modal="true"
+                      role="menu"
+                    >
+                      {/* Mobile close button */}
+                      <div className="md:hidden flex items-center justify-between px-4 py-4 border-b border-gray-200">
+                        <span className="font-semibold text-lg">Menu</span>
+                        <button
+                          onClick={() => setUserMenuOpen(false)}
+                          className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black"
+                          aria-label="Close menu"
+                        >
+                          <X size={24} />
+                        </button>
                       </div>
-                      <div className="p-2">
+                      <div className={window.innerWidth < 768 ? 'flex-1 flex flex-col justify-center space-y-2 px-6 py-8' : 'p-2'}>
+                        <div className="p-4 border-b border-gray-200">
+                          <p className="font-semibold text-black">
+                            {user.email}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            User
+                          </p>
+                        </div>
                         <Link
                           to="/profile/settings"
                           className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
@@ -193,8 +294,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                           </div>
                         </button>
                       </div>
-                    </div>
+                    </motion.div>
                   )}
+                  </AnimatePresence>
                 </div>
               )}
               

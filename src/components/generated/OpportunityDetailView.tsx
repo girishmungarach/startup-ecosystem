@@ -23,6 +23,7 @@ interface OpportunityDetail {
   isGrabbed?: boolean;
   grabCount?: number;
   viewCount?: number;
+  user_id: string; // <-- Added for Vercel build fix
 }
 
 const OpportunityDetailView: React.FC = () => {

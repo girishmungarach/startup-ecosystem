@@ -17,6 +17,7 @@ interface Opportunity {
   postedAt: string;
   isBookmarked?: boolean;
   isGrabbed?: boolean;
+  user_id: string; // <-- Added for Vercel build fix
 }
 const OpportunitiesDashboard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('All');
@@ -44,15 +45,7 @@ const OpportunitiesDashboard: React.FC = () => {
         // Load opportunities
         const { data: opportunitiesData, error: opportunitiesError } = await supabase
           .from('opportunities')
-          .select(`
-            id,
-            title,
-            type,
-            company,
-            location,
-            description,
-            created_at
-          `)
+          .select('id, title, type, company, location, description, created_at, user_id, is_active')
           .eq('is_active', true)
           .order('created_at', { ascending: false });
 
@@ -88,7 +81,7 @@ const OpportunitiesDashboard: React.FC = () => {
         const userBookmarkedIds = new Set(bookmarksData?.map(bookmark => bookmark.opportunity_id) || []);
 
         // Filter out opportunities posted by the current user
-        const filteredOpportunitiesData = opportunitiesData?.filter(opp => opp.user_id !== user.id) || [];
+        const filteredOpportunitiesData = opportunitiesData?.filter(opp => opp.user_id && opp.user_id !== user.id) || [];
 
         const formattedOpportunities: Opportunity[] = filteredOpportunitiesData.map(opp => ({
           id: opp.id,
@@ -97,6 +90,8 @@ const OpportunitiesDashboard: React.FC = () => {
           company: opp.company,
           location: opp.location,
           description: opp.description,
+          created_at: opp.created_at,
+          user_id: opp.user_id, // <-- include user_id
           postedAt: formatTimeAgo(opp.created_at),
           isBookmarked: userBookmarkedIds.has(opp.id),
           isGrabbed: userGrabbedIds.has(opp.id)
