@@ -6,6 +6,7 @@ import { Search, Plus, MapPin, Clock, Bookmark, Filter, CheckCircle, AlertCircle
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { bookmarksService } from '../../services/bookmarks';
 interface Opportunity {
   id: string;
   title: string;
@@ -24,6 +25,7 @@ const OpportunitiesDashboard: React.FC = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [grabbingOpportunityId, setGrabbingOpportunityId] = useState<string | null>(null);
+  const [bookmarkingOpportunityId, setBookmarkingOpportunityId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -72,6 +74,19 @@ const OpportunitiesDashboard: React.FC = () => {
 
         const userGrabbedIds = new Set(grabsData?.map(grab => grab.opportunity_id) || []);
 
+        // Load user's bookmarks to check which opportunities they've bookmarked
+        const { data: bookmarksData, error: bookmarksError } = await supabase
+          .from('bookmarks')
+          .select('opportunity_id')
+          .eq('user_id', user.id)
+          .eq('bookmark_type', 'opportunity');
+
+        if (bookmarksError) {
+          console.error('Error loading user bookmarks:', bookmarksError);
+        }
+
+        const userBookmarkedIds = new Set(bookmarksData?.map(bookmark => bookmark.opportunity_id) || []);
+
         // Filter out opportunities posted by the current user
         const filteredOpportunitiesData = opportunitiesData?.filter(opp => opp.user_id !== user.id) || [];
 
@@ -83,7 +98,7 @@ const OpportunitiesDashboard: React.FC = () => {
           location: opp.location,
           description: opp.description,
           postedAt: formatTimeAgo(opp.created_at),
-          isBookmarked: false, // TODO: Implement bookmark functionality
+          isBookmarked: userBookmarkedIds.has(opp.id),
           isGrabbed: userGrabbedIds.has(opp.id)
         }));
 
@@ -137,9 +152,40 @@ const OpportunitiesDashboard: React.FC = () => {
     };
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
-  const handleBookmark = (id: string) => {
-    // Handle bookmark functionality
-    console.log('Bookmark toggled for opportunity:', id);
+  const handleBookmark = async (opportunity: Opportunity) => {
+    if (!user) return;
+
+    setBookmarkingOpportunityId(opportunity.id);
+    try {
+      // Get the opportunity owner's user ID for bookmarking
+      const { data: opportunityData, error: opportunityError } = await supabase
+        .from('opportunities')
+        .select('user_id')
+        .eq('id', opportunity.id)
+        .single();
+
+      if (opportunityError) {
+        console.error('Error getting opportunity owner:', opportunityError);
+        return;
+      }
+
+      // Toggle bookmark
+      const isBookmarked = await bookmarksService.toggleBookmark(
+        user.id,
+        opportunityData.user_id,
+        'opportunity',
+        opportunity.id
+      );
+
+      // Update local state
+      setOpportunities(prev => prev.map(opp => 
+        opp.id === opportunity.id ? { ...opp, isBookmarked } : opp
+      ));
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    } finally {
+      setBookmarkingOpportunityId(null);
+    }
   };
   const handleGrabIt = async (opportunity: Opportunity) => {
     if (!user) {
@@ -303,8 +349,16 @@ const OpportunitiesDashboard: React.FC = () => {
                       <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`}>
                         {opportunity.type}
                       </span>
-                      <button onClick={() => handleBookmark(opportunity.id)} className="text-gray-400 hover:text-black transition-colors duration-200">
-                        <Bookmark size={20} className={opportunity.isBookmarked ? 'fill-current text-black' : ''} />
+                      <button 
+                        onClick={() => handleBookmark(opportunity)} 
+                        disabled={bookmarkingOpportunityId === opportunity.id}
+                        className="text-gray-400 hover:text-black transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {bookmarkingOpportunityId === opportunity.id ? (
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-400"></div>
+                        ) : (
+                          <Bookmark size={20} className={opportunity.isBookmarked ? 'fill-current text-black' : ''} />
+                        )}
                       </button>
                     </div>
 

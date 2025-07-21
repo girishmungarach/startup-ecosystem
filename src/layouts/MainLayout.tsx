@@ -127,6 +127,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             <span className="text-xs text-gray-500">Account and privacy settings</span>
                           </div>
                         </Link>
+                        <Link
+                          to="/bookmarks"
+                          className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Bookmark size={16} />
+                          <div>
+                            <span className="block">My Bookmarks</span>
+                            <span className="text-xs text-gray-500">View saved opportunities and profiles</span>
+                          </div>
+                        </Link>
                         <button
                           onClick={handleSignOut}
                           className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 w-full"
@@ -238,6 +249,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       <div>
                         <span className="block text-base font-medium">Settings</span>
                         <span className="text-xs text-gray-500">Account and privacy settings</span>
+                      </div>
+                    </Link>
+                    
+                    <Link
+                      to="/bookmarks"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 px-4 py-4 text-gray-700 hover:bg-gray-100 active:bg-gray-200 rounded-md transition-colors duration-200 touch-manipulation"
+                    >
+                      <Bookmark size={20} />
+                      <div>
+                        <span className="block text-base font-medium">My Bookmarks</span>
+                        <span className="text-xs text-gray-500">View saved opportunities and profiles</span>
                       </div>
                     </Link>
                     

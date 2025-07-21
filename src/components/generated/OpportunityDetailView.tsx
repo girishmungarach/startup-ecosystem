@@ -6,6 +6,7 @@ import { ArrowLeft, MapPin, Clock, CheckCircle, AlertCircle, Users, Bookmark, Ey
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { bookmarksService } from '../../services/bookmarks';
 
 interface OpportunityDetail {
   id: string;
@@ -32,6 +33,8 @@ const OpportunityDetailView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isGrabbing, setIsGrabbing] = useState(false);
+  const [isBookmarking, setIsBookmarking] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
     const loadOpportunity = async () => {
@@ -55,17 +58,22 @@ const OpportunityDetailView: React.FC = () => {
 
         // Check if user has already grabbed this opportunity
         let isGrabbed = false;
+        let isBookmarked = false;
         if (user) {
-          const { data: grabData, error: grabError } = await supabase
-            .from('opportunity_grabs')
-            .select('id')
-            .eq('opportunity_id', id)
-            .eq('user_id', user.id)
-            .single();
+          const [grabResult, bookmarkResult] = await Promise.all([
+            supabase
+              .from('opportunity_grabs')
+              .select('id')
+              .eq('opportunity_id', id)
+              .eq('user_id', user.id)
+              .single(),
+            bookmarksService.isBookmarked(user.id, opportunityData.user_id, 'opportunity', id)
+          ]);
 
-          if (!grabError || grabError.code === 'PGRST116') {
-            isGrabbed = !!grabData;
+          if (!grabResult.error || grabResult.error.code === 'PGRST116') {
+            isGrabbed = !!grabResult.data;
           }
+          isBookmarked = bookmarkResult;
         }
 
         // Get grab and view counts
@@ -80,6 +88,7 @@ const OpportunityDetailView: React.FC = () => {
           grabCount: grabCount || 0,
           viewCount: opportunityData.views_count || 0
         });
+        setIsBookmarked(isBookmarked);
       } catch (error) {
         console.error('Failed to load opportunity:', error);
         setError('Failed to load opportunity details.');
@@ -143,6 +152,27 @@ const OpportunityDetailView: React.FC = () => {
       alert('Failed to show interest. Please try again.');
     } finally {
       setIsGrabbing(false);
+    }
+  };
+
+  const handleBookmark = async () => {
+    if (!user || !opportunity) return;
+
+    setIsBookmarking(true);
+    try {
+      // Toggle bookmark
+      const newBookmarkStatus = await bookmarksService.toggleBookmark(
+        user.id,
+        opportunity.user_id || opportunity.id, // Use opportunity owner's user ID
+        'opportunity',
+        opportunity.id
+      );
+
+      setIsBookmarked(newBookmarkStatus);
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    } finally {
+      setIsBookmarking(false);
     }
   };
 
@@ -242,8 +272,16 @@ const OpportunityDetailView: React.FC = () => {
               <span className={`px-3 py-1 text-sm font-medium border ${getTypeColor(opportunity.type)}`}>
                 {opportunity.type}
               </span>
-              <button className="text-gray-400 hover:text-black transition-colors duration-200">
-                <Bookmark size={20} />
+              <button 
+                onClick={handleBookmark}
+                disabled={isBookmarking}
+                className="text-gray-400 hover:text-black transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isBookmarking ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-400"></div>
+                ) : (
+                  <Bookmark size={20} className={isBookmarked ? 'fill-current text-black' : ''} />
+                )}
               </button>
             </div>
 
