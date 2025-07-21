@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, User, MapPin, Building, Briefcase, Calendar, Clock, Eye, Mail, Linkedin, Globe, MessageCircle, Share2, Bookmark } from 'lucide-react';
+import { ArrowLeft, Star, User, MapPin, Building, Briefcase, Calendar, Clock, Eye, Mail, Linkedin, Globe, MessageCircle, Share2, Bookmark, Send, X } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -58,6 +58,9 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingActions, setIsLoadingActions] = useState(false);
   const [showContactInfo, setShowContactInfo] = useState(false);
+  const [showConnectionModal, setShowConnectionModal] = useState(false);
+  const [connectionMessage, setConnectionMessage] = useState('');
+  const [connectionType, setConnectionType] = useState<'professional' | 'mentorship' | 'investment' | 'partnership' | 'friendship'>('professional');
 
   // Load profile data
   useEffect(() => {
@@ -100,7 +103,8 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
             .from('bookmarks')
             .select('*')
             .eq('user_id', user.id)
-            .eq('profile_id', profileId)
+            .eq('bookmarked_user_id', profileId)
+            .eq('bookmark_type', 'profile')
             .single();
 
           setIsBookmarked(!!bookmarkData);
@@ -109,8 +113,7 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
           const { data: connectionData } = await supabase
             .from('connections')
             .select('*')
-            .or(`requester_id.eq.${user.id},responder_id.eq.${user.id}`)
-            .or(`requester_id.eq.${profileId},responder_id.eq.${profileId}`)
+            .or(`and(requester_id.eq.${user.id},responder_id.eq.${profileId}),and(requester_id.eq.${profileId},responder_id.eq.${user.id})`)
             .single();
 
           if (connectionData) {
@@ -139,7 +142,8 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
           .from('bookmarks')
           .delete()
           .eq('user_id', user.id)
-          .eq('profile_id', profile.id);
+          .eq('bookmarked_user_id', profile.id)
+          .eq('bookmark_type', 'profile');
         
         setIsBookmarked(false);
       } else {
@@ -148,8 +152,8 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
           .from('bookmarks')
           .insert({
             user_id: user.id,
-            profile_id: profile.id,
-            tags: []
+            bookmarked_user_id: profile.id,
+            bookmark_type: 'profile'
           });
         
         setIsBookmarked(true);
@@ -161,7 +165,11 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
     }
   };
 
-  const handleConnect = async () => {
+  const handleConnect = () => {
+    setShowConnectionModal(true);
+  };
+
+  const handleSendConnectionRequest = async () => {
     if (!user || !profile) return;
 
     setIsLoadingActions(true);
@@ -171,12 +179,17 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
         .insert({
           requester_id: user.id,
           responder_id: profile.id,
-          status: 'pending'
+          status: 'pending',
+          connection_type: connectionType,
+          message: connectionMessage.trim() || undefined
         });
 
       if (!error) {
         setIsConnected(true);
         setConnectionStatus('pending');
+        setShowConnectionModal(false);
+        setConnectionMessage('');
+        setConnectionType('professional');
       }
     } catch (error) {
       console.error('Error creating connection:', error);
@@ -488,6 +501,95 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
           </motion.div>
         </div>
       </main>
+
+      {/* Connection Request Modal */}
+      <AnimatePresence>
+        {showConnectionModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowConnectionModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold">Send Connection Request</h3>
+                <button
+                  onClick={() => setShowConnectionModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Connection Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Connection Type
+                  </label>
+                  <select
+                    value={connectionType}
+                    onChange={(e) => setConnectionType(e.target.value as any)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  >
+                    <option value="professional">Professional</option>
+                    <option value="mentorship">Mentorship</option>
+                    <option value="investment">Investment</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="friendship">Friendship</option>
+                  </select>
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Message (Optional)
+                  </label>
+                  <textarea
+                    value={connectionMessage}
+                    onChange={(e) => setConnectionMessage(e.target.value)}
+                    placeholder="Introduce yourself and explain why you'd like to connect..."
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent resize-none"
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex space-x-3 pt-4">
+                  <button
+                    onClick={() => setShowConnectionModal(false)}
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSendConnectionRequest}
+                    disabled={isLoadingActions}
+                    className="flex-1 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    {isLoadingActions ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <>
+                        <Send size={16} />
+                        <span>Send Request</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
