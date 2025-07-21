@@ -19,6 +19,7 @@ import ProfileDiscoveryPage from './components/generated/ProfileDiscoveryPage'
 import ProfileDetailView from './components/generated/ProfileDetailView'
 import MyConnectionsPage from './components/generated/MyConnectionsPage'
 import BookmarksManagementPage from './components/generated/BookmarksManagementPage'
+import NotificationsPage from './components/generated/NotificationsPage'
 import ContactRevelationSuccess from './components/generated/ContactRevelationSuccess'
 import StatusPage from './pages/StatusPage'
 
@@ -256,6 +257,15 @@ const AppContent: React.FC = () => {
           element={
             <ProtectedRoute>
               <BookmarksManagementPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/notifications" 
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
             </ProtectedRoute>
           } 
         />

@@ -10,9 +10,12 @@ import {
   User,
   Menu,
   X,
-  Settings
+  Settings,
+  Bell
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import NotificationsDropdown from '../components/NotificationsDropdown'
+import { useNotifications } from '../hooks/useNotifications'
 // TestPanel removed for production
 
 interface MainLayoutProps {
@@ -23,8 +26,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+  const { unreadCount } = useNotifications(user?.id)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [userMenuOpen, setUserMenuOpen] = React.useState(false)
+  const [notificationsOpen, setNotificationsOpen] = React.useState(false)
   const userMenuRef = React.useRef<HTMLDivElement>(null)
 
   // Close user menu on outside click
@@ -72,6 +77,32 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </Link>
             
             <div className="flex items-center space-x-4">
+              {/* Notifications */}
+              {user && (
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      setNotificationsOpen((open) => !open);
+                      setUserMenuOpen(false);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="p-2 md:p-3 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black touch-manipulation relative"
+                    aria-label="Open notifications"
+                  >
+                    <Bell size={20} className="md:w-5 md:h-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+                  <NotificationsDropdown 
+                    isOpen={notificationsOpen} 
+                    onClose={() => setNotificationsOpen(false)} 
+                  />
+                </div>
+              )}
+              
               {/* User Menu */}
               {user && (
                 <div className="relative" ref={userMenuRef}>
@@ -136,6 +167,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                           <div>
                             <span className="block">My Bookmarks</span>
                             <span className="text-xs text-gray-500">View saved opportunities and profiles</span>
+                          </div>
+                        </Link>
+                        <Link
+                          to="/notifications"
+                          className="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Bell size={16} />
+                          <div>
+                            <span className="block">Notifications</span>
+                            <span className="text-xs text-gray-500">
+                              {unreadCount > 0 ? `${unreadCount} unread` : 'View all notifications'}
+                            </span>
                           </div>
                         </Link>
                         <button
@@ -261,6 +305,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       <div>
                         <span className="block text-base font-medium">My Bookmarks</span>
                         <span className="text-xs text-gray-500">View saved opportunities and profiles</span>
+                      </div>
+                    </Link>
+                    
+                    <Link
+                      to="/notifications"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 px-4 py-4 text-gray-700 hover:bg-gray-100 active:bg-gray-200 rounded-md transition-colors duration-200 touch-manipulation"
+                    >
+                      <Bell size={20} />
+                      <div>
+                        <span className="block text-base font-medium">Notifications</span>
+                        <span className="text-xs text-gray-500">
+                          {unreadCount > 0 ? `${unreadCount} unread` : 'View all notifications'}
+                        </span>
                       </div>
                     </Link>
                     
