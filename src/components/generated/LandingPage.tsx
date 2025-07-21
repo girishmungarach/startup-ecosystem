@@ -8,7 +8,7 @@ const LandingPage: React.FC = () => {
       <header className="w-full px-4 py-6 md:px-8 lg:px-12 xl:px-24 border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight" style={{ fontFamily: 'Abril Fatface, serif', fontWeight: 'normal' }}>
               <span className="block">Startup</span>
               <span className="block">Ecosystem</span>
             </h1>
