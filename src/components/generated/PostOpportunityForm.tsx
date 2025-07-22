@@ -176,11 +176,11 @@ const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = 
 
       const opportunityData = {
         user_id: user.id,
-        title: formData.title,
-        type: formData.type as any,
-        company: profile?.company || 'Your Company',
-        location: formData.location,
-        description: formData.description,
+        title: formData.title.trim(),
+        type: formData.type.trim(),
+        company: (profile?.company || 'Your Company').trim(),
+        location: (formData.location && formData.location.trim() !== '' ? formData.location : 'Remote').trim(),
+        description: formData.description.trim(),
         requirements: formData.requirements || null,
         compensation: formData.compensation || null,
         contact_email: user.email,
@@ -211,8 +211,9 @@ const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = 
       }
 
       if (result.error) {
-        console.error('Error saving opportunity:', result.error);
-        throw result.error;
+        console.error('Error saving opportunity:', result.error, result);
+        setSubmitError(result.error.message || JSON.stringify(result.error) || 'Failed to save opportunity. Please try again.');
+        return;
       }
 
       console.log('Opportunity saved successfully:', result.data);
@@ -224,9 +225,9 @@ const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = 
         navigate('/my-opportunities');
       }, 1500);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save opportunity:', error);
-      setSubmitError(error instanceof Error ? error.message : 'Failed to save opportunity. Please try again.');
+      setSubmitError(error?.message || JSON.stringify(error) || 'Failed to save opportunity. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
