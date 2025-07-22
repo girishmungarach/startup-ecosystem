@@ -185,8 +185,6 @@ const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = 
         compensation: formData.compensation || null,
         contact_email: user.email,
         is_active: !isDraft,
-        contact_preference: formData.contactPreference,
-        screening_questions: formData.screeningQuestions || null,
         status: isDraft ? 'draft' : 'active',
         updated_at: new Date().toISOString()
       };
