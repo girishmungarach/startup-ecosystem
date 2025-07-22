@@ -92,6 +92,21 @@ const ProfileCreationForm: React.FC = () => {
     loadExistingProfile();
   }, [user]);
 
+  useEffect(() => {
+    const checkProfileCompleteAndRedirect = async () => {
+      if (!user) return;
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('full_name, company, role')
+        .eq('id', user.id)
+        .single();
+      if (profile && profile.full_name && profile.company && profile.role) {
+        navigate('/opportunities', { replace: true });
+      }
+    };
+    checkProfileCompleteAndRedirect();
+  }, [user, navigate]);
+
   const roleOptions = [
     { value: 'Founder', description: 'Building and leading startups' },
     { value: 'Investor', description: 'Funding and supporting startups' },
