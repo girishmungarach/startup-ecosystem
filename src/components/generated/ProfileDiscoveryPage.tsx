@@ -6,10 +6,11 @@ import { Search, Filter, Bookmark, User, MapPin, Building, Briefcase, X, Loader2
 import { useAuth } from '../../contexts/AuthContext';
 import { profilesService, Profile, ProfileFilters } from '../../services/profiles';
 import { bookmarksService } from '../../services/bookmarks';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ProfileDiscoveryPage: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -23,6 +24,7 @@ const ProfileDiscoveryPage: React.FC = () => {
   const buildingStatusOptions = ['All', 'Actively building', 'Exploring ideas', 'Looking for opportunities'];
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [bookmarkError, setBookmarkError] = useState<string | null>(null);
 
   // Load profiles and available options
   useEffect(() => {
@@ -93,7 +95,10 @@ const ProfileDiscoveryPage: React.FC = () => {
     }
   };
   const toggleBookmark = async (profileId: string) => {
-    if (!user) return;
+    if (!user) {
+      setBookmarkError('You must be logged in to bookmark profiles.');
+      return;
+    }
     
     try {
       const wasAdded = await bookmarksService.toggleBookmark(profileId, user.id, 'profile');
@@ -103,9 +108,10 @@ const ProfileDiscoveryPage: React.FC = () => {
         ...profile,
         is_bookmarked: wasAdded
       } : profile));
+      setBookmarkError(null);
     } catch (err) {
+      setBookmarkError('Error toggling bookmark. Please try again.');
       console.error('Error toggling bookmark:', err);
-      // You could add a toast notification here
     }
   };
   const clearAllFilters = () => {
@@ -309,7 +315,7 @@ const ProfileDiscoveryPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center"
             >
               {filteredProfiles.map((profile, index) => (
                 <motion.div
@@ -317,7 +323,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative bg-white border border-gray-200 rounded-2xl shadow-md p-6 flex flex-col justify-between min-h-[480px] max-w-xs mx-auto hover:shadow-xl hover:border-black transition-all duration-300 group"
+                  className="relative bg-white border border-gray-200 rounded-2xl shadow-md p-8 flex flex-col justify-between min-h-[480px] max-w-md w-full mx-auto hover:shadow-xl hover:border-black transition-all duration-300 group"
                 >
                   {/* Bookmark Icon */}
                   <button
@@ -360,11 +366,11 @@ const ProfileDiscoveryPage: React.FC = () => {
                   </div>
                   {/* Interest Tags */}
                   <div className="mb-3 flex flex-wrap gap-2 justify-center">
-                    {profile.interests.map(interest => (
+                    {(profile.interests && profile.interests.length > 0) ? profile.interests.map(interest => (
                       <span key={interest} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">
                         {interest}
                       </span>
-                    ))}
+                    )) : <span className="text-xs text-gray-400">No interests listed</span>}
                   </div>
                   {/* Building Status */}
                   <div className="mb-4 flex justify-center">
@@ -375,7 +381,7 @@ const ProfileDiscoveryPage: React.FC = () => {
                     className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 min-h-[44px] flex items-center justify-center rounded-xl text-base mt-auto"
                     tabIndex={0}
                     aria-label={`View profile of ${profile.name}`}
-                    onClick={() => window.location.href = `/profiles/${profile.id}`}
+                    onClick={() => navigate(`/profiles/${profile.id}`)}
                   >
                     View Profile
                   </button>
@@ -479,6 +485,9 @@ const ProfileDiscoveryPage: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      {bookmarkError && (
+        <div className="text-xs text-red-600 text-center mb-2">{bookmarkError}</div>
+      )}
     </div>
   );
 };
