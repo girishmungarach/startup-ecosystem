@@ -6,6 +6,7 @@ import { ArrowLeft, Star, User, MapPin, Building, Briefcase, Calendar, Clock, Ey
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { bookmarksService } from '../../services/bookmarksService';
 
 interface Profile {
   id: string;
@@ -136,28 +137,14 @@ const ProfileDetailView: React.FC<ProfileDetailViewProps> = ({
 
     setIsLoadingActions(true);
     try {
-      if (isBookmarked) {
-        // Remove bookmark
-        await supabase
-          .from('bookmarks')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('bookmarked_user_id', profile.id)
-          .eq('bookmark_type', 'profile');
-        
-        setIsBookmarked(false);
-      } else {
-        // Add bookmark
-        await supabase
-          .from('bookmarks')
-          .insert({
-            user_id: user.id,
-            bookmarked_user_id: profile.id,
-            bookmark_type: 'profile'
-          });
-        
-        setIsBookmarked(true);
-      }
+      // Use bookmarksService.toggleBookmark for consistency
+      const newBookmarkStatus = await bookmarksService.toggleBookmark(
+        user.id,
+        profile.id,
+        'profile',
+        undefined // No opportunity_id for profile bookmarks
+      );
+      setIsBookmarked(newBookmarkStatus);
     } catch (error) {
       console.error('Error toggling bookmark:', error);
     } finally {
