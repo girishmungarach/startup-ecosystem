@@ -435,30 +435,41 @@ const ProfileSettings: React.FC = () => {
                 <div className="flex items-center space-x-6">
                   <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
                     {profileData.avatar_url ? (
-                      <img src={profileData.avatar_url} alt="Profile" className="w-24 h-24 object-cover rounded-full" />
+                      <img
+                        src={profileData.avatar_url}
+                        alt="Profile"
+                        className="w-24 h-24 object-cover rounded-full"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '';
+                        }}
+                      />
                     ) : (
                       <User size={48} className="text-gray-600" />
                     )}
                   </div>
-                  <div>
+                  <div className="flex flex-col space-y-2">
                     <label className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition-colors duration-200 flex items-center space-x-2 cursor-pointer">
                       <Camera size={16} />
                       <span>{uploading ? 'Uploading...' : 'Upload Photo'}</span>
                       <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploading} />
                     </label>
-                    <p className="text-sm text-gray-600 mt-2">
-                      JPG, PNG or GIF. Max size 2MB.
-                    </p>
+                    <p className="text-sm text-gray-600 mt-2">JPG, PNG or GIF. Max size 2MB.</p>
+                    {/* Only show delete button if avatar_url is set, not uploading, and not cropping */}
+                    {profileData.avatar_url && !uploading && !showCropModal && (
+                      <button
+                        onClick={handleDeleteAvatar}
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 mt-2"
+                        disabled={uploading}
+                      >
+                        Delete Photo
+                      </button>
+                    )}
+                    {/* Show error if image fails to load */}
+                    {profileData.avatar_url === '' && (
+                      <span className="text-xs text-red-500 mt-1">Profile image could not be loaded. Please upload again.</span>
+                    )}
                   </div>
-                  {profileData.avatar_url && (
-                    <button
-                      onClick={handleDeleteAvatar}
-                      className="ml-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
-                      disabled={uploading}
-                    >
-                      {uploading ? 'Deleting...' : 'Delete Photo'}
-                    </button>
-                  )}
                 </div>
               </div>
 
