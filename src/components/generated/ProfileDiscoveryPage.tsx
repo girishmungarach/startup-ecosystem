@@ -305,79 +305,74 @@ const ProfileDiscoveryPage: React.FC = () => {
 
           {/* Profile Grid */}
           {!isLoading && !error && filteredProfiles.length > 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+            >
               {filteredProfiles.map((profile, index) => (
                 <motion.div
                   key={profile.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-lg hover:border-black transition-all duration-300 group flex flex-col justify-between min-h-[480px] max-w-md mx-auto"
+                  className="relative bg-white border border-gray-200 rounded-2xl shadow-md p-6 flex flex-col justify-between min-h-[480px] max-w-xs mx-auto hover:shadow-xl hover:border-black transition-all duration-300 group"
                 >
-                  {/* Profile Header */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 shadow-inner">
-                        <User size={32} className="text-gray-400" />
-                      </div>
-                      <div>
-                        <h4 className="text-xl font-bold text-gray-900 leading-tight">{profile.name}</h4>
-                        <p className="text-gray-600 flex items-center space-x-1 mt-1">
-                          <Briefcase size={14} />
-                          <span>{profile.role}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Bookmark Icon */}
                   <button
                     onClick={() => toggleBookmark(profile.id)}
-                    className={`p-2 rounded-full transition-all duration-200 ${profile.is_bookmarked ? 'bg-black text-white hover:bg-gray-800' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                    className={`absolute top-4 right-4 p-2 rounded-full transition-all duration-200 z-10 shadow-sm border border-gray-200 bg-white ${profile.is_bookmarked ? 'text-black' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
                     title={profile.is_bookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
                   >
-                    <Bookmark size={20} className={profile.is_bookmarked ? 'fill-current' : ''} />
+                    <Bookmark size={22} className={profile.is_bookmarked ? 'fill-current' : ''} />
                   </button>
-
+                  {/* Profile Header */}
+                  <div className="flex flex-col items-center mb-4">
+                    <div className="w-20 h-20 rounded-full flex items-center justify-center border-2 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 shadow-inner mb-2">
+                      <User size={40} className="text-gray-400" />
+                    </div>
+                    <h4 className="text-lg font-bold text-gray-900 leading-tight text-center">{profile.name}</h4>
+                    <p className="text-gray-600 flex items-center space-x-1 mt-1 text-sm font-medium">
+                      <Briefcase size={14} />
+                      <span>{profile.role}</span>
+                    </p>
+                  </div>
                   {/* Company and Location */}
-                  <div className="mb-4 space-y-1">
-                    <p className="flex items-center space-x-1 text-gray-600">
+                  <div className="mb-3 text-center">
+                    <p className="flex items-center justify-center space-x-1 text-gray-600 text-sm">
                       <Building size={14} />
                       <span>{profile.company}</span>
                     </p>
                     {profile.location && (
-                      <p className="flex items-center space-x-1 text-gray-600">
-                        <MapPin size={14} />
+                      <p className="flex items-center justify-center space-x-1 text-gray-600 text-xs mt-1">
+                        <MapPin size={13} />
                         <span>{profile.location}</span>
                       </p>
                     )}
                   </div>
-
                   {/* Current Project */}
-                  <div className="mb-4">
-                    <p className="text-sm font-semibold text-gray-800 mb-2">Currently building:</p>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                  <div className="mb-3">
+                    <p className="text-xs font-semibold text-gray-800 mb-1 text-center">Currently building:</p>
+                    <p className="text-xs text-gray-600 leading-relaxed text-center">
                       {profile.current_project}
                     </p>
                   </div>
-
                   {/* Interest Tags */}
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-2">
-                      {profile.interests.map(interest => (
-                        <span key={interest} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">
-                          {interest}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="mb-3 flex flex-wrap gap-2 justify-center">
+                    {profile.interests.map(interest => (
+                      <span key={interest} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">
+                        {interest}
+                      </span>
+                    ))}
                   </div>
-
                   {/* Building Status */}
-                  <div className="mb-6">
+                  <div className="mb-4 flex justify-center">
                     <span className={`px-3 py-1 text-xs font-semibold border rounded-full ${profile.building_status === 'Actively building' ? 'bg-green-50 text-green-700 border-green-200' : profile.building_status === 'Exploring ideas' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>{profile.building_status}</span>
                   </div>
-
                   {/* View Profile Button */}
                   <button
-                    className="w-full bg-black text-white py-4 sm:py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 min-h-[48px] flex items-center justify-center rounded-xl text-lg mt-auto"
+                    className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition-all duration-200 group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-20 min-h-[44px] flex items-center justify-center rounded-xl text-base mt-auto"
                     tabIndex={0}
                     aria-label={`View profile of ${profile.name}`}
                     onClick={() => window.location.href = `/profiles/${profile.id}`}
