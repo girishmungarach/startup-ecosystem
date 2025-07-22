@@ -4,6 +4,8 @@ import { User, Settings, Save, Camera, Eye, EyeOff, Bell, Shield, Globe, Mail, A
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Cropper from 'react-easy-crop';
+import Modal from 'react-modal';
 
 interface ProfileData {
   full_name: string;
@@ -15,6 +17,7 @@ interface ProfileData {
   twitter_url?: string;
   website_url?: string;
   avatar_url?: string; // Add avatar_url for profile picture
+  email: string; // Added email field
 }
 
 interface SettingsData {
@@ -43,6 +46,7 @@ const ProfileSettings: React.FC = () => {
     twitter_url: '',
     website_url: '',
     avatar_url: '', // Add avatar_url for profile picture
+    email: '', // Added email field
   });
 
   const [settingsData, setSettingsData] = useState<SettingsData>({
@@ -60,6 +64,47 @@ const ProfileSettings: React.FC = () => {
 
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  const getCroppedImg = async (imageSrc, crop) => {
+    const createImage = (url) => new Promise((resolve, reject) => {
+      const image = new window.Image();
+      image.addEventListener('load', () => resolve(image));
+      image.addEventListener('error', error => reject(error));
+      image.setAttribute('crossOrigin', 'anonymous');
+      image.src = url;
+    });
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement('canvas');
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(
+      image,
+      crop.x,
+      crop.y,
+      crop.width,
+      crop.height,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, 'image/jpeg');
+    });
+  };
 
   // Load profile data
   useEffect(() => {
@@ -90,6 +135,7 @@ const ProfileSettings: React.FC = () => {
             twitter_url: data.twitter_url || '',
             website_url: data.website_url || '',
             avatar_url: data.avatar_url || '',
+            email: data.email || user.email || '', // Set email
           });
         }
       } catch (error) {
@@ -114,6 +160,7 @@ const ProfileSettings: React.FC = () => {
         .upsert({
           id: user.id,
           ...profileData,
+          email: profileData.email || user.email, // Ensure email is included
           updated_at: new Date().toISOString()
         });
 
@@ -198,31 +245,89 @@ const ProfileSettings: React.FC = () => {
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!user || !event.target.files || event.target.files.length === 0) return;
+    setSelectedImage(event.target.files[0]);
+    setShowCropModal(true);
+  };
+
+  const handleCropSave = async () => {
+    if (!selectedImage || !croppedAreaPixels) return;
     setUploading(true);
     setProfileError(null);
     try {
-      const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
+      const imageDataUrl = URL.createObjectURL(selectedImage);
+      const croppedBlob = await getCroppedImg(imageDataUrl, croppedAreaPixels);
+      const fileExt = selectedImage.name.split('.').pop();
       const filePath = `avatars/${user.id}.${fileExt}`;
-      // Upload to Supabase Storage
-      let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+      let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, croppedBlob, { upsert: true });
       if (uploadError) {
         setProfileError(uploadError.message || 'Failed to upload image.');
         setUploading(false);
+        setShowCropModal(false);
         return;
       }
-      // Get public URL
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
       const publicUrl = data.publicUrl;
-      // Update profile with new avatar_url
-      const { error: updateError } = await supabase.from('profiles').update({ avatar_url: publicUrl, updated_at: new Date().toISOString() }).eq('id', user.id);
+      const { error: updateError } = await supabase.from('profiles').update({ avatar_url: publicUrl, updated_at: new Date().toISOString(), email: profileData.email || user.email }).eq('id', user.id);
       if (updateError) {
         setProfileError(updateError.message || 'Failed to update profile with image.');
         setUploading(false);
+        setShowCropModal(false);
         return;
       }
-      // Reload profile data from DB to ensure UI is up to date
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileDataDb, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      if (profileError) {
+        setProfileError(profileError.message || 'Failed to reload profile.');
+        setUploading(false);
+        setShowCropModal(false);
+        return;
+      }
+      setProfileData({
+        full_name: profileDataDb.full_name || '',
+        role: profileDataDb.role || '',
+        company: profileDataDb.company || '',
+        location: profileDataDb.location || '',
+        bio: profileDataDb.bio || '',
+        linkedin_url: profileDataDb.linkedin_url || '',
+        twitter_url: profileDataDb.twitter_url || '',
+        website_url: profileDataDb.website_url || '',
+        avatar_url: profileDataDb.avatar_url || '',
+        email: profileDataDb.email || user.email || '',
+      });
+      setProfileSuccess('Profile picture updated!');
+      setShowCropModal(false);
+      setSelectedImage(null);
+    } catch (error) {
+      setProfileError(error instanceof Error ? error.message : 'Failed to upload image.');
+      setShowCropModal(false);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    if (!user) return;
+    setUploading(true);
+    setProfileError(null);
+    try {
+      // Remove from Supabase Storage
+      // Try to delete both .jpg and .png extensions for safety
+      const jpgPath = `avatars/${user.id}.jpg`;
+      const pngPath = `avatars/${user.id}.png`;
+      const jpegPath = `avatars/${user.id}.jpeg`;
+      await supabase.storage.from('avatars').remove([jpgPath, pngPath, jpegPath]);
+      // Set avatar_url to null in DB
+      const { error: updateError } = await supabase.from('profiles').update({ avatar_url: null, updated_at: new Date().toISOString(), email: profileData.email || user.email }).eq('id', user.id);
+      if (updateError) {
+        setProfileError(updateError.message || 'Failed to update profile.');
+        setUploading(false);
+        return;
+      }
+      // Reload profile data
+      const { data: profileDataDb, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
@@ -233,19 +338,20 @@ const ProfileSettings: React.FC = () => {
         return;
       }
       setProfileData({
-        full_name: profileData.full_name || '',
-        role: profileData.role || '',
-        company: profileData.company || '',
-        location: profileData.location || '',
-        bio: profileData.bio || '',
-        linkedin_url: profileData.linkedin_url || '',
-        twitter_url: profileData.twitter_url || '',
-        website_url: profileData.website_url || '',
-        avatar_url: profileData.avatar_url || '',
+        full_name: profileDataDb.full_name || '',
+        role: profileDataDb.role || '',
+        company: profileDataDb.company || '',
+        location: profileDataDb.location || '',
+        bio: profileDataDb.bio || '',
+        linkedin_url: profileDataDb.linkedin_url || '',
+        twitter_url: profileDataDb.twitter_url || '',
+        website_url: profileDataDb.website_url || '',
+        avatar_url: profileDataDb.avatar_url || '',
+        email: profileDataDb.email || user.email || '',
       });
-      setProfileSuccess('Profile picture updated!');
+      setProfileSuccess('Profile picture deleted!');
     } catch (error) {
-      setProfileError(error instanceof Error ? error.message : 'Failed to upload image.');
+      setProfileError(error instanceof Error ? error.message : 'Failed to delete image.');
     } finally {
       setUploading(false);
     }
@@ -344,6 +450,15 @@ const ProfileSettings: React.FC = () => {
                       JPG, PNG or GIF. Max size 2MB.
                     </p>
                   </div>
+                  {profileData.avatar_url && (
+                    <button
+                      onClick={handleDeleteAvatar}
+                      className="ml-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+                      disabled={uploading}
+                    >
+                      {uploading ? 'Deleting...' : 'Delete Photo'}
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -634,6 +749,31 @@ const ProfileSettings: React.FC = () => {
           )}
         </div>
       </main>
+      <Modal
+        isOpen={showCropModal}
+        onRequestClose={() => setShowCropModal(false)}
+        contentLabel="Crop Image"
+        ariaHideApp={false}
+        style={{ content: { maxWidth: 400, margin: 'auto' } }}
+      >
+        {selectedImage && (
+          <div style={{ position: 'relative', width: 300, height: 300 }}>
+            <Cropper
+              image={URL.createObjectURL(selectedImage)}
+              crop={crop}
+              zoom={zoom}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+          </div>
+        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16 }}>
+          <button onClick={() => setShowCropModal(false)} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+          <button onClick={handleCropSave} className="bg-black text-white px-4 py-2 rounded" disabled={uploading}>{uploading ? 'Uploading...' : 'Save'}</button>
+        </div>
+      </Modal>
     </div>
   );
 };
