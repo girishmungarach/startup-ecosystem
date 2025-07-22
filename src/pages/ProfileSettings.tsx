@@ -221,7 +221,28 @@ const ProfileSettings: React.FC = () => {
         setUploading(false);
         return;
       }
-      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+      // Reload profile data from DB to ensure UI is up to date
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      if (profileError) {
+        setProfileError(profileError.message || 'Failed to reload profile.');
+        setUploading(false);
+        return;
+      }
+      setProfileData({
+        full_name: profileData.full_name || '',
+        role: profileData.role || '',
+        company: profileData.company || '',
+        location: profileData.location || '',
+        bio: profileData.bio || '',
+        linkedin_url: profileData.linkedin_url || '',
+        twitter_url: profileData.twitter_url || '',
+        website_url: profileData.website_url || '',
+        avatar_url: profileData.avatar_url || '',
+      });
       setProfileSuccess('Profile picture updated!');
     } catch (error) {
       setProfileError(error instanceof Error ? error.message : 'Failed to upload image.');
