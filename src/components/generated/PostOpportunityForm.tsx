@@ -212,7 +212,11 @@ const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = 
 
       if (result.error) {
         console.error('Error saving opportunity:', result.error, result);
-        setSubmitError(result.error.message || JSON.stringify(result.error) || 'Failed to save opportunity. Please try again.');
+        setSubmitError(
+          (result.error && (result.error.message || result.error.details || JSON.stringify(result.error))) ||
+          JSON.stringify(result) ||
+          'Failed to save opportunity. Please try again.'
+        );
         return;
       }
 
@@ -227,7 +231,10 @@ const PostOpportunityForm: React.FC<PostOpportunityFormProps> = ({ isEditMode = 
       
     } catch (error: any) {
       console.error('Failed to save opportunity:', error);
-      setSubmitError(error?.message || JSON.stringify(error) || 'Failed to save opportunity. Please try again.');
+      setSubmitError(
+        (error && (error.message || error.details || JSON.stringify(error))) ||
+        'Failed to save opportunity. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
